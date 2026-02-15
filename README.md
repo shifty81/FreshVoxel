@@ -143,7 +143,10 @@ cd build
 cmake --build . --config Release
 
 # 5. Run
-Release\FreshVoxelEngine.exe
+Release\FreshEditor.exe     # Full editor
+Release\FreshClient.exe     # Player runtime
+Release\FreshServer.exe     # Headless server
+Release\FreshRuntime.exe    # Runtime launcher
 ```
 
 **For complete step-by-step instructions, see [docs/getting-started/BUILD.md](docs/getting-started/BUILD.md).**
@@ -307,39 +310,76 @@ Fresh Voxel Engine supports multiple development approaches for Windows:
 
 ## 📁 Project Structure
 
+Atlas-style modular architecture — the engine ships as multiple executables linked against a shared core library:
+
+| Binary         | Purpose                              |
+|----------------|--------------------------------------|
+| `FreshEditor`  | Full editor + runtime (superset)     |
+| `FreshClient`  | Player runtime                       |
+| `FreshServer`  | Headless authoritative server        |
+| `FreshRuntime` | Runtime launcher with CLI options    |
+
 ```
 fresh/
-├── CMakeLists.txt          # Build configuration
+├── CMakeLists.txt          # Root build — add_subdirectory() for each target
 ├── vcpkg.json              # Dependency manifest
 ├── generate_vs2022.bat     # Visual Studio generator
 ├── setup-and-build.ps1     # Automated setup script
 │
-├── include/                # Header files
-│   ├── core/              # Engine core (Engine, Logger, Window)
-│   ├── renderer/          # DirectX 11/12 rendering
-│   ├── voxel/             # Voxel world and chunks
-│   ├── generation/        # Procedural terrain generation
-│   ├── physics/           # Physics and collision
-│   ├── editor/            # World editor and terraforming
-│   ├── ui/                # Native Windows UI (Win32 components)
-│   ├── gameplay/          # Player and camera
-│   ├── audio/             # Audio engine
-│   ├── character/         # Voxel character system
-│   ├── assets/            # Asset management
-│   └── ...                # Other systems
+├── engine/                 # Core engine library (FreshEngine)
+│   ├── CMakeLists.txt      # Builds FreshEngine as STATIC library
+│   ├── core/               # Engine bootstrap, logging, config, window
+│   ├── renderer/           # DirectX 11/12, OpenGL rendering
+│   │   └── backends/       # Platform-specific render backends
+│   ├── voxel/              # Voxel world and chunks
+│   ├── generation/         # Procedural terrain generation
+│   ├── physics/            # Physics and collision
+│   ├── editor/             # Editor systems (GUI, selection, tools)
+│   ├── ui/                 # UI framework and native Win32 panels
+│   │   └── native/         # Win32 native controls
+│   ├── gameplay/           # Player, camera, time, weather
+│   ├── audio/              # Audio engine
+│   ├── character/          # Voxel character system
+│   ├── assets/             # Asset management
+│   ├── ecs/                # Entity/Component/System
+│   ├── ai/                 # AI system, behavior trees
+│   ├── input/              # Input management
+│   ├── interaction/        # Raycasting, voxel tools
+│   ├── networking/         # Client/server networking
+│   ├── scripting/          # Event system, Lua bindings
+│   ├── serialization/      # World serialization
+│   ├── rpg/                # RPG systems (inventory, crafting)
+│   ├── galaxy/             # Galaxy generation
+│   ├── voxelship/          # Voxel structures
+│   └── devtools/           # Debug tools, profiler
 │
-├── src/                   # Implementation files
-│   └── (mirrors include/ structure)
+├── editor/                 # Editor executable
+│   ├── CMakeLists.txt
+│   └── main.cpp
 │
-├── shaders/               # HLSL shaders for DirectX
-├── textures/              # Placeholder textures (42 blocks + 11 UI)
-├── sounds/                # Audio files
-├── Assets/                # Game assets
-├── examples/              # In-engine gameplay demo documentation
-├── docs/                  # Detailed documentation
-├── dotnet/                # .NET 9 C# bindings
-├── tests/                 # Unit tests
-└── tools/                 # Python development tools
+├── client/                 # Player runtime executable
+│   ├── CMakeLists.txt
+│   └── main.cpp
+│
+├── server/                 # Headless server executable
+│   ├── CMakeLists.txt
+│   └── main.cpp
+│
+├── runtime/                # Runtime launcher executable
+│   ├── CMakeLists.txt
+│   └── main.cpp
+│
+├── tests/                  # Unit tests
+├── include/                # Legacy headers (backward compatibility)
+├── src/                    # Legacy sources (backward compatibility)
+├── shaders/                # HLSL shaders for DirectX
+├── textures/               # Placeholder textures (42 blocks + 11 UI)
+├── sounds/                 # Audio files
+├── Assets/                 # Game assets
+├── examples/               # In-engine gameplay demo documentation
+├── docs/                   # Detailed documentation
+├── dotnet/                 # .NET 9 C# bindings
+└── tools/                  # Python development tools
 ```
 
 ---

@@ -1,0 +1,15 @@
+add_executable(FreshServer main.cpp)
+target_link_libraries(FreshServer FreshEngine)
+
+if(MSVC)
+    target_compile_options(FreshServer PRIVATE /W4 /WX)
+    if(CMAKE_BUILD_TYPE STREQUAL "Release")
+        target_compile_options(FreshServer PRIVATE /O2 /Oi /Ot /GL /Gy /GS- /fp:fast /arch:AVX2)
+        target_link_options(FreshServer PRIVATE /LTCG /OPT:REF /OPT:ICF)
+    endif()
+    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+        target_compile_options(FreshServer PRIVATE /ZI /Od /RTC1)
+    endif()
+endif()
+
+install(TARGETS FreshServer DESTINATION bin)

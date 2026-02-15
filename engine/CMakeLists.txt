@@ -1,0 +1,162 @@
+add_library(FreshEngine STATIC
+    core/Engine.cpp
+    core/Project.cpp
+    core/Window.cpp
+    core/Logger.cpp
+    core/MemoryManager.cpp
+    core/ResourceManager.cpp
+    core/SceneManager.cpp
+    core/Reflection.cpp
+    renderer/ShaderManager.cpp
+    renderer/RenderContext.cpp
+    renderer/Material.cpp
+    renderer/Texture.cpp
+    renderer/stb_image_impl.cpp
+    renderer/ModelLoader.cpp
+    renderer/TextureManager.cpp
+    renderer/VoxelTextureLoader.cpp
+    voxel/Chunk.cpp
+    voxel/VoxelWorld.cpp
+    voxel/MeshGenerator.cpp
+    voxel/ChunkStreamer.cpp
+    generation/NoiseGenerator.cpp
+    generation/TerrainGenerator.cpp
+    generation/BiomeSystem.cpp
+    generation/HeightmapWorldGenerator.cpp
+    generation/World2DGenerator.cpp
+    generation/WorldGeneratorFactory.cpp
+    generation/WorldGenerationTask.cpp
+    physics/PhysicsSystem.cpp
+    physics/CollisionDetection.cpp
+    physics/PhysicsComponent.cpp
+    physics/PhysicsSystemEnhanced.cpp
+    interaction/RaycastSystem.cpp
+    interaction/VoxelInteraction.cpp
+    interaction/VoxelTool.cpp
+    interaction/ToolManager.cpp
+    ai/AISystem.cpp
+    ai/BehaviorTree.cpp
+    ai/LLMClient.cpp
+    ai/ProjectContext.cpp
+    audio/AudioEngine.cpp
+    scripting/EventSystem.cpp
+    character/VoxelCharacter.cpp
+    character/BodyPartLibrary.cpp
+    character/AnimationClip.cpp
+    character/AnimationController.cpp
+    character/IKSolver.cpp
+    character/CharacterRenderer.cpp
+    editor/EditorGUI.cpp
+    editor/WorldEditor.cpp
+    editor/TerraformingSystem.cpp
+    editor/BlockBuilder.cpp
+    editor/SelectionManager.cpp
+    editor/SelectionRenderer.cpp
+    editor/TransformGizmo.cpp
+    editor/FileDialogManager.cpp
+    editor/LayoutManager.cpp
+    editor/EditorSettingsDialog.cpp
+    editor/CameraController.cpp
+    serialization/WorldSerializer.cpp
+    ui/MainMenu.cpp
+    ui/EditorToolbar.cpp
+    input/InputManager.cpp
+    gameplay/Camera.cpp
+    gameplay/Player.cpp
+    gameplay/TimeManager.cpp
+    gameplay/SeasonManager.cpp
+    gameplay/WeatherManager.cpp
+    gameplay/Raft.cpp
+    assets/ModularAssetSystem.cpp
+    assets/VoxelMaterialPack.cpp
+    assets/AssetManager.cpp
+    assets/AssetManagerExports.cpp
+    ecs/EntityManager.cpp
+    ecs/TransformComponent.cpp
+    ecs/RendererComponent.cpp
+    ecs/MaterialComponent.cpp
+    ecs/Transform2DComponent.cpp
+    ecs/Sprite2DComponent.cpp
+    ecs/RigidBody2DComponent.cpp
+    ecs/Collider2DComponent.cpp
+    ecs/Animation2DComponent.cpp
+    ecs/Camera2DComponent.cpp
+    ecs/Physics2DSystem.cpp
+    ecs/Collision2DSystem.cpp
+    ecs/Animation2DSystem.cpp
+    ecs/Camera2DSystem.cpp
+    voxelship/VoxelBlock.cpp
+    voxelship/VoxelStructureComponent.cpp
+    galaxy/GalaxySector.cpp
+    galaxy/GalaxyGenerator.cpp
+    rpg/Inventory.cpp
+    rpg/InventoryComponent.cpp
+    rpg/CraftingSystem.cpp
+    rpg/ProgressionComponent.cpp
+    rpg/FactionComponent.cpp
+    rpg/LootSystem.cpp
+    rpg/TradingSystem.cpp
+    networking/NetworkMessage.cpp
+    networking/ClientConnection.cpp
+    networking/GameServer.cpp
+    networking/SectorServer.cpp
+    devtools/DebugRenderer.cpp
+    devtools/PerformanceProfiler.cpp
+    devtools/MemoryTracker.cpp
+    devtools/DebugConsole.cpp
+    devtools/DevToolsManager.cpp
+    scripting/lua/ScriptingEngine.cpp
+    scripting/lua/LuaScriptingEngine.cpp
+    scripting/lua/LuaECSBindings.cpp
+    scripting/lua/LuaTimeBindings.cpp
+    editor/EditorManager.cpp
+    ui/HotbarPanel.cpp
+    ui/NativeMainMenu.cpp
+)
+
+# Add platform-specific rendering backends
+if(ENABLE_DIRECTX)
+    target_sources(FreshEngine PRIVATE
+        renderer/backends/DirectX11RenderContext.cpp
+        renderer/backends/DirectX12RenderContext.cpp
+    )
+endif()
+
+if(ENABLE_OPENGL)
+    target_sources(FreshEngine PRIVATE
+        renderer/backends/OpenGLRenderContext.cpp
+    )
+endif()
+
+# Add Windows-native UI
+if(WIN32)
+    target_sources(FreshEngine PRIVATE
+        core/Win32Window.cpp
+        core/GamePlayWindow.cpp
+        input/Win32InputManager.cpp
+        ui/native/Win32Panel.cpp
+        ui/native/Win32MenuBar.cpp
+        ui/native/Win32Toolbar.cpp
+        ui/native/Win32HUD.cpp
+        ui/native/Win32HUDOverlay.cpp
+        ui/native/Win32TreeView.cpp
+        ui/native/Win32ListView.cpp
+        ui/native/Win32ConsolePanel.cpp
+        ui/native/Win32InspectorPanel.cpp
+        ui/native/Win32SceneHierarchyPanel.cpp
+        ui/native/Win32ContentBrowserPanel.cpp
+        ui/native/Win32SettingsDialog.cpp
+        ui/native/Win32TerraformingPanel.cpp
+        ui/native/Win32ViewportPanel.cpp
+        ui/native/Win32StatusBar.cpp
+        ui/native/Win32LLMAssistantPanel.cpp
+        ui/WindowsThemeManager.cpp
+        ui/WindowsDialogManager.cpp
+        ui/WindowsTaskbarManager.cpp
+        ui/WindowsJumpListManager.cpp
+        ui/WindowsToastManager.cpp
+        ui/WindowsDPIManager.cpp
+    )
+endif()
+
+target_include_directories(FreshEngine PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

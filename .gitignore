@@ -5,6 +5,13 @@ cmake-build-*/
 out/
 _codeql_build_dir/
 
+# Engine build artifacts (Atlas-style subdirectory builds)
+engine/build/
+editor/build/
+client/build/
+server/build/
+runtime/build/
+
 # Build scripts (temporary)
 build_minimal_tests.sh
 build_tests_only.sh
