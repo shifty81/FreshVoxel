@@ -196,7 +196,7 @@ Python scripts for asset generation and tooling:
 ### Option 1: C++ Development
 Modify the engine directly in C++20:
 
-1. Add your gameplay systems to `src/gameplay/`
+1. Add your gameplay systems to `engine/gameplay/`
 2. Integrate with existing systems
 3. Build with CMake
 4. Test in the main executable

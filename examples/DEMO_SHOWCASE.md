@@ -232,7 +232,7 @@ Follow this quick walkthrough to see all major features:
 ### Changing Graphics API
 The engine defaults to OpenGL on Windows. To use DirectX instead:
 
-1. **Edit**: `include/renderer/GraphicsAPI.h`
+1. **Edit**: `engine/renderer/GraphicsAPI.h`
 2. **Find**: `selectBestGraphicsAPI()` function
 3. **Change**: Return `GraphicsAPI::DirectX12` instead of `OpenGL`
 4. **Rebuild**: `cmake --build build --config Release`
