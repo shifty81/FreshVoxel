@@ -246,10 +246,8 @@ Step 5: Share (Optional)
 │  textures/             ← Default engine textures         │
 │  └── blocks/           ← Built-in textures (3 sizes)     │
 │                                                           │
-│  include/assets/       ← API headers                     │
+│  engine/assets/       ← API headers & Implementation      │
 │  └── VoxelMaterialPack.h  ← Asset pack system          │
-│                                                           │
-│  src/assets/           ← Implementation                  │
 │  └── VoxelMaterialPack.cpp                              │
 │                                                           │
 └──────────────────────────────────────────────────────────┘
