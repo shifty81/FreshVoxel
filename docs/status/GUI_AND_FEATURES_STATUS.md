@@ -8,7 +8,7 @@ This document provides a comprehensive overview of the current state of GUI and 
 
 #### 1. Native Win32 UI System
 - **Status**: 100% Complete
-- **Location**: `src/ui/native/` and `include/ui/native/`
+- **Location**: `engine/ui/native/` and `engine/ui/native/`
 - **Components**:
   - Win32MenuBar - Native Windows menu bar with File, Edit, View, World, Tools, Window, Help menus
   - Win32Toolbar - Tool buttons for common operations
@@ -97,7 +97,7 @@ This document provides a comprehensive overview of the current state of GUI and 
 
 #### 1. Character System
 - **Status**: Framework Exists (~70% complete)
-- **Location**: `include/character/` and `src/character/`
+- **Location**: `engine/character/` and `engine/character/`
 - **What's Implemented**:
   - ✅ VoxelCharacter class (character representation)
   - ✅ CharacterRenderer (voxel-based character rendering)

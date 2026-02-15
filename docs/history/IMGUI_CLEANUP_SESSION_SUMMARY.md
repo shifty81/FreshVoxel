@@ -70,7 +70,7 @@ Moved 7 deprecated ImGui-based files to `archived/imgui-panels/`:
 
 ### Files Modified
 - `CMakeLists.txt` - Updated comments
-- `include/ui/VoxelToolPalette.h` - Removed platform conditionals
+- `engine/ui/VoxelToolPalette.h` - Removed platform conditionals
 - `GUI_WORK_REMAINING_SUMMARY.md` - Added cleanup notes
 - `docs/community/FAQ.md` - Removed ImGui troubleshooting
 

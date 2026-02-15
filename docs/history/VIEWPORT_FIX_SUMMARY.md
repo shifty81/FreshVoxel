@@ -18,7 +18,7 @@ The issue occurred because:
 
 ## Changes Made
 
-### 1. Pre-Creation Viewport Validation (`src/core/Engine.cpp`)
+### 1. Pre-Creation Viewport Validation (`engine/core/Engine.cpp`)
 
 Added validation BEFORE world creation to ensure the viewport has valid dimensions:
 
@@ -47,7 +47,7 @@ Added validation BEFORE world creation to ensure the viewport has valid dimensio
 - Logs clear error messages if dimensions cannot be fixed
 - Prevents silent failure that leads to full-screen rendering
 
-### 2. Enhanced Logging in Swap Chain Recreation (`src/core/Engine.cpp`)
+### 2. Enhanced Logging in Swap Chain Recreation (`engine/core/Engine.cpp`)
 
 Added detailed logging during viewport swap chain recreation in `initializeGameSystems()`:
 
@@ -66,7 +66,7 @@ std::cout << "✓ Viewport swap chain configured: " << vpWidth << "x" << vpHeigh
 - Shows when viewport swap chain is successfully configured
 - Makes it easy to verify the fix is working
 
-### 3. Z-Order Management Fix (`src/editor/EditorManager.cpp`)
+### 3. Z-Order Management Fix (`engine/editor/EditorManager.cpp`)
 
 Updated `ensurePanelsOnTop()` to explicitly manage Z-order:
 
@@ -93,7 +93,7 @@ void EditorManager::ensurePanelsOnTop()
 - Ensures viewport renders behind UI panels as intended
 - Prevents UI panels from being obscured by the viewport
 
-### 4. Explicit Z-Order Update After Swap Chain Creation (`src/core/Engine.cpp`)
+### 4. Explicit Z-Order Update After Swap Chain Creation (`engine/core/Engine.cpp`)
 
 Added a call to `ensurePanelsOnTop()` after successful swap chain recreation:
 
@@ -249,8 +249,8 @@ Ensured proper panel Z-order after viewport swap chain creation
 
 ## Related Files Modified
 
-- `src/core/Engine.cpp` - Pre-creation validation and enhanced logging
-- `src/editor/EditorManager.cpp` - Z-order management fix
+- `engine/core/Engine.cpp` - Pre-creation validation and enhanced logging
+- `engine/editor/EditorManager.cpp` - Z-order management fix
 
 ## Related Memory Notes
 

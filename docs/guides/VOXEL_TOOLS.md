@@ -413,6 +413,6 @@ Potential future additions:
 ## API Reference
 
 For complete API documentation, see:
-- `include/interaction/VoxelTool.h`
-- `include/interaction/ToolManager.h`
+- `engine/interaction/VoxelTool.h`
+- `engine/interaction/ToolManager.h`
 - Unit tests: `tests/interaction/VoxelToolTests.cpp`

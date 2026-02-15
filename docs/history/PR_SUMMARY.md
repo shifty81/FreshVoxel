@@ -21,8 +21,8 @@ The issue reported three main problems:
 - This allows the dockspace to pass through input when the mouse is over the 3D viewport
 
 **Files Changed**:
-- `src/editor/EditorManager.cpp` - Line 395
-- `src/ui/ImGuiContext.cpp` - Lines 367-378
+- `engine/editor/EditorManager.cpp` - Line 395
+- `engine/ui/ImGuiContext.cpp` - Lines 367-378
 
 **Impact**: Users can now interact with the 3D world (place/remove voxels, move camera) even when the editor UI is visible, as long as the mouse is not over a UI panel.
 
@@ -48,13 +48,13 @@ The issue reported three main problems:
   - Dependencies (e.g., "requires voxel selection system")
 
 **Files Changed**:
-- `include/ui/SceneHierarchyPanel.h` - Added method declarations
-- `src/ui/SceneHierarchyPanel.cpp` - Implemented selectAll/deselectAll
-- `include/ui/EditorMenuBar.h` - Added callback setters
-- `src/ui/EditorMenuBar.cpp` - Connected callbacks, improved messages
-- `include/ui/ContentBrowserPanel.h` - Added showImportDialog declaration
-- `src/ui/ContentBrowserPanel.cpp` - Implemented showImportDialog
-- `src/editor/EditorManager.cpp` - Wired all callbacks
+- `engine/ui/SceneHierarchyPanel.h` - Added method declarations
+- `engine/ui/SceneHierarchyPanel.cpp` - Implemented selectAll/deselectAll
+- `engine/ui/EditorMenuBar.h` - Added callback setters
+- `engine/ui/EditorMenuBar.cpp` - Connected callbacks, improved messages
+- `engine/ui/ContentBrowserPanel.h` - Added showImportDialog declaration
+- `engine/ui/ContentBrowserPanel.cpp` - Implemented showImportDialog
+- `engine/editor/EditorManager.cpp` - Wired all callbacks
 
 ### 3. Comprehensive Documentation Created
 

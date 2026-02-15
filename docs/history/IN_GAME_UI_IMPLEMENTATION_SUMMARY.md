@@ -14,7 +14,7 @@ This document summarizes the comprehensive implementation of an Unreal Engine 5-
 
 ### 1. Unreal Engine 5 Color Theme System
 
-**File:** `include/ui/native/UnrealStyleTheme.h`
+**File:** `engine/ui/native/UnrealStyleTheme.h`
 
 Created a comprehensive color palette matching Unreal Engine 5's professional dark theme:
 
@@ -44,7 +44,7 @@ Created a comprehensive color palette matching Unreal Engine 5's professional da
 
 ### 2. Native Win32 In-Game HUD System
 
-**Files:** `include/ui/native/Win32HUD.h`, `src/ui/native/Win32HUD.cpp`
+**Files:** `engine/ui/native/Win32HUD.h`, `engine/ui/native/Win32HUD.cpp`
 
 Implemented a complete native Windows GDI-based HUD system with Unreal styling:
 
@@ -99,7 +99,7 @@ Implemented a complete native Windows GDI-based HUD system with Unreal styling:
 
 ### 3. Comprehensive Menu Structure
 
-**File:** `src/core/Engine.cpp` (setupNativeMenuBar function)
+**File:** `engine/core/Engine.cpp` (setupNativeMenuBar function)
 
 Created a professional 7-menu structure matching Unreal Engine's organization:
 
@@ -215,7 +215,7 @@ About Fresh Voxel Engine
 
 ### 4. Enhanced Toolbar Layout
 
-**File:** `src/core/Engine.cpp` (setupNativeToolbar function)
+**File:** `engine/core/Engine.cpp` (setupNativeToolbar function)
 
 Created a professional toolbar with 6 logical groups:
 
@@ -257,7 +257,7 @@ Created a professional toolbar with 6 logical groups:
 
 ### 5. Updated ImGui Theme
 
-**File:** `src/ui/ImGuiContext.cpp`
+**File:** `engine/ui/ImGuiContext.cpp`
 
 Updated ImGui styling to match Unreal Engine 5 throughout all editor panels:
 
@@ -383,15 +383,15 @@ Fresh Voxel Engine
 ## Files Changed
 
 ### New Files (5)
-1. `include/ui/native/UnrealStyleTheme.h` - Theme constants
-2. `include/ui/native/Win32HUD.h` - HUD header
-3. `src/ui/native/Win32HUD.cpp` - HUD implementation (450+ lines)
+1. `engine/ui/native/UnrealStyleTheme.h` - Theme constants
+2. `engine/ui/native/Win32HUD.h` - HUD header
+3. `engine/ui/native/Win32HUD.cpp` - HUD implementation (450+ lines)
 4. `UNREAL_STYLE_NATIVE_UI.md` - Documentation (10,500+ words)
 5. `IN_GAME_UI_IMPLEMENTATION_SUMMARY.md` - This file
 
 ### Modified Files (2)
-1. `src/core/Engine.cpp` - Enhanced menus and toolbar (+300 lines)
-2. `src/ui/ImGuiContext.cpp` - Unreal theme colors (~80 lines changed)
+1. `engine/core/Engine.cpp` - Enhanced menus and toolbar (+300 lines)
+2. `engine/ui/ImGuiContext.cpp` - Unreal theme colors (~80 lines changed)
 
 ### Code Statistics
 - **Lines Added**: ~2,000

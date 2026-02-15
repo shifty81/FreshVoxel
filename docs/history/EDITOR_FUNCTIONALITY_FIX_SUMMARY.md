@@ -41,8 +41,8 @@ This is why:
 
 ### 1. Created Win32ViewportPanel Class
 **Files:**
-- `include/ui/native/Win32ViewportPanel.h`
-- `src/ui/native/Win32ViewportPanel.cpp`
+- `engine/ui/native/Win32ViewportPanel.h`
+- `engine/ui/native/Win32ViewportPanel.cpp`
 
 **Features:**
 - Native Win32 child window (WS_CHILD style)
@@ -53,7 +53,7 @@ This is why:
 - Converts screen coords to viewport coords: `screenToViewport()`
 
 ### 2. Integrated Viewport into EditorManager
-**File:** `src/editor/EditorManager.cpp`
+**File:** `engine/editor/EditorManager.cpp`
 
 - Viewport panel created during `initialize()` on Windows
 - Positioned in center-right area after other UI panels
@@ -63,7 +63,7 @@ This is why:
 ### 3. Added to Build System
 **File:** `CMakeLists.txt`
 
-- Added `src/ui/native/Win32ViewportPanel.cpp` to build sources
+- Added `engine/ui/native/Win32ViewportPanel.cpp` to build sources
 
 ## What Still Needs to Be Done
 
@@ -72,8 +72,8 @@ The viewport panel exists but DirectX still renders to the main window. The foll
 
 #### 1. Modify DirectX Swap Chain Creation
 **Files to modify:**
-- `src/renderer/backends/DirectX11RenderContext.cpp`
-- `src/renderer/backends/DirectX12RenderContext.cpp`
+- `engine/renderer/backends/DirectX11RenderContext.cpp`
+- `engine/renderer/backends/DirectX12RenderContext.cpp`
 
 **Required changes:**
 - Add `setViewportWindow(void* hwnd)` method to set viewport HWND
@@ -81,7 +81,7 @@ The viewport panel exists but DirectX still renders to the main window. The foll
 - Add `recreateSwapChain(int width, int height)` method for resize handling
 
 #### 2. Update Engine Initialization
-**File:** `src/core/Engine.cpp`
+**File:** `engine/core/Engine.cpp`
 
 **Required changes in `initializeGameSystems()`:**
 ```cpp
@@ -94,7 +94,7 @@ if (m_editorManager && m_editorManager->getViewportPanel()) {
 ```
 
 #### 3. Add Viewport Resize Handling
-**File:** `src/core/Engine.cpp`
+**File:** `engine/core/Engine.cpp`
 
 **Required changes in `update()`:**
 ```cpp
@@ -106,7 +106,7 @@ if (m_editorManager->getViewportPanel()->wasResized()) {
 ```
 
 #### 4. Update Mouse Input Handling
-**File:** `src/core/Engine.cpp`
+**File:** `engine/core/Engine.cpp`
 
 **Required changes in `update()`:**
 ```cpp
@@ -210,15 +210,15 @@ Main Window (HWND)
 ## Files Modified
 
 ### Created
-- `include/ui/native/Win32ViewportPanel.h`
-- `src/ui/native/Win32ViewportPanel.cpp`
+- `engine/ui/native/Win32ViewportPanel.h`
+- `engine/ui/native/Win32ViewportPanel.cpp`
 - `VIEWPORT_INTEGRATION_TODO.md`
 - `EDITOR_FUNCTIONALITY_FIX_SUMMARY.md` (this file)
 
 ### Modified
-- `include/editor/EditorManager.h`
-- `src/editor/EditorManager.cpp`
-- `src/core/Engine.cpp` (added TODO comments)
+- `engine/editor/EditorManager.h`
+- `engine/editor/EditorManager.cpp`
+- `engine/core/Engine.cpp` (added TODO comments)
 - `CMakeLists.txt`
 
 ## Conclusion

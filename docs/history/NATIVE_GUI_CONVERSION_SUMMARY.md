@@ -99,19 +99,19 @@ Component executes registered callback
 
 ### Files Modified
 
-1. **include/core/Win32Window.h**
+1. **engine/core/Win32Window.h**
    - Added Win32MenuBar and Win32Toolbar forward declarations
    - Added getMenuBar() and getToolbar() methods
    - Added m_menuBar and m_toolbar member variables
 
-2. **src/core/Win32Window.cpp**
+2. **engine/core/Win32Window.cpp**
    - Implemented getMenuBar() and getToolbar() methods
    - Added WM_COMMAND handling for both menu and toolbar
 
-3. **include/core/Engine.h**
+3. **engine/core/Engine.h**
    - Added setupNativeMenuBar() and setupNativeToolbar() methods
 
-4. **src/core/Engine.cpp**
+4. **engine/core/Engine.cpp**
    - Implemented setupNativeMenuBar() with complete menu structure
    - Implemented setupNativeToolbar() with button groups
    - Added calls during window initialization

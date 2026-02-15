@@ -220,7 +220,7 @@ target_link_libraries(${PROJECT_NAME}_dll PRIVATE
 
 ### Step 2: Create C API Exports
 
-Create a new header file `include/core/EngineAPI.h`:
+Create a new header file `engine/core/EngineAPI.h`:
 
 ```cpp
 #pragma once
@@ -253,7 +253,7 @@ FRESH_API void Engine_SetWindowSize(void* engine, int width, int height);
 
 ### Step 3: Implement C API Exports
 
-Create `src/core/EngineAPI.cpp`:
+Create `engine/core/EngineAPI.cpp`:
 
 ```cpp
 #include "core/EngineAPI.h"

@@ -21,12 +21,12 @@ We completed the native GUI conversion by:
 
 ### New Files Created
 
-#### Headers (include/ui/native/)
+#### Headers (engine/ui/native/)
 - **Win32InspectorPanel.h** (107 lines) - Property inspector with transform, physics, renderer sections
 - **Win32SceneHierarchyPanel.h** (98 lines) - Tree-based hierarchy with context menu
 - **Win32ContentBrowserPanel.h** (113 lines) - File/asset browser with ListView
 
-#### Implementations (src/ui/native/)
+#### Implementations (engine/ui/native/)
 - **Win32InspectorPanel.cpp** (344 lines) - Property grid with edit controls, checkboxes, collapsible sections
 - **Win32SceneHierarchyPanel.cpp** (327 lines) - TreeView integration with add/rename/delete operations
 - **Win32ContentBrowserPanel.cpp** (420 lines) - Directory navigation, file operations, thumbnails
@@ -34,8 +34,8 @@ We completed the native GUI conversion by:
 
 #### Modified Files
 - **CMakeLists.txt** - Added new source files to Windows build
-- **include/editor/EditorManager.h** - Added native panel forward declarations and members
-- **src/editor/EditorManager.cpp** - Added initialization and integration code
+- **engine/editor/EditorManager.h** - Added native panel forward declarations and members
+- **engine/editor/EditorManager.cpp** - Added initialization and integration code
 
 **Total New Code:** ~1,600 lines of native Win32 UI implementation
 

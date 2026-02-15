@@ -301,7 +301,7 @@ All Windows-native features are:
 ### File Organization
 
 ```
-include/ui/
+engine/ui/
 ├── WindowsThemeManager.h          # Theme detection and management
 ├── WindowsDialogManager.h         # Native dialog wrappers
 ├── WindowsTaskbarManager.h        # Taskbar integration
@@ -310,7 +310,7 @@ include/ui/
 ├── WindowsDPIManager.h            # High DPI awareness
 └── WindowsCustomizationPanel.h    # UI for all Windows features
 
-src/ui/
+engine/ui/
 ├── WindowsThemeManager.cpp
 ├── WindowsDialogManager.cpp
 ├── WindowsTaskbarManager.cpp

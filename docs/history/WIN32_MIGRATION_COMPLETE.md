@@ -32,26 +32,26 @@ The Fresh Voxel Engine has been successfully migrated from GLFW-based windowing 
 ### Modified Files
 
 #### Core Engine
-- `include/core/Engine.h` - Window/InputManager typedef aliases
-- `src/core/Engine.cpp` - Conditional includes, Win32 callback setup, platform-agnostic key codes
+- `engine/core/Engine.h` - Window/InputManager typedef aliases
+- `engine/core/Engine.cpp` - Conditional includes, Win32 callback setup, platform-agnostic key codes
 
 #### Editor
-- `include/editor/EditorManager.h` - Window/InputManager typedef aliases
-- `src/editor/EditorManager.cpp` - Win32 ImGui backend initialization
+- `engine/editor/EditorManager.h` - Window/InputManager typedef aliases
+- `engine/editor/EditorManager.cpp` - Win32 ImGui backend initialization
 
 #### UI Panels
-- `include/ui/SettingsPanel.h` - Window/InputManager typedef aliases
-- `src/ui/SettingsPanel.cpp` - Conditional includes
-- `include/ui/EngineConfigPanel.h` - InputManager typedef alias
+- `engine/ui/SettingsPanel.h` - Window/InputManager typedef aliases
+- `engine/ui/SettingsPanel.cpp` - Conditional includes
+- `engine/ui/EngineConfigPanel.h` - InputManager typedef alias
 
 #### Renderers
-- `include/renderer/RenderContext.h` - Changed initialize() to accept void* window
-- `include/renderer/backends/DirectX11RenderContext.h` - Updated for void* window
-- `src/renderer/backends/DirectX11RenderContext.cpp` - Added WindowAdapter helper
-- `include/renderer/backends/DirectX12RenderContext.h` - Updated for void* window
-- `src/renderer/backends/DirectX12RenderContext.cpp` - Added WindowAdapter helper
-- `include/renderer/backends/OpenGLRenderContext.h` - Updated for void* window
-- `src/renderer/backends/OpenGLRenderContext.cpp` - Added WindowAdapter helper
+- `engine/renderer/RenderContext.h` - Changed initialize() to accept void* window
+- `engine/renderer/backends/DirectX11RenderContext.h` - Updated for void* window
+- `engine/renderer/backends/DirectX11RenderContext.cpp` - Added WindowAdapter helper
+- `engine/renderer/backends/DirectX12RenderContext.h` - Updated for void* window
+- `engine/renderer/backends/DirectX12RenderContext.cpp` - Added WindowAdapter helper
+- `engine/renderer/backends/OpenGLRenderContext.h` - Updated for void* window
+- `engine/renderer/backends/OpenGLRenderContext.cpp` - Added WindowAdapter helper
 
 ## Technical Details
 

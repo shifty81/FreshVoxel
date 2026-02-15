@@ -124,25 +124,25 @@ Created comprehensive `GUI_AND_FEATURES_STATUS.md` explaining:
 
 ## Files Modified
 
-1. **include/ui/NativeMainMenu.h**
+1. **engine/ui/NativeMainMenu.h**
    - Added `WorldStyle2D` enum
    - Updated member variable type
    - Updated getter return type
 
-2. **src/ui/NativeMainMenu.cpp**
+2. **engine/ui/NativeMainMenu.cpp**
    - Added 2D style radio buttons to dialog
    - Increased dialog height
    - Fixed radio button grouping
    - Updated enum initialization
 
-3. **include/editor/EditorManager.h**
+3. **engine/editor/EditorManager.h**
    - Updated callback signature to 4 parameters
 
-4. **src/editor/EditorManager.cpp**
+4. **engine/editor/EditorManager.cpp**
    - Convert enum to int for callback
    - Enhanced logging
 
-5. **src/core/Engine.cpp**
+5. **engine/core/Engine.cpp**
    - Fixed game loop with continue statement
    - Updated callback lambda to accept 4 parameters
 

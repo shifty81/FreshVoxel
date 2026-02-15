@@ -12,7 +12,7 @@ The Fresh Engine uses **Windows Native UI (Win32)** exclusively for its user int
 
 The engine includes a complete suite of native Win32 UI components:
 
-**Location**: `include/ui/native/` and `src/ui/native/`
+**Location**: `engine/ui/native/` and `engine/ui/native/`
 
 **Components**:
 - `Win32MenuBar` - Native Windows menu bar (HMENU)
@@ -60,13 +60,13 @@ Native Win32 UI is enabled by default on Windows:
 # From CMakeLists.txt
 if(WIN32)
     list(APPEND ENGINE_SOURCES
-        src/ui/native/Win32Panel.cpp
-        src/ui/native/Win32MenuBar.cpp
-        src/ui/native/Win32Toolbar.cpp
-        src/ui/native/Win32ConsolePanel.cpp
-        src/ui/native/Win32InspectorPanel.cpp
-        src/ui/native/Win32SceneHierarchyPanel.cpp
-        src/ui/native/Win32ContentBrowserPanel.cpp
+        engine/ui/native/Win32Panel.cpp
+        engine/ui/native/Win32MenuBar.cpp
+        engine/ui/native/Win32Toolbar.cpp
+        engine/ui/native/Win32ConsolePanel.cpp
+        engine/ui/native/Win32InspectorPanel.cpp
+        engine/ui/native/Win32SceneHierarchyPanel.cpp
+        engine/ui/native/Win32ContentBrowserPanel.cpp
         # ... etc
     )
     add_definitions(-DFRESH_WIN32_UI)

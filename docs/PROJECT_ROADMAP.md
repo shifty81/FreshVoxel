@@ -25,7 +25,7 @@ This document provides an honest assessment of what is implemented, what is part
 
 **Problem**: When creating a new world, the viewport shows nothing during chunk generation because `m_isGeneratingWorld = true` blocks `renderEditor()` from calling `renderVoxelWorld()`.
 
-**Location**: `src/core/Engine.cpp` lines 555-584 (`createNewWorld()`)
+**Location**: `engine/core/Engine.cpp` lines 555-584 (`createNewWorld()`)
 
 **Root Cause**: Chunk generation is synchronous and blocks the render loop. During generation (which loads 49 chunks = 7x7 radius), the `m_isGeneratingWorld` flag prevents any 3D rendering, resulting in a blank/frozen viewport.
 
@@ -39,7 +39,7 @@ This document provides an honest assessment of what is implemented, what is part
 
 **Problem**: Viewport swap chain may fail to initialize if the viewport panel has zero dimensions when `setViewportWindow()` + `recreateSwapChain()` are called.
 
-**Location**: `src/core/Engine.cpp` lines 393-464
+**Location**: `engine/core/Engine.cpp` lines 393-464
 
 **Current Mitigation**: The engine retries swap chain creation every frame in `updateEditor()`, but this retry can be fragile.
 
@@ -52,7 +52,7 @@ This document provides an honest assessment of what is implemented, what is part
 
 **Problem**: The Lua scripting system (Sol2/LuaJIT) has the framework but the backend is mostly stubs. Scripts cannot actually be loaded or executed in the current state.
 
-**Location**: `src/scripting/lua/LuaScriptingEngine.cpp`, `src/scripting/EventSystem.cpp`
+**Location**: `engine/scripting/lua/LuaScriptingEngine.cpp`, `engine/scripting/EventSystem.cpp`
 
 **Fix Required**:
 - [ ] Wire Sol2 bindings to actual engine APIs (entity creation, world manipulation)
@@ -385,11 +385,11 @@ Engine::run()
 ### Key Files for Each System
 | System | Header | Implementation |
 |--------|--------|----------------|
-| Engine Loop | `include/core/Engine.h` | `src/core/Engine.cpp` |
-| Viewport | `include/ui/native/Win32ViewportPanel.h` | `src/ui/native/Win32ViewportPanel.cpp` |
-| DX11 Renderer | `include/renderer/backends/DirectX11RenderContext.h` | `src/renderer/backends/DirectX11RenderContext.cpp` |
-| Editor Manager | `include/editor/EditorManager.h` | `src/editor/EditorManager.cpp` |
-| Player | `include/gameplay/Player.h` | `src/gameplay/Player.cpp` |
-| Voxel World | `include/voxel/VoxelWorld.h` | `src/voxel/VoxelWorld.cpp` |
-| AI/LLM | `include/ai/LLMClient.h` | `src/ai/LLMClient.cpp` |
-| Lua Scripting | `include/scripting/lua/LuaScriptingEngine.h` | `src/scripting/lua/LuaScriptingEngine.cpp` |
+| Engine Loop | `engine/core/Engine.h` | `engine/core/Engine.cpp` |
+| Viewport | `engine/ui/native/Win32ViewportPanel.h` | `engine/ui/native/Win32ViewportPanel.cpp` |
+| DX11 Renderer | `engine/renderer/backends/DirectX11RenderContext.h` | `engine/renderer/backends/DirectX11RenderContext.cpp` |
+| Editor Manager | `engine/editor/EditorManager.h` | `engine/editor/EditorManager.cpp` |
+| Player | `engine/gameplay/Player.h` | `engine/gameplay/Player.cpp` |
+| Voxel World | `engine/voxel/VoxelWorld.h` | `engine/voxel/VoxelWorld.cpp` |
+| AI/LLM | `engine/ai/LLMClient.h` | `engine/ai/LLMClient.cpp` |
+| Lua Scripting | `engine/scripting/lua/LuaScriptingEngine.h` | `engine/scripting/lua/LuaScriptingEngine.cpp` |

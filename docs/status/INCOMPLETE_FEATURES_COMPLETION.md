@@ -23,7 +23,7 @@ This document tracks the completion of missing or incomplete features in the Fre
 
 ### 1. Physics System - SpatialHash Body Removal
 
-**File**: `src/physics/CollisionDetection.cpp`
+**File**: `engine/physics/CollisionDetection.cpp`
 
 **Status**: ✅ Complete
 
@@ -64,8 +64,8 @@ void SpatialHash::remove(CollisionBody* body)
 ### 2. Character IK - Foot Rotation Adjustment
 
 **Files**: 
-- `include/character/IKSolver.h`
-- `src/character/IKSolver.cpp`
+- `engine/character/IKSolver.h`
+- `engine/character/IKSolver.cpp`
 
 **Status**: ✅ Complete
 
@@ -100,7 +100,7 @@ solution.endEffectorRotation = glm::vec3(pitch, 0.0f, roll);
 
 ### 3. Asset System - Manifest Validation
 
-**File**: `src/assets/ModularAssetSystem.cpp`
+**File**: `engine/assets/ModularAssetSystem.cpp`
 
 **Status**: ✅ Complete
 
@@ -158,13 +158,13 @@ try {
 These are documented placeholder implementations for future integration:
 
 #### Lua Scripting Engine (13 TODOs)
-- `src/scripting/lua/ScriptingEngine.cpp`
+- `engine/scripting/lua/ScriptingEngine.cpp`
 - **Reason**: Requires Sol2 or LuaBridge integration
 - **Status**: Framework ready, integration deferred per design
 - **Documentation**: See `LUA_INTEGRATION_GUIDE.md`
 
 #### Event System (6 TODOs)
-- `src/scripting/EventSystem.cpp`
+- `engine/scripting/EventSystem.cpp`
 - **Reason**: Depends on scripting backend choice
 - **Status**: Stub implementation with proper structure
 - **Documentation**: API ready for implementation
@@ -182,14 +182,14 @@ These are documented placeholder implementations for future integration:
 ### Design Notes (8) - Appropriate as-is
 
 #### Performance Optimizations (3)
-- `src/physics/PhysicsSystemEnhanced.cpp` - Spatial partitioning note
-- `src/voxelship/VoxelStructureComponent.cpp` - Spatial indexing note
-- `src/voxel/ChunkStreamer.cpp` - Background generation note
+- `engine/physics/PhysicsSystemEnhanced.cpp` - Spatial partitioning note
+- `engine/voxelship/VoxelStructureComponent.cpp` - Spatial indexing note
+- `engine/voxel/ChunkStreamer.cpp` - Background generation note
 
 **Status**: Working implementations with future optimization notes.
 
 #### Editor Features (5)
-- `src/ui/EditorMenuBar.cpp` - Cut/Copy/Paste, Settings dialogs
+- `engine/ui/EditorMenuBar.cpp` - Cut/Copy/Paste, Settings dialogs
 - **Status**: Proper logging in place, awaiting full implementation
 - **Note**: These are "not yet implemented" warnings, not broken code
 

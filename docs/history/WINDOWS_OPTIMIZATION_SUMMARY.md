@@ -116,12 +116,12 @@ int physical = WindowsDPIManager::logicalToPhysical(800, scale);
 
 ## File Structure
 
-### New Header Files (include/ui/)
+### New Header Files (engine/ui/)
 - `WindowsJumpListManager.h` - Jump list management
 - `WindowsToastManager.h` - Toast notification management
 - `WindowsDPIManager.h` - High DPI awareness management
 
-### New Implementation Files (src/ui/)
+### New Implementation Files (engine/ui/)
 - `WindowsJumpListManager.cpp` - Jump list implementation
 - `WindowsToastManager.cpp` - Toast notification implementation
 - `WindowsDPIManager.cpp` - DPI awareness implementation

@@ -68,13 +68,13 @@ This session continued implementing the Fresh Voxel Engine roadmap by integratin
    - Periodic time information display
 
 **Files Modified:**
-- `include/core/Engine.h` - Added TimeManager member and forward declaration
-- `src/core/Engine.cpp` - Integrated TimeManager lifecycle and Lua bindings
+- `engine/core/Engine.h` - Added TimeManager member and forward declaration
+- `engine/core/Engine.cpp` - Integrated TimeManager lifecycle and Lua bindings
 - `CMakeLists.txt` - Added LuaTimeBindings source and header files
 
 **Files Created:**
-- `include/scripting/lua/LuaTimeBindings.h` (2.2 KB)
-- `src/scripting/lua/LuaTimeBindings.cpp` (8.5 KB)
+- `engine/scripting/lua/LuaTimeBindings.h` (2.2 KB)
+- `engine/scripting/lua/LuaTimeBindings.cpp` (8.5 KB)
 - `docs/guides/DAY_NIGHT_CYCLE.md` (10 KB)
 - `examples/scripts/day_night_demo.lua` (4.5 KB)
 

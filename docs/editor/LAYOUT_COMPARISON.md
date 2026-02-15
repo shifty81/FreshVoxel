@@ -135,7 +135,7 @@ The reference image (../images/1.png) shows Unreal Engine 5's interface with the
 ## Implementation Details
 
 ### Code Changes Summary
-- **File Modified**: `src/editor/EditorManager.cpp`
+- **File Modified**: `engine/editor/EditorManager.cpp`
 - **Lines Changed**: ~100 lines
 - **Constants Updated**: All layout constants replaced
 - **Panel Creation**: Completely reorganized

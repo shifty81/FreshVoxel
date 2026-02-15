@@ -31,8 +31,8 @@
 - Documentation: Complete
 
 ## Key Files
-- `include/galaxy/GalaxySector.h` - Enhanced structures
-- `include/editor/BlockBuilder.h` - Builder system
+- `engine/galaxy/GalaxySector.h` - Enhanced structures
+- `engine/editor/BlockBuilder.h` - Builder system
 - `docs/BLOCK_STRETCHING.md` - Feature guide
 - `docs/ENHANCED_GALAXY_GENERATION.md` - System docs
 

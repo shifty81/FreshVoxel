@@ -23,7 +23,7 @@ This work completes Sprint 1 (Weeks 1-4) of the immediate action plan, achieving
 
 #### TerraformingSystem Enhancements
 
-**File**: `include/editor/TerraformingSystem.h` & `src/editor/TerraformingSystem.cpp`
+**File**: `engine/editor/TerraformingSystem.h` & `engine/editor/TerraformingSystem.cpp`
 
 Added three public methods for external systems to use the undo/redo system:
 
@@ -61,7 +61,7 @@ This allows pasting 1000 voxels to be undone with a single Ctrl+Z!
 
 #### SelectionManager Integration
 
-**File**: `include/editor/SelectionManager.h` & `src/editor/SelectionManager.cpp`
+**File**: `engine/editor/SelectionManager.h` & `engine/editor/SelectionManager.cpp`
 
 **New Method**:
 ```cpp
@@ -108,7 +108,7 @@ void setTerraformingSystem(TerraformingSystem* system);
 
 #### SelectionManager Preview Methods
 
-**File**: `include/editor/SelectionManager.h` & `src/editor/SelectionManager.cpp`
+**File**: `engine/editor/SelectionManager.h` & `engine/editor/SelectionManager.cpp`
 
 **New Public Methods**:
 
@@ -165,7 +165,7 @@ bool getPastePreviewBounds(glm::ivec3& min, glm::ivec3& max) const;
 
 #### SelectionRenderer Preview Rendering
 
-**File**: `include/editor/SelectionRenderer.h` & `src/editor/SelectionRenderer.cpp`
+**File**: `engine/editor/SelectionRenderer.h` & `engine/editor/SelectionRenderer.cpp`
 
 **New Public Methods**:
 
@@ -388,14 +388,14 @@ if (m_selectionManager && m_selectionRenderer) {
 ## Files Modified
 
 ### Headers
-1. `include/editor/TerraformingSystem.h` - Added command grouping methods
-2. `include/editor/SelectionManager.h` - Added undo/redo integration and paste preview
-3. `include/editor/SelectionRenderer.h` - Added paste preview rendering
+1. `engine/editor/TerraformingSystem.h` - Added command grouping methods
+2. `engine/editor/SelectionManager.h` - Added undo/redo integration and paste preview
+3. `engine/editor/SelectionRenderer.h` - Added paste preview rendering
 
 ### Source Files
-4. `src/editor/TerraformingSystem.cpp` - Implemented command grouping
-5. `src/editor/SelectionManager.cpp` - Integrated undo/redo, implemented preview
-6. `src/editor/SelectionRenderer.cpp` - Implemented ghost block rendering
+4. `engine/editor/TerraformingSystem.cpp` - Implemented command grouping
+5. `engine/editor/SelectionManager.cpp` - Integrated undo/redo, implemented preview
+6. `engine/editor/SelectionRenderer.cpp` - Implemented ghost block rendering
 
 ### Documentation
 7. `WEEK4_PASTE_PREVIEW_DESIGN.md` - Design document
@@ -516,8 +516,8 @@ According to IMMEDIATE_ACTION_PLAN.md, next priorities are:
 - [IMMEDIATE_ACTION_PLAN.md](/IMMEDIATE_ACTION_PLAN.md) - Week 4 requirements
 - [WEEK4_PASTE_PREVIEW_DESIGN.md](/WEEK4_PASTE_PREVIEW_DESIGN.md) - Design document
 - [SELECTION_SYSTEM_TESTING_SUMMARY.md](/SELECTION_SYSTEM_TESTING_SUMMARY.md) - Previous week's work
-- [TerraformingSystem.h](/include/editor/TerraformingSystem.h) - Undo/redo implementation
-- [SelectionManager.h](/include/editor/SelectionManager.h) - Selection and clipboard implementation
+- [TerraformingSystem.h](/engine/editor/TerraformingSystem.h) - Undo/redo implementation
+- [SelectionManager.h](/engine/editor/SelectionManager.h) - Selection and clipboard implementation
 
 ---
 

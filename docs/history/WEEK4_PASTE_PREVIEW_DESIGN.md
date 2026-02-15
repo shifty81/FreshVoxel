@@ -409,8 +409,8 @@ These are **not** required for Week 4 completion:
 
 - [IMMEDIATE_ACTION_PLAN.md](/IMMEDIATE_ACTION_PLAN.md) - Week 4 requirements
 - [SELECTION_SYSTEM_TESTING_SUMMARY.md](/SELECTION_SYSTEM_TESTING_SUMMARY.md) - Previous work
-- [TerraformingSystem.h](/include/editor/TerraformingSystem.h) - Undo/redo implementation
-- [SelectionManager.h](/include/editor/SelectionManager.h) - Current implementation
+- [TerraformingSystem.h](/engine/editor/TerraformingSystem.h) - Undo/redo implementation
+- [SelectionManager.h](/engine/editor/SelectionManager.h) - Current implementation
 
 ---
 

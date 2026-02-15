@@ -8,7 +8,7 @@ I've successfully implemented the **Transform Gizmo System** for the Fresh Voxel
 
 ### 1. Complete Transform Gizmo System ✅
 
-**File:** `src/editor/TransformGizmo.cpp` (500+ lines, fully implemented)
+**File:** `engine/editor/TransformGizmo.cpp` (500+ lines, fully implemented)
 
 A professional-grade 3D manipulation system that provides visual handles for transforming objects in the editor, similar to Unreal Engine and Unity.
 
@@ -200,7 +200,7 @@ Modified:
   CMakeLists.txt (2 locations)
 
 Created:
-  src/editor/TransformGizmo.cpp (500+ lines)
+  engine/editor/TransformGizmo.cpp (500+ lines)
   TRANSFORM_GIZMO_IMPLEMENTATION.md (12KB)
   TRANSFORM_GIZMO_INTEGRATION_GUIDE.md (14KB)
 ```

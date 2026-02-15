@@ -78,7 +78,7 @@ The solution follows Unreal Engine Editor's architectural patterns:
 
 **New Components:**
 
-**WorldGenerationTask Class** (`include/generation/WorldGenerationTask.h`)
+**WorldGenerationTask Class** (`engine/generation/WorldGenerationTask.h`)
 - Manages world generation in background thread
 - Provides progress callbacks: `void(int current, int total, std::string message)`
 - Provides completion callbacks: `void(bool success, VoxelWorld* world, std::string error)`
@@ -114,13 +114,13 @@ std::unique_ptr<VoxelWorld> releaseWorld();     // Transfer ownership
 
 #### Modified Files
 
-**1. include/core/Engine.h**
+**1. engine/core/Engine.h**
 ```cpp
 // Added member variable
 bool m_isGeneratingWorld = false;  // Track world generation state
 ```
 
-**2. src/core/Engine.cpp**
+**2. engine/core/Engine.cpp**
 
 **Lines 569-608 - World Generation Loop:**
 ```cpp
@@ -188,21 +188,21 @@ LOG_INFO_C("World generation complete - exiting generation mode", "Engine");
 **3. CMakeLists.txt**
 ```cmake
 # Added to sources
-src/generation/WorldGenerationTask.cpp
+engine/generation/WorldGenerationTask.cpp
 
 # Added to headers
-include/generation/WorldGenerationTask.h
+engine/generation/WorldGenerationTask.h
 ```
 
 #### New Files
 
-**1. include/generation/WorldGenerationTask.h** (194 lines)
+**1. engine/generation/WorldGenerationTask.h** (194 lines)
 - Complete async world generation task class
 - Thread-safe status and progress tracking
 - Callback infrastructure for progress and completion
 - Comprehensive documentation
 
-**2. src/generation/WorldGenerationTask.cpp** (223 lines)
+**2. engine/generation/WorldGenerationTask.cpp** (223 lines)
 - Full implementation of async generation
 - Background thread management
 - Exception handling

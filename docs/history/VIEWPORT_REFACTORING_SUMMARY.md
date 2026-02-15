@@ -98,7 +98,7 @@ if (viewportPanel->wasResized()) {
 - **Lines removed:** 297
 - **Lines added:** 19
 - **Net reduction:** 278 lines (12% reduction in Engine.cpp)
-- **Files modified:** 1 (src/core/Engine.cpp)
+- **Files modified:** 1 (engine/core/Engine.cpp)
 
 ## Benefits
 
@@ -159,11 +159,11 @@ This should be transparent to users, but if you encounter issues:
 
 ## Related Files
 
-- `src/core/Engine.cpp` - Main changes
-- `include/ui/native/Win32ViewportPanel.h` - Viewport panel interface (unchanged)
-- `src/ui/native/Win32ViewportPanel.cpp` - Viewport panel implementation (unchanged)
-- `src/renderer/backends/DirectX11RenderContext.cpp` - DX11 rendering (unchanged)
-- `src/renderer/backends/DirectX12RenderContext.cpp` - DX12 rendering (unchanged)
+- `engine/core/Engine.cpp` - Main changes
+- `engine/ui/native/Win32ViewportPanel.h` - Viewport panel interface (unchanged)
+- `engine/ui/native/Win32ViewportPanel.cpp` - Viewport panel implementation (unchanged)
+- `engine/renderer/backends/DirectX11RenderContext.cpp` - DX11 rendering (unchanged)
+- `engine/renderer/backends/DirectX12RenderContext.cpp` - DX12 rendering (unchanged)
 
 ## Future Considerations
 

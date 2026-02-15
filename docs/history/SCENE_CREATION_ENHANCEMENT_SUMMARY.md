@@ -87,40 +87,40 @@ struct WorldCreationParams {
 ## Files Modified
 
 ### Viewport-Only Rendering
-- `src/renderer/backends/DirectX11RenderContext.cpp`
+- `engine/renderer/backends/DirectX11RenderContext.cpp`
   - Modified `initialize()` to skip main window swap chain
   - Added guard in `beginFrame()` for null swap chain
   - Enforced viewport requirement in `recreateSwapChain()`
   
-- `src/core/Win32Window.cpp`
+- `engine/core/Win32Window.cpp`
   - Modified `WM_PAINT` to explicitly fill with black
 
 ### Enhanced Scene Creation
-- `include/ui/NativeMainMenu.h`
+- `engine/ui/NativeMainMenu.h`
   - Added `WorldSize`, `TerrainType`, `BiomeType` enums
   - Added `WorldCreationParams` struct
   - Added getter methods for new parameters
   - Added member variables and control IDs
 
-- `src/ui/NativeMainMenu.cpp`
+- `engine/ui/NativeMainMenu.cpp`
   - Extended `createWorldCreationDialog()` with combo boxes
   - Updated `createWorldDialogProc()` to read combo values
   - Initialize new member variables in constructor
 
-- `include/editor/EditorManager.h`
+- `engine/editor/EditorManager.h`
   - Updated callback signature to use `WorldCreationParams`
   - Added include for `NativeMainMenu.h`
 
-- `src/editor/EditorManager.cpp`
+- `engine/editor/EditorManager.cpp`
   - Modified callback invocation to create and pass `WorldCreationParams`
   - Enhanced logging to include all new parameters
 
-- `include/core/Engine.h`
+- `engine/core/Engine.h`
   - Added new `createNewWorld()` overload accepting `WorldCreationParams`
   - Kept old signature for backward compatibility
   - Added forward declaration for `WorldCreationParams`
 
-- `src/core/Engine.cpp`
+- `engine/core/Engine.cpp`
   - Implemented new `createNewWorld(params)` overload
   - Added logging for size, terrain, and biome
   - Updated callback to accept `WorldCreationParams`

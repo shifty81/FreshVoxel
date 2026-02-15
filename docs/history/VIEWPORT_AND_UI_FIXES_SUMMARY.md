@@ -8,8 +8,8 @@
 **Root Cause**: Both Win32Window and Win32ViewportPanel used `(HBRUSH)(COLOR_WINDOW + 1)` which creates a system-colored (typically blue/white) background brush.
 
 **Solution**: Changed background brush to `BLACK_BRUSH` in:
-- `src/core/Win32Window.cpp` (line 81)
-- `src/ui/native/Win32ViewportPanel.cpp` (line 38)
+- `engine/core/Win32Window.cpp` (line 81)
+- `engine/ui/native/Win32ViewportPanel.cpp` (line 38)
 
 ### 2. Panel Borders Creating Visual Gaps ✓
 **Problem**: Gaps visible between UI panels allowed background to show through.
@@ -17,8 +17,8 @@
 **Root Cause**: Panels were created without proper border styles, leaving small gaps.
 
 **Solution**: Added `WS_EX_CLIENTEDGE` (extended style) and `WS_BORDER` (window style) to:
-- `src/ui/native/Win32Panel.cpp` (line 80)
-- `src/ui/native/Win32ViewportPanel.cpp` (line 76)
+- `engine/ui/native/Win32Panel.cpp` (line 80)
+- `engine/ui/native/Win32ViewportPanel.cpp` (line 76)
 
 These styles create sunken borders that properly fill gaps between panels.
 
@@ -27,7 +27,7 @@ These styles create sunken borders that properly fill gaps between panels.
 
 **Root Cause**: DirectX11 initially creates a swap chain for the main window during renderer initialization. This swap chain renders to the entire window client area. Even after recreating the swap chain for the viewport child window, the initial rendering to the main window persisted in memory and was visible through gaps between panels.
 
-**Solution**: Multi-part fix in `src/core/Engine.cpp`:
+**Solution**: Multi-part fix in `engine/core/Engine.cpp`:
 
 1. **Before world creation** (lines 495-515):
    - Explicitly clear main window client area to black using `FillRect()` after viewport swap chain is created
@@ -37,7 +37,7 @@ These styles create sunken borders that properly fill gaps between panels.
    - Clear main window again to ensure no stray DirectX rendering shows through
    - Ensures gaps stay black instead of showing world content
 
-3. **Added tracking flag** in `include/renderer/backends/DirectX11RenderContext.h`:
+3. **Added tracking flag** in `engine/renderer/backends/DirectX11RenderContext.h`:
    - Added `useViewportSwapChain` boolean to track when viewport is active
    - Set to true in `setViewportWindow()` to mark viewport swap chain as active
 
@@ -54,7 +54,7 @@ These styles create sunken borders that properly fill gaps between panels.
 - World reference is set via `setWorld()` and `refresh()` in `EditorManager::updateWorld()`
 - This is called from `initializeGameSystems()` after world creation
 
-**Solution**: Added enhanced logging in `src/editor/EditorManager.cpp` (lines 1041-1049):
+**Solution**: Added enhanced logging in `engine/editor/EditorManager.cpp` (lines 1041-1049):
 - Console output when scene hierarchy is populated: "✓ Scene Hierarchy populated with world data"
 - Warning if scene hierarchy panel is missing
 - Helps diagnose if issues occur
@@ -64,7 +64,7 @@ These styles create sunken borders that properly fill gaps between panels.
 ### 5. ESC Key to Exit Play Mode ✓
 **Problem**: User reported ESC key doesn't properly cancel back to editing mode
 
-**Investigation**: Reviewed ESC key handling in `src/core/Engine.cpp` (lines 1200-1206)
+**Investigation**: Reviewed ESC key handling in `engine/core/Engine.cpp` (lines 1200-1206)
 
 **Findings**: 
 ```cpp
@@ -90,7 +90,7 @@ if (!guiCapturesKeyboard && m_inputManager->isKeyJustPressed(KEY_ESCAPE)) {
 ### 6. Button Icons/Tooltips
 **Problem**: User reported "blind clicking because there is no icons for what buttons do"
 
-**Investigation**: Reviewed toolbar implementation in `src/ui/native/Win32Toolbar.cpp`
+**Investigation**: Reviewed toolbar implementation in `engine/ui/native/Win32Toolbar.cpp`
 
 **Findings**:
 - Toolbar is created with `TBSTYLE_TOOLTIPS` flag (line 59)
@@ -107,13 +107,13 @@ if (!guiCapturesKeyboard && m_inputManager->isKeyJustPressed(KEY_ESCAPE)) {
 
 ## Files Modified
 
-1. `src/core/Win32Window.cpp` - Changed background brush to black
-2. `src/ui/native/Win32ViewportPanel.cpp` - Changed background to black, added border
-3. `src/ui/native/Win32Panel.cpp` - Added border styles
-4. `src/core/Engine.cpp` - Added main window clearing logic
-5. `include/renderer/backends/DirectX11RenderContext.h` - Added viewport tracking flag
-6. `src/renderer/backends/DirectX11RenderContext.cpp` - Set viewport flag, added comments
-7. `src/editor/EditorManager.cpp` - Enhanced scene hierarchy logging
+1. `engine/core/Win32Window.cpp` - Changed background brush to black
+2. `engine/ui/native/Win32ViewportPanel.cpp` - Changed background to black, added border
+3. `engine/ui/native/Win32Panel.cpp` - Added border styles
+4. `engine/core/Engine.cpp` - Added main window clearing logic
+5. `engine/renderer/backends/DirectX11RenderContext.h` - Added viewport tracking flag
+6. `engine/renderer/backends/DirectX11RenderContext.cpp` - Set viewport flag, added comments
+7. `engine/editor/EditorManager.cpp` - Enhanced scene hierarchy logging
 
 ## Testing Recommendations
 

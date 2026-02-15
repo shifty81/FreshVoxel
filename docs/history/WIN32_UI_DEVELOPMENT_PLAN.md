@@ -37,25 +37,25 @@ Create a separate section for Win32 native UI that doesn't depend on ImGui:
 if(WIN32)
     list(APPEND ENGINE_SOURCES
         # Core Windows components
-        src/core/Win32Window.cpp
-        src/input/Win32InputManager.cpp
+        engine/core/Win32Window.cpp
+        engine/input/Win32InputManager.cpp
         
         # Native Win32 UI panels and controls
-        src/ui/native/Win32Panel.cpp
-        src/ui/native/Win32MenuBar.cpp
-        src/ui/native/Win32Toolbar.cpp
-        src/ui/native/Win32HUD.cpp
-        src/ui/native/Win32TreeView.cpp
-        src/ui/native/Win32ListView.cpp
+        engine/ui/native/Win32Panel.cpp
+        engine/ui/native/Win32MenuBar.cpp
+        engine/ui/native/Win32Toolbar.cpp
+        engine/ui/native/Win32HUD.cpp
+        engine/ui/native/Win32TreeView.cpp
+        engine/ui/native/Win32ListView.cpp
         
         # Windows integration features
-        src/ui/WindowsThemeManager.cpp
-        src/ui/WindowsDialogManager.cpp
-        src/ui/WindowsTaskbarManager.cpp
-        src/ui/WindowsCustomizationPanel.cpp
-        src/ui/WindowsJumpListManager.cpp
-        src/ui/WindowsToastManager.cpp
-        src/ui/WindowsDPIManager.cpp
+        engine/ui/WindowsThemeManager.cpp
+        engine/ui/WindowsDialogManager.cpp
+        engine/ui/WindowsTaskbarManager.cpp
+        engine/ui/WindowsCustomizationPanel.cpp
+        engine/ui/WindowsJumpListManager.cpp
+        engine/ui/WindowsToastManager.cpp
+        engine/ui/WindowsDPIManager.cpp
     )
     
     # Define that we're using native Win32 UI
@@ -75,9 +75,9 @@ endif()
 # Add ImGui-dependent UI sources only if ImGui is available
 if(imgui_FOUND)
     list(APPEND ENGINE_SOURCES
-        src/editor/EditorManager.cpp
-        src/ui/ImGuiContext.cpp
-        src/ui/SceneHierarchyPanel.cpp
+        engine/editor/EditorManager.cpp
+        engine/ui/ImGuiContext.cpp
+        engine/ui/SceneHierarchyPanel.cpp
         # ... other ImGui panels
     )
     add_definitions(-DFRESH_IMGUI_AVAILABLE)
@@ -86,7 +86,7 @@ endif()
 
 ### Step 2: Create Win32-Only Main Menu
 
-Create `src/ui/native/Win32MainMenu.cpp`:
+Create `engine/ui/native/Win32MainMenu.cpp`:
 
 ```cpp
 #ifdef _WIN32
@@ -161,7 +161,7 @@ private:
 
 ### Step 3: Create Win32 Settings Dialog
 
-Create `src/ui/native/Win32SettingsDialog.cpp`:
+Create `engine/ui/native/Win32SettingsDialog.cpp`:
 
 ```cpp
 #ifdef _WIN32

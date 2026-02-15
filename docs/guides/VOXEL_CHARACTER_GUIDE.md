@@ -220,7 +220,7 @@ The character system is designed to support future enhancements:
 
 ## See Also
 
-- `include/character/Bone.h` - Bone class API
-- `include/character/HumanoidSkeleton.h` - Humanoid skeleton API
-- `include/character/VoxelCharacter.h` - Character class API
+- `engine/character/Bone.h` - Bone class API
+- `engine/character/HumanoidSkeleton.h` - Humanoid skeleton API
+- `engine/character/VoxelCharacter.h` - Character class API
 - `tests/character/` - Unit tests and examples

@@ -45,14 +45,14 @@ Successfully implemented the **Camera Controller** system for the Fresh Voxel En
 ## Files Created
 
 ### Source Code
-1. **include/editor/CameraController.h** (277 lines)
+1. **engine/editor/CameraController.h** (277 lines)
    - CameraController class declaration
    - ViewMode enum (7 modes)
    - Bookmark struct
    - 20+ public methods
    - Private implementation details
 
-2. **src/editor/CameraController.cpp** (462 lines)
+2. **engine/editor/CameraController.cpp** (462 lines)
    - Complete implementation
    - Smooth transition system
    - Bookmark persistence
@@ -72,7 +72,7 @@ Successfully implemented the **Camera Controller** system for the Fresh Voxel En
 
 ## Files Modified
 
-1. **include/editor/EditorManager.h**
+1. **engine/editor/EditorManager.h**
    - Added CameraController forward declaration
    - Added getCameraController() method
    - Added setCameraViewMode() method
@@ -80,7 +80,7 @@ Successfully implemented the **Camera Controller** system for the Fresh Voxel En
    - Added frameSelection() method
    - Added m_cameraController member
 
-2. **src/editor/EditorManager.cpp**
+2. **engine/editor/EditorManager.cpp**
    - Added CameraController initialization
    - Implemented setPlayer() to initialize camera controller
    - Implemented setCameraViewMode() with string-to-enum mapping
@@ -88,13 +88,13 @@ Successfully implemented the **Camera Controller** system for the Fresh Voxel En
    - Implemented frameSelection() with bounding box calculation
    - Added camera controller header include
 
-3. **src/core/Engine.cpp**
+3. **engine/core/Engine.cpp**
    - Added F key keyboard shortcut
    - Added focusOnSelection() call on F key press
    - Integrated with existing W/E/R shortcuts
 
 4. **CMakeLists.txt**
-   - Added src/editor/CameraController.cpp to build
+   - Added engine/editor/CameraController.cpp to build
 
 5. **docs/history/GUI_REMAINING_TASKS.md**
    - Updated Camera Controls Enhancement status to COMPLETE

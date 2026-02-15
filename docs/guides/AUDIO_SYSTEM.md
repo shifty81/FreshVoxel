@@ -386,15 +386,15 @@ Or use the standalone example:
 ```bash
 # See examples/audio_test.cpp for usage
 cd examples
-g++ -std=c++20 -I../include -DFRESH_OPENAL_AVAILABLE \
-    audio_test.cpp ../src/audio/AudioEngine.cpp \
+g++ -std=c++20 -I../engine -DFRESH_OPENAL_AVAILABLE \
+    audio_test.cpp ../engine/audio/AudioEngine.cpp \
     -lopenal -o audio_test
 ./audio_test
 ```
 
 ## API Reference
 
-See `include/audio/AudioEngine.h` for complete API documentation.
+See `engine/audio/AudioEngine.h` for complete API documentation.
 
 ## License
 

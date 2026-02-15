@@ -30,7 +30,7 @@ These features enable developers to efficiently manipulate 3D objects in the edi
 - Only active when editor is initialized and running
 
 **Code Location:**
-- File: `src/core/Engine.cpp`
+- File: `engine/core/Engine.cpp`
 - Method: `Engine::processInput()`
 - Key constants defined for both Win32 (`'W'`, `'E'`, `'R'`) and GLFW (`GLFW_KEY_W`, etc.)
 
@@ -46,7 +46,7 @@ These features enable developers to efficiently manipulate 3D objects in the edi
 - Bidirectional sync with keyboard shortcuts
 
 **Code Location:**
-- File: `src/editor/EditorManager.cpp`
+- File: `engine/editor/EditorManager.cpp`
 - Method: `EditorManager::initialize()`
 - Callback set up after toolbar initialization
 

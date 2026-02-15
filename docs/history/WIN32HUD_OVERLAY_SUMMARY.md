@@ -75,13 +75,13 @@ The following improvements were suggested but are not critical:
 ## Files Changed
 
 ### New Files (2)
-1. `include/ui/native/Win32HUDOverlay.h` - Class declaration
-2. `src/ui/native/Win32HUDOverlay.cpp` - Implementation
+1. `engine/ui/native/Win32HUDOverlay.h` - Class declaration
+2. `engine/ui/native/Win32HUDOverlay.cpp` - Implementation
 
 ### Modified Files (3)
 1. `CMakeLists.txt` - Added Win32HUDOverlay.cpp to build
-2. `include/editor/EditorManager.h` - Added overlay member and forward declaration
-3. `src/editor/EditorManager.cpp` - Integrated overlay lifecycle and updates
+2. `engine/editor/EditorManager.h` - Added overlay member and forward declaration
+3. `engine/editor/EditorManager.cpp` - Integrated overlay lifecycle and updates
 
 ### Documentation Files (2)
 1. `WIN32HUD_OVERLAY_IMPLEMENTATION.md` - Technical documentation

@@ -225,5 +225,5 @@ Sets the callback function to be called when the user selects "Tools → Dialogu
 
 For issues or questions about the dialogue editor integration:
 - Check the documentation in `dotnet/DialogueEditor/README.md`
-- Review the implementation in `src/editor/EditorManager.cpp`
+- Review the implementation in `engine/editor/EditorManager.cpp`
 - Check logs in the engine console for error messages

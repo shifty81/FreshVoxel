@@ -106,11 +106,11 @@ The goal was to implement a voxel-based building and terraforming system inspire
 ### Code Organization
 
 ```
-include/interaction/
+engine/interaction/
   ├── VoxelTool.h           (Base classes and tool definitions)
   └── ToolManager.h         (Tool management system)
 
-src/interaction/
+engine/interaction/
   ├── VoxelTool.cpp         (Tool implementations)
   └── ToolManager.cpp       (Manager implementation)
 
@@ -147,10 +147,10 @@ docs/guides/
 ## Files Changed
 
 1. `CMakeLists.txt` - Added new source files
-2. `include/interaction/VoxelTool.h` - Tool definitions (NEW)
-3. `src/interaction/VoxelTool.cpp` - Tool implementations (NEW)
-4. `include/interaction/ToolManager.h` - Manager definition (NEW)
-5. `src/interaction/ToolManager.cpp` - Manager implementation (NEW)
+2. `engine/interaction/VoxelTool.h` - Tool definitions (NEW)
+3. `engine/interaction/VoxelTool.cpp` - Tool implementations (NEW)
+4. `engine/interaction/ToolManager.h` - Manager definition (NEW)
+5. `engine/interaction/ToolManager.cpp` - Manager implementation (NEW)
 6. `tests/interaction/VoxelToolTests.cpp` - Unit tests (NEW)
 7. `docs/guides/VOXEL_TOOLS.md` - User guide (NEW)
 8. `docs/guides/ADVANCED_MESH_GENERATION.md` - Future guide (NEW)

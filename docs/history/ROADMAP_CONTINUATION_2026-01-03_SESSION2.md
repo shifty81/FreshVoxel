@@ -39,8 +39,8 @@ This session continued implementing the Fresh Voxel Engine roadmap, focusing on 
    - Documents workflow, configuration, and future enhancements
 
 **Files Modified:**
-- `include/core/Engine.h` - Added scripting engine member and namespace
-- `src/core/Engine.cpp` - Integrated lifecycle and hot-reload checking
+- `engine/core/Engine.h` - Added scripting engine member and namespace
+- `engine/core/Engine.cpp` - Integrated lifecycle and hot-reload checking
 
 **Files Created:**
 - `docs/guides/HOT_RELOAD_USAGE.md` - Complete hot-reload usage guide
@@ -108,11 +108,11 @@ This session continued implementing the Fresh Voxel Engine roadmap, focusing on 
    - Includes cleanup functions for proper resource management
 
 **Files Modified:**
-- `src/core/Engine.cpp` - Added ECS bindings registration
+- `engine/core/Engine.cpp` - Added ECS bindings registration
 
 **Files Created:**
-- `include/scripting/lua/LuaECSBindings.h` - Interface (2.9 KB)
-- `src/scripting/lua/LuaECSBindings.cpp` - Implementation (8.0 KB)
+- `engine/scripting/lua/LuaECSBindings.h` - Interface (2.9 KB)
+- `engine/scripting/lua/LuaECSBindings.cpp` - Implementation (8.0 KB)
 - `docs/guides/LUA_ECS_API.md` - Complete API reference (12.4 KB)
 - `examples/scripts/ecs_demo.lua` - Interactive demonstration (7.5 KB)
 - Updated `CMakeLists.txt` - Added new binding files to build system

@@ -4,7 +4,7 @@ This guide shows how to integrate the TransformGizmo into the EditorManager and 
 
 ## Step 1: Add TransformGizmo to EditorManager.h
 
-Add the following to `include/editor/EditorManager.h`:
+Add the following to `engine/editor/EditorManager.h`:
 
 ```cpp
 // Add include at top

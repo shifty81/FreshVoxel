@@ -27,21 +27,21 @@ This session completed the full removal of ImGui from the Fresh Voxel Engine cod
    - Removed FRESH_IMGUI_AVAILABLE compile definition
 
 3. **Source Code**
-   - Deleted `include/ui/ImGuiContext.h`
+   - Deleted `engine/ui/ImGuiContext.h`
    - Removed all FRESH_IMGUI_AVAILABLE conditionals from:
-     - `src/editor/EditorManager.cpp` (3 occurrences)
-     - `src/core/Engine.cpp` (13 occurrences)
-     - `src/ui/MainMenuPanel.cpp`
-     - `src/ui/WindowsThemeManager.cpp`
-     - `src/ui/SettingsPanel.cpp`
-     - `src/ui/EngineConfigPanel.cpp`
-     - `src/ui/WindowsCustomizationPanel.cpp`
+     - `engine/editor/EditorManager.cpp` (3 occurrences)
+     - `engine/core/Engine.cpp` (13 occurrences)
+     - `engine/ui/MainMenuPanel.cpp`
+     - `engine/ui/WindowsThemeManager.cpp`
+     - `engine/ui/SettingsPanel.cpp`
+     - `engine/ui/EngineConfigPanel.cpp`
+     - `engine/ui/WindowsCustomizationPanel.cpp`
 
 4. **Panel Headers**
-   - Updated `include/ui/ConsolePanel.h` (removed #ifdef _WIN32)
-   - Updated `include/ui/SceneHierarchyPanel.h` (removed #ifdef _WIN32)
-   - Updated `include/ui/InspectorPanel.h` (removed #ifdef _WIN32)
-   - Updated `include/ui/ContentBrowserPanel.h` (removed #ifdef _WIN32)
+   - Updated `engine/ui/ConsolePanel.h` (removed #ifdef _WIN32)
+   - Updated `engine/ui/SceneHierarchyPanel.h` (removed #ifdef _WIN32)
+   - Updated `engine/ui/InspectorPanel.h` (removed #ifdef _WIN32)
+   - Updated `engine/ui/ContentBrowserPanel.h` (removed #ifdef _WIN32)
    - All now unconditionally use Win32 native implementations
 
 ### Phase 2: Code Review Fixes ✅
@@ -56,10 +56,10 @@ This session completed the full removal of ImGui from the Fresh Voxel Engine cod
 
 3. **Deprecated ImGui Panel Files**
    - Wrapped in `#if 0` to prevent compilation:
-     - `src/ui/MainMenuPanel.cpp`
-     - `src/ui/SettingsPanel.cpp`
-     - `src/ui/EngineConfigPanel.cpp`
-     - `src/ui/WindowsCustomizationPanel.cpp`
+     - `engine/ui/MainMenuPanel.cpp`
+     - `engine/ui/SettingsPanel.cpp`
+     - `engine/ui/EngineConfigPanel.cpp`
+     - `engine/ui/WindowsCustomizationPanel.cpp`
    - Added deprecation notices at top of each file
 
 ### Phase 3: Documentation Updates ✅
@@ -102,21 +102,21 @@ This session completed the full removal of ImGui from the Fresh Voxel Engine cod
 ### Modified (16 files)
 1. `vcpkg.json` - Removed imgui dependency
 2. `CMakeLists.txt` - Removed ImGui sections
-3. `src/editor/EditorManager.cpp` - Removed conditionals
-4. `src/core/Engine.cpp` - Removed conditionals, updated comment
-5. `src/ui/WindowsThemeManager.cpp` - Removed ImGui code
-6. `src/ui/MainMenuPanel.cpp` - Wrapped in #if 0
-7. `src/ui/SettingsPanel.cpp` - Wrapped in #if 0
-8. `src/ui/EngineConfigPanel.cpp` - Wrapped in #if 0
-9. `src/ui/WindowsCustomizationPanel.cpp` - Wrapped in #if 0
-10. `include/ui/ConsolePanel.h` - Removed #ifdef _WIN32
-11. `include/ui/SceneHierarchyPanel.h` - Removed #ifdef _WIN32
-12. `include/ui/InspectorPanel.h` - Removed #ifdef _WIN32
-13. `include/ui/ContentBrowserPanel.h` - Removed #ifdef _WIN32
+3. `engine/editor/EditorManager.cpp` - Removed conditionals
+4. `engine/core/Engine.cpp` - Removed conditionals, updated comment
+5. `engine/ui/WindowsThemeManager.cpp` - Removed ImGui code
+6. `engine/ui/MainMenuPanel.cpp` - Wrapped in #if 0
+7. `engine/ui/SettingsPanel.cpp` - Wrapped in #if 0
+8. `engine/ui/EngineConfigPanel.cpp` - Wrapped in #if 0
+9. `engine/ui/WindowsCustomizationPanel.cpp` - Wrapped in #if 0
+10. `engine/ui/ConsolePanel.h` - Removed #ifdef _WIN32
+11. `engine/ui/SceneHierarchyPanel.h` - Removed #ifdef _WIN32
+12. `engine/ui/InspectorPanel.h` - Removed #ifdef _WIN32
+13. `engine/ui/ContentBrowserPanel.h` - Removed #ifdef _WIN32
 14. `GUI_WORK_REMAINING_SUMMARY.md` - Updated for ImGui removal
 
 ### Deleted (1 file)
-1. `include/ui/ImGuiContext.h`
+1. `engine/ui/ImGuiContext.h`
 
 ### Renamed (1 file)
 1. `IMGUI_INTEGRATION_TODO.md` → `IMGUI_INTEGRATION_TODO.md.DEPRECATED`

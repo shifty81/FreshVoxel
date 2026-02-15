@@ -116,7 +116,7 @@ Multiplayer is planned for v0.4.0 (Q1 2026). The architecture supports it, but i
 
 ### Can I create custom voxel types?
 
-Yes! Edit `include/voxel/VoxelTypes.h` to add new voxel types. The engine supports up to 256 types.
+Yes! Edit `engine/voxel/VoxelTypes.h` to add new voxel types. The engine supports up to 256 types.
 
 ### How does terrain generation work?
 
@@ -257,7 +257,7 @@ Memory management features:
 5. Upload to GPU when ready
 6. Unload distant chunks
 
-See [ChunkStreamer](include/voxel/ChunkStreamer.h) for implementation.
+See [ChunkStreamer](engine/voxel/ChunkStreamer.h) for implementation.
 
 ### Can I use a different renderer?
 

@@ -11,7 +11,7 @@ The engine had comprehensive GUI components implemented with ImGui, but several 
 ### 1. Hotbar Integration with Block Selection
 
 #### Files Changed
-- `src/core/Engine.cpp` (initializeGameSystems function)
+- `engine/core/Engine.cpp` (initializeGameSystems function)
 
 #### Implementation
 - **Hotbar Initialization**: When a world is created/loaded, the hotbar is automatically populated with 10 common block types:
@@ -38,8 +38,8 @@ The engine had comprehensive GUI components implemented with ImGui, but several 
 ### 2. Voxel Tool Palette Integration
 
 #### Files Changed
-- `include/editor/EditorManager.h` - Added `getVoxelToolPalette()` getter
-- `src/core/Engine.cpp` (initializeGameSystems function)
+- `engine/editor/EditorManager.h` - Added `getVoxelToolPalette()` getter
+- `engine/core/Engine.cpp` (initializeGameSystems function)
 
 #### Implementation
 - **Added Public Getter**: EditorManager now exposes VoxelToolPalette through `getVoxelToolPalette()`
@@ -54,8 +54,8 @@ The engine had comprehensive GUI components implemented with ImGui, but several 
 ### 3. Undo/Redo Integration
 
 #### Files Changed
-- `src/editor/EditorManager.cpp` (both initialize and updateWorld functions)
-- `src/core/Engine.cpp` (processInput function)
+- `engine/editor/EditorManager.cpp` (both initialize and updateWorld functions)
+- `engine/core/Engine.cpp` (processInput function)
 
 #### Implementation
 
@@ -158,11 +158,11 @@ Input handling follows this priority:
 ## Files Modified
 
 ### Header Files
-- `include/editor/EditorManager.h` - Added VoxelToolPalette getter
+- `engine/editor/EditorManager.h` - Added VoxelToolPalette getter
 
 ### Implementation Files
-- `src/core/Engine.cpp` - Hotbar init, callbacks, keyboard shortcuts (3 additions)
-- `src/editor/EditorManager.cpp` - Undo/redo menu callbacks (2 locations)
+- `engine/core/Engine.cpp` - Hotbar init, callbacks, keyboard shortcuts (3 additions)
+- `engine/editor/EditorManager.cpp` - Undo/redo menu callbacks (2 locations)
 
 ## Dependencies
 - ImGui library (already integrated)

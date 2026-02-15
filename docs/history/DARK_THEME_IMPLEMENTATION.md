@@ -6,7 +6,7 @@ This document describes the implementation of a modern dark night mode theme for
 ## Changes Made
 
 ### File Modified
-- `src/ui/ImGuiContext.cpp` - Lines 81-202
+- `engine/ui/ImGuiContext.cpp` - Lines 81-202
 
 ### Theme Characteristics
 

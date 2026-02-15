@@ -17,8 +17,8 @@ Successfully implemented a comprehensive Editor Settings Dialog for the Fresh Vo
 ### ✅ Core Implementation
 
 1. **EditorSettingsDialog Class**
-   - Created header file: `include/editor/EditorSettingsDialog.h` (172 lines)
-   - Created implementation: `src/editor/EditorSettingsDialog.cpp` (424 lines)
+   - Created header file: `engine/editor/EditorSettingsDialog.h` (172 lines)
+   - Created implementation: `engine/editor/EditorSettingsDialog.cpp` (424 lines)
    - Full tabbed interface with ImGui
    - Settings persistence via INI format
 
@@ -86,17 +86,17 @@ Successfully implemented a comprehensive Editor Settings Dialog for the Fresh Vo
 
 ### New Files Created
 ```
-include/editor/EditorSettingsDialog.h              (172 lines)
-src/editor/EditorSettingsDialog.cpp                (424 lines)
+engine/editor/EditorSettingsDialog.h              (172 lines)
+engine/editor/EditorSettingsDialog.cpp                (424 lines)
 docs/editor/EDITOR_SETTINGS_DIALOG.md              (10.1KB)
 ```
 
 ### Existing Files Modified
 ```
-include/editor/EditorManager.h                     (+16 lines)
-src/editor/EditorManager.cpp                       (+15 lines)
-include/ui/EditorMenuBar.h                         (+5 lines)
-src/ui/EditorMenuBar.cpp                           (+8 lines)
+engine/editor/EditorManager.h                     (+16 lines)
+engine/editor/EditorManager.cpp                       (+15 lines)
+engine/ui/EditorMenuBar.h                         (+5 lines)
+engine/ui/EditorMenuBar.cpp                           (+8 lines)
 CMakeLists.txt                                     (+1 line)
 docs/history/GUI_REMAINING_TASKS.md                (updated)
 ```

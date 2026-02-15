@@ -42,11 +42,11 @@ Find the line around line 313 in `CMakeLists.txt`:
 
 ```cmake
 set(ENGINE_SOURCES
-    src/main.cpp
-    src/core/Engine.cpp
+    engine/main.cpp
+    engine/core/Engine.cpp
     ...
-    src/devtools/DevToolsManager.cpp
-    src/scripting/lua/ScriptingEngine.cpp   # ← Change this line
+    engine/devtools/DevToolsManager.cpp
+    engine/scripting/lua/ScriptingEngine.cpp   # ← Change this line
 )
 ```
 
@@ -58,18 +58,18 @@ Replace the fixed line with a variable:
 # Before the ENGINE_SOURCES list (around line 250)
 # Determine which Lua implementation to use
 if(Lua_FOUND AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/external/sol2/include")
-    set(LUA_IMPL_FILE src/scripting/lua/ScriptingEngineImpl.cpp)
+    set(LUA_IMPL_FILE engine/scripting/lua/ScriptingEngineImpl.cpp)
     message(STATUS "Using production Lua implementation with Sol2")
 else()
-    set(LUA_IMPL_FILE src/scripting/lua/ScriptingEngine.cpp)
+    set(LUA_IMPL_FILE engine/scripting/lua/ScriptingEngine.cpp)
     message(STATUS "Using stub Lua implementation")
 endif()
 
 # Then in ENGINE_SOURCES:
 set(ENGINE_SOURCES
-    src/main.cpp
+    engine/main.cpp
     ...
-    src/devtools/DevToolsManager.cpp
+    engine/devtools/DevToolsManager.cpp
     ${LUA_IMPL_FILE}  # ← Use variable instead
 )
 ```
@@ -81,7 +81,7 @@ Just change the filename:
 ```cmake
 set(ENGINE_SOURCES
     ...
-    src/scripting/lua/ScriptingEngineImpl.cpp  # ← Changed
+    engine/scripting/lua/ScriptingEngineImpl.cpp  # ← Changed
 )
 ```
 

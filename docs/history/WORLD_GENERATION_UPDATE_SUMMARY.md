@@ -76,12 +76,12 @@ A comprehensive design document covering:
   - ADVANCED_WORLD_GENERATION.md (marked as 🆕)
   - WORLD_TYPE_SELECTION.md
 
-#### include/generation/TerrainGenerator.h
+#### engine/generation/TerrainGenerator.h
 - Enhanced class documentation with current vs. future features
 - Added detailed future enhancement notes to `getHeight()` method
 - References ADVANCED_WORLD_GENERATION.md for detailed design
 
-#### src/generation/TerrainGenerator.cpp
+#### engine/generation/TerrainGenerator.cpp
 - Added inline comments in `getHeight()` explaining future climate enhancements
 - Added inline comments in `getBlockType()` explaining future geological features
 - Cross-referenced ADVANCED_WORLD_GENERATION.md for implementation details
@@ -240,8 +240,8 @@ Fresh Voxel Engine Documentation
 │       └── WORLD_TYPE_SELECTION.md
 │
 └── Code Documentation (Updated)
-    ├── include/generation/TerrainGenerator.h
-    └── src/generation/TerrainGenerator.cpp
+    ├── engine/generation/TerrainGenerator.h
+    └── engine/generation/TerrainGenerator.cpp
 ```
 
 ---

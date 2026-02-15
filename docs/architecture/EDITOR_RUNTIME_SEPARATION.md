@@ -290,11 +290,11 @@ project(FreshVoxelEngine)
 
 # All sources in one list
 set(ENGINE_SOURCES
-    src/main.cpp
-    src/core/Engine.cpp
+    engine/main.cpp
+    engine/core/Engine.cpp
     # ... all sources ...
-    src/editor/EditorManager.cpp
-    src/ui/native/Win32*.cpp
+    engine/editor/EditorManager.cpp
+    engine/ui/native/Win32*.cpp
 )
 
 # Single executable
@@ -325,10 +325,10 @@ add_subdirectory(tests)
 ```cmake
 # runtime/CMakeLists.txt
 add_library(FreshRuntime STATIC
-    src/core/Engine.cpp
-    src/renderer/*.cpp
-    src/physics/*.cpp
-    src/ecs/*.cpp
+    engine/core/Engine.cpp
+    engine/renderer/*.cpp
+    engine/physics/*.cpp
+    engine/ecs/*.cpp
     # ... runtime sources only ...
 )
 
@@ -341,9 +341,9 @@ target_link_libraries(FreshRuntime
 ```cmake
 # editor/CMakeLists.txt
 add_executable(FreshEditor
-    src/main_editor.cpp
-    src/EditorApplication.cpp
-    src/ui/native/*.cpp
+    engine/main_editor.cpp
+    engine/EditorApplication.cpp
+    engine/ui/native/*.cpp
     # ... editor sources only ...
 )
 
@@ -356,8 +356,8 @@ target_link_libraries(FreshEditor
 ```cmake
 # game/CMakeLists.txt
 add_executable(FreshGame
-    src/main_game.cpp
-    src/GameApplication.cpp
+    engine/main_game.cpp
+    engine/GameApplication.cpp
     # ... minimal game runtime ...
 )
 

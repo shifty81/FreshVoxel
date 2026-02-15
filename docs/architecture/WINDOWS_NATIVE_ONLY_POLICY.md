@@ -239,8 +239,8 @@ endif()
 
 Delete these files:
 ```bash
-rm include/ui/ImGuiContext.h
-rm src/ui/ImGuiContext.cpp
+rm engine/ui/ImGuiContext.h
+rm engine/ui/ImGuiContext.cpp
 ```
 
 ### Step 4: Remove ImGui-based Panel Files
@@ -248,19 +248,19 @@ rm src/ui/ImGuiContext.cpp
 Delete or migrate these files to Win32 equivalents:
 ```bash
 # These may have ImGui fallback implementations
-rm include/ui/MainMenuPanel.h
-rm src/ui/MainMenuPanel.cpp
+rm engine/ui/MainMenuPanel.h
+rm engine/ui/MainMenuPanel.cpp
 
 # Check these files for ImGui usage and remove fallback code
-# - include/ui/SettingsPanel.h
-# - src/ui/SettingsPanel.cpp
-# - include/ui/HotbarPanel.h
-# - src/ui/HotbarPanel.cpp
+# - engine/ui/SettingsPanel.h
+# - engine/ui/SettingsPanel.cpp
+# - engine/ui/HotbarPanel.h
+# - engine/ui/HotbarPanel.cpp
 ```
 
 ### Step 5: Update EditorManager
 
-**src/editor/EditorManager.cpp** - Remove all `#ifdef FRESH_IMGUI_AVAILABLE` blocks:
+**engine/editor/EditorManager.cpp** - Remove all `#ifdef FRESH_IMGUI_AVAILABLE` blocks:
 
 ```cpp
 // BEFORE (with ImGui fallback):
@@ -278,7 +278,7 @@ rm src/ui/MainMenuPanel.cpp
 
 Update these header files to remove ImGui compatibility aliases:
 
-**include/ui/ConsolePanel.h:**
+**engine/ui/ConsolePanel.h:**
 ```cpp
 #pragma once
 #include "ui/native/Win32ConsolePanel.h"
@@ -291,9 +291,9 @@ namespace fresh
 ```
 
 Do the same for:
-- `include/ui/SceneHierarchyPanel.h`
-- `include/ui/InspectorPanel.h`
-- `include/ui/ContentBrowserPanel.h`
+- `engine/ui/SceneHierarchyPanel.h`
+- `engine/ui/InspectorPanel.h`
+- `engine/ui/ContentBrowserPanel.h`
 
 ### Step 7: Update Documentation
 
@@ -424,11 +424,11 @@ HFONT hFont = CreateFont(
 - [High DPI](https://docs.microsoft.com/en-us/windows/win32/hidpi/high-dpi-desktop-application-development-on-windows)
 
 ### Fresh Engine Examples
-- `include/ui/native/Win32MenuBar.h` - Menu bar implementation
-- `include/ui/native/Win32Toolbar.h` - Toolbar implementation
-- `include/ui/native/Win32Panel.h` - Base panel class
-- `include/ui/native/UnrealStyleTheme.h` - Theme constants
-- `src/core/Win32Window.cpp` - Main window implementation
+- `engine/ui/native/Win32MenuBar.h` - Menu bar implementation
+- `engine/ui/native/Win32Toolbar.h` - Toolbar implementation
+- `engine/ui/native/Win32Panel.h` - Base panel class
+- `engine/ui/native/UnrealStyleTheme.h` - Theme constants
+- `engine/core/Win32Window.cpp` - Main window implementation
 
 ### Community Resources
 - [Windows UI Cookbook (CodeProject)](https://www.codeproject.com/KB/windows/)
@@ -470,7 +470,7 @@ CI/CD will reject PRs that:
 **A:** Use Win32 from the start. Our Win32Panel base class and helper functions make Win32 development fast. Prototyping with ImGui creates technical debt.
 
 ### Q: How do I contribute UI improvements?
-**A:** Read this policy, study existing Win32 code in `include/ui/native/`, and follow the implementation checklist. Ask in Discussions if unsure.
+**A:** Read this policy, study existing Win32 code in `engine/ui/native/`, and follow the implementation checklist. Ask in Discussions if unsure.
 
 ### Q: Will ImGui support ever return?
 **A:** No. This is a permanent architectural decision. Windows Native UI is the future of this project.

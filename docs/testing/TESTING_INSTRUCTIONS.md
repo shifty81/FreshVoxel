@@ -116,11 +116,11 @@ If you encounter any issues during testing:
 
 ## Files Changed in This Fix
 
-- `include/renderer/backends/DirectX11RenderContext.h`
-- `include/renderer/backends/DirectX12RenderContext.h`
-- `src/renderer/backends/DirectX11RenderContext.cpp`
-- `src/renderer/backends/DirectX12RenderContext.cpp`
-- `src/core/Engine.cpp`
+- `engine/renderer/backends/DirectX11RenderContext.h`
+- `engine/renderer/backends/DirectX12RenderContext.h`
+- `engine/renderer/backends/DirectX11RenderContext.cpp`
+- `engine/renderer/backends/DirectX12RenderContext.cpp`
+- `engine/core/Engine.cpp`
 - `DARKER_BLUE_SCREEN_FIX.md` (documentation)
 
 See `DARKER_BLUE_SCREEN_FIX.md` for detailed technical information about the fix.

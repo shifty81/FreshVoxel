@@ -51,9 +51,9 @@ Updated the project status to accurately reflect what has been implemented:
 **Week 5 Goal:** Add stb_image for texture loading
 
 **Files Changed:**
-- `include/third_party/stb_image.h` - Added library (277KB, header-only)
-- `src/renderer/stb_image_impl.cpp` - Implementation file
-- `src/renderer/Texture.cpp` - Updated loadFromFile()
+- `engine/third_party/stb_image.h` - Added library (277KB, header-only)
+- `engine/renderer/stb_image_impl.cpp` - Implementation file
+- `engine/renderer/Texture.cpp` - Updated loadFromFile()
 - `tests/renderer/test_texture.cpp` - Comprehensive tests
 - `CMakeLists.txt` - Added to build system
 
@@ -84,7 +84,7 @@ Updated the project status to accurately reflect what has been implemented:
 
 **Files Changed:**
 - `vcpkg.json` - Added tinyobjloader dependency
-- `src/renderer/ModelLoader.cpp` - Complete implementation (13KB)
+- `engine/renderer/ModelLoader.cpp` - Complete implementation (13KB)
 - `tests/renderer/test_model_loader.cpp` - Comprehensive tests
 - `CMakeLists.txt` - Added to build system
 
@@ -221,15 +221,15 @@ Model
 
 ### Source Files Added
 ```
-src/renderer/stb_image_impl.cpp
-src/renderer/ModelLoader.cpp
+engine/renderer/stb_image_impl.cpp
+engine/renderer/ModelLoader.cpp
 tests/renderer/test_texture.cpp
 tests/renderer/test_model_loader.cpp
 ```
 
 ### Third-Party Headers
 ```
-include/third_party/stb_image.h
+engine/third_party/stb_image.h
 ```
 
 ---

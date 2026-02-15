@@ -9,7 +9,7 @@ The Fresh Voxel Engine GUI had issues with:
 ## Solution Implemented
 
 ### Core Change
-Modified `src/ui/ImGuiContext.cpp` to implement a modern dark night mode theme with professional blue accents and excellent text readability.
+Modified `engine/ui/ImGuiContext.cpp` to implement a modern dark night mode theme with professional blue accents and excellent text readability.
 
 ### Key Features
 
@@ -34,7 +34,7 @@ Modified `src/ui/ImGuiContext.cpp` to implement a modern dark night mode theme w
 ## Technical Details
 
 ### Implementation Location
-- **File**: `src/ui/ImGuiContext.cpp`
+- **File**: `engine/ui/ImGuiContext.cpp`
 - **Function**: `ImGuiContext::initialize()`
 - **Lines**: 81-202
 - **Scope**: Affects all ImGui UI elements globally
@@ -160,7 +160,7 @@ When the application is built and run, verify:
 ## Files Changed
 
 ### Modified Files (1)
-- `src/ui/ImGuiContext.cpp` - Added dark theme implementation
+- `engine/ui/ImGuiContext.cpp` - Added dark theme implementation
 
 ### New Documentation (3)
 - `DARK_THEME_IMPLEMENTATION.md` - Technical documentation
@@ -226,7 +226,7 @@ The changes are minimal (1 file modified), low-risk (style only), and provide si
 ## References
 
 - **Problem Statement**: GitHub Issue (GUI has no readable text, awful colors)
-- **Implementation**: `src/ui/ImGuiContext.cpp` lines 81-202
+- **Implementation**: `engine/ui/ImGuiContext.cpp` lines 81-202
 - **Documentation**: `DARK_THEME_IMPLEMENTATION.md`, `DARK_THEME_VISUAL_MOCKUP.md`
 - **Standards**: WCAG 2.1 Level AAA (Contrast ≥ 7:1)
 - **Inspiration**: Modern IDEs, game engines (Unity, Unreal, Visual Studio Code)

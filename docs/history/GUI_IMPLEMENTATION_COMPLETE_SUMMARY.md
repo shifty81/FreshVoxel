@@ -26,10 +26,10 @@ This PR successfully implements the **critical remaining GUI components** for th
 - Ready for mouse interaction and manipulation
 
 **Files Modified:**
-- `include/editor/TransformGizmo.h`
-- `src/editor/TransformGizmo.cpp`
-- `include/editor/EditorManager.h`
-- `src/editor/EditorManager.cpp`
+- `engine/editor/TransformGizmo.h`
+- `engine/editor/TransformGizmo.cpp`
+- `engine/editor/EditorManager.h`
+- `engine/editor/EditorManager.cpp`
 
 ### 2. Cross-Platform File Dialog System ✅
 **Problem:** File operations (Open/Save World, Import Assets) had platform-specific implementations or were missing.
@@ -53,13 +53,13 @@ This PR successfully implements the **critical remaining GUI components** for th
 - Integrated with EditorManager save/load operations
 
 **Files Created:**
-- `include/editor/FileDialogManager.h`
-- `src/editor/FileDialogManager.cpp`
+- `engine/editor/FileDialogManager.h`
+- `engine/editor/FileDialogManager.cpp`
 
 **Files Modified:**
 - `vcpkg.json` - Added nativefiledialog-extended
 - `CMakeLists.txt` - Added NFD package and linking
-- `src/editor/EditorManager.cpp` - Updated save/load methods
+- `engine/editor/EditorManager.cpp` - Updated save/load methods
 
 ### 3. Comprehensive Documentation ✅
 **Problem:** Unclear what GUI work remained and priorities.

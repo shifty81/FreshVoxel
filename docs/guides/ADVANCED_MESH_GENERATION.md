@@ -449,5 +449,5 @@ A hybrid approach offers the best of both worlds.
 ## See Also
 
 - [Voxel Tools Guide](VOXEL_TOOLS.md)
-- [Mesh Generator API](../../include/voxel/MeshGenerator.h)
+- [Mesh Generator API](../../engine/voxel/MeshGenerator.h)
 - [Performance Optimization Guide](../architecture/PERFORMANCE.md)

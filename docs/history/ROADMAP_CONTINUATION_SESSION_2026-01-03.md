@@ -25,9 +25,9 @@ This session focused on implementing the highest priority items from the Fresh V
 
 **Files Modified/Created:**
 - `vcpkg.json` - Added sol2 dependency
-- `include/scripting/lua/ScriptingEngine.h` - Updated interface
-- `src/scripting/lua/ScriptingEngine.cpp` - Full implementation
-- `include/scripting/lua/ScriptingEngineImpl.h` - Template implementations
+- `engine/scripting/lua/ScriptingEngine.h` - Updated interface
+- `engine/scripting/lua/ScriptingEngine.cpp` - Full implementation
+- `engine/scripting/lua/ScriptingEngineImpl.h` - Template implementations
 - `CMakeLists.txt` - Added Sol2 finding and linking
 
 **Testing:**
@@ -52,8 +52,8 @@ This session focused on implementing the highest priority items from the Fresh V
 - Metadata support
 
 **Files Modified/Created:**
-- `include/core/SceneManager.h` - Added serialization declarations
-- `src/core/SceneManager.cpp` - Implemented save/load + helpers
+- `engine/core/SceneManager.h` - Added serialization declarations
+- `engine/core/SceneManager.cpp` - Implemented save/load + helpers
 
 **Testing:**
 - 11 comprehensive unit tests
@@ -87,8 +87,8 @@ This session focused on implementing the highest priority items from the Fresh V
 - Utilities: log functions, time access
 
 **Files Created:**
-- `include/scripting/lua/LuaAPIBindings.h` - Interface
-- `src/scripting/lua/LuaAPIBindings.cpp` - Implementation
+- `engine/scripting/lua/LuaAPIBindings.h` - Interface
+- `engine/scripting/lua/LuaAPIBindings.cpp` - Implementation
 
 **Documentation:**
 - Complete API reference (LUA_API_REFERENCE.md)

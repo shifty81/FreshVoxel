@@ -64,13 +64,13 @@ We established a solid foundation for plugins without breaking existing function
 
 #### Files Created:
 - `plugins/README.md` - Plugin system overview
-- `include/core/IEngineMode.h` - Engine mode plugin interface
+- `engine/core/IEngineMode.h` - Engine mode plugin interface
 - `docs/architecture/EDITOR_RUNTIME_SEPARATION.md` - Migration roadmap
 - `docs/guides/PLUGIN_DEVELOPMENT.md` - Developer guide
 
 #### Files Modified:
-- `include/generation/IWorldGenerator.h` - Added metadata support
-- `src/generation/WorldGeneratorFactory.cpp` - Updated all generators
+- `engine/generation/IWorldGenerator.h` - Added metadata support
+- `engine/generation/WorldGeneratorFactory.cpp` - Updated all generators
 
 ### 2. World Generation Plugins
 
@@ -312,13 +312,13 @@ When continuing this work:
 
 ### Created:
 - `plugins/README.md`
-- `include/core/IEngineMode.h`
+- `engine/core/IEngineMode.h`
 - `docs/architecture/EDITOR_RUNTIME_SEPARATION.md`
 - `docs/guides/PLUGIN_DEVELOPMENT.md`
 
 ### Modified:
-- `include/generation/IWorldGenerator.h`
-- `src/generation/WorldGeneratorFactory.cpp`
+- `engine/generation/IWorldGenerator.h`
+- `engine/generation/WorldGeneratorFactory.cpp`
 
 ### Total Lines:
 - Documentation: ~25,000 characters
@@ -344,6 +344,6 @@ The next phases will build on this foundation to achieve the full separation req
 
 - [Plugin Development Guide](docs/guides/PLUGIN_DEVELOPMENT.md)
 - [Architecture Document](docs/architecture/EDITOR_RUNTIME_SEPARATION.md)
-- [IWorldGenerator Interface](include/generation/IWorldGenerator.h)
-- [IEngineMode Interface](include/core/IEngineMode.h)
-- [World Generator Factory](src/generation/WorldGeneratorFactory.cpp)
+- [IWorldGenerator Interface](engine/generation/IWorldGenerator.h)
+- [IEngineMode Interface](engine/core/IEngineMode.h)
+- [World Generator Factory](engine/generation/WorldGeneratorFactory.cpp)

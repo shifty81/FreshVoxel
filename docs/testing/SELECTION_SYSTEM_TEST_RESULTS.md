@@ -177,9 +177,9 @@ During testing, the following issue was discovered and fixed:
 
 **Solution:** Added missing dependencies to `CMakeLists.txt`:
 ```cmake
-src/generation/World2DGenerator.cpp
-src/gameplay/Camera.cpp
-src/editor/TerraformingSystem.cpp
+engine/generation/World2DGenerator.cpp
+engine/gameplay/Camera.cpp
+engine/editor/TerraformingSystem.cpp
 ```
 
 **Impact:** Test build now succeeds on all platforms (Linux verified, Windows expected to work)

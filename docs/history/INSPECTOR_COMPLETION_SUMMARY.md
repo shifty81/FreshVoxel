@@ -10,7 +10,7 @@ The Inspector Panel interface has been successfully completed! The panel now pro
 
 Three new ECS components were created to support the Inspector Panel:
 
-#### TransformComponent (`include/ecs/TransformComponent.h`)
+#### TransformComponent (`engine/ecs/TransformComponent.h`)
 - **Position** (glm::vec3) - Object location in 3D space
 - **Rotation** (glm::quat) - Object orientation using quaternions
 - **Scale** (glm::vec3) - Object size multiplier
@@ -20,13 +20,13 @@ Three new ECS components were created to support the Inspector Panel:
   - `getTransformMatrix()` - Get 4x4 transformation matrix
   - `getForward()`, `getRight()`, `getUp()` - Direction vectors
 
-#### RendererComponent (`include/ecs/RendererComponent.h`)
+#### RendererComponent (`engine/ecs/RendererComponent.h`)
 - **visible** (bool) - Whether object should be rendered
 - **castShadows** (bool) - Whether object casts shadows
 - **receiveShadows** (bool) - Whether object receives shadows
 - **renderLayer** (int 0-31) - Render layer for selective rendering
 
-#### MaterialComponent (`include/ecs/MaterialComponent.h`)
+#### MaterialComponent (`engine/ecs/MaterialComponent.h`)
 - **shaderType** (enum) - Standard, Unlit, Water, Transparent, Custom
 - **color** (glm::vec4) - RGBA base color
 - **texturePath** (string) - Path to texture file
@@ -36,7 +36,7 @@ Three new ECS components were created to support the Inspector Panel:
 
 ### 2. Inspector Panel Updates
 
-The Inspector Panel (`src/ui/InspectorPanel.cpp`) was completely rewritten to:
+The Inspector Panel (`engine/ui/InspectorPanel.cpp`) was completely rewritten to:
 
 #### Display Real Component Data
 - No more static variables!
@@ -152,22 +152,22 @@ Three demonstration entities are automatically created to showcase functionality
 ## Files Modified
 
 ### New Files (6 files)
-1. `include/ecs/TransformComponent.h`
-2. `src/ecs/TransformComponent.cpp`
-3. `include/ecs/RendererComponent.h`
-4. `src/ecs/RendererComponent.cpp`
-5. `include/ecs/MaterialComponent.h`
-6. `src/ecs/MaterialComponent.cpp`
+1. `engine/ecs/TransformComponent.h`
+2. `engine/ecs/TransformComponent.cpp`
+3. `engine/ecs/RendererComponent.h`
+4. `engine/ecs/RendererComponent.cpp`
+5. `engine/ecs/MaterialComponent.h`
+6. `engine/ecs/MaterialComponent.cpp`
 
 ### Modified Files (9 files)
-1. `include/ui/InspectorPanel.h`
-2. `src/ui/InspectorPanel.cpp`
-3. `include/editor/EditorManager.h`
-4. `src/editor/EditorManager.cpp`
-5. `include/core/Engine.h`
-6. `src/core/Engine.cpp`
-7. `include/ui/SceneHierarchyPanel.h`
-8. `src/ui/SceneHierarchyPanel.cpp`
+1. `engine/ui/InspectorPanel.h`
+2. `engine/ui/InspectorPanel.cpp`
+3. `engine/editor/EditorManager.h`
+4. `engine/editor/EditorManager.cpp`
+5. `engine/core/Engine.h`
+6. `engine/core/Engine.cpp`
+7. `engine/ui/SceneHierarchyPanel.h`
+8. `engine/ui/SceneHierarchyPanel.cpp`
 9. `CMakeLists.txt`
 
 ## Code Statistics

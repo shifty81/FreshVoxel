@@ -15,9 +15,9 @@ This document summarizes the fixes made to ensure Lua is properly integrated in 
 **Problem:** Three Lua binding files were including `sol/sol.hpp` without proper `#ifdef FRESH_LUA_AVAILABLE` guards, causing compilation failures when Lua/Sol2 was not installed, despite the README stating Lua integration is optional.
 
 **Affected Files:**
-- `src/scripting/lua/LuaTimeBindings.cpp`
-- `src/scripting/lua/LuaAPIBindings.cpp`
-- `src/scripting/lua/ScriptingEngine.cpp`
+- `engine/scripting/lua/LuaTimeBindings.cpp`
+- `engine/scripting/lua/LuaAPIBindings.cpp`
+- `engine/scripting/lua/ScriptingEngine.cpp`
 
 **Solution:** Added proper conditional compilation guards with stub implementations for all three files, matching the pattern used in other Lua files like `LuaECSBindings.cpp` and `LuaScriptingEngine.cpp`.
 
@@ -55,19 +55,19 @@ This document summarizes the fixes made to ensure Lua is properly integrated in 
 
 All Lua-related implementation files now have proper conditional compilation:
 
-- ✅ `src/scripting/lua/LuaScriptingEngine.cpp` - Has guards
-- ✅ `src/scripting/lua/LuaECSBindings.cpp` - Has guards
-- ✅ `src/scripting/lua/LuaTimeBindings.cpp` - Has guards (FIXED)
-- ✅ `src/scripting/lua/LuaAPIBindings.cpp` - Has guards (FIXED)
-- ✅ `src/scripting/lua/ScriptingEngine.cpp` - Has guards (FIXED)
-- ✅ `src/scripting/lua/ScriptingEngineImpl.cpp` - Has guards
+- ✅ `engine/scripting/lua/LuaScriptingEngine.cpp` - Has guards
+- ✅ `engine/scripting/lua/LuaECSBindings.cpp` - Has guards
+- ✅ `engine/scripting/lua/LuaTimeBindings.cpp` - Has guards (FIXED)
+- ✅ `engine/scripting/lua/LuaAPIBindings.cpp` - Has guards (FIXED)
+- ✅ `engine/scripting/lua/ScriptingEngine.cpp` - Has guards (FIXED)
+- ✅ `engine/scripting/lua/ScriptingEngineImpl.cpp` - Has guards
 
 ### Header Files
 
 Header files use forward declarations for Sol2 types, which allows them to be included regardless of whether Lua/Sol2 is available:
 
-- ✅ `include/scripting/lua/ScriptingEngine.h` - Forward declares `sol::state`
-- ✅ `include/scripting/lua/LuaScriptingEngine.h` - Forward declares `sol::state`
+- ✅ `engine/scripting/lua/ScriptingEngine.h` - Forward declares `sol::state`
+- ✅ `engine/scripting/lua/LuaScriptingEngine.h` - Forward declares `sol::state`
 
 ## Compilation Behavior
 

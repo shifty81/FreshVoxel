@@ -26,9 +26,9 @@ Based on `GUI_WORK_REMAINING_SUMMARY.md`, the task was to complete **Selection S
 **Fix Applied:**
 Updated `CMakeLists.txt` to include missing test dependencies:
 ```cmake
-src/generation/World2DGenerator.cpp
-src/gameplay/Camera.cpp
-src/editor/TerraformingSystem.cpp
+engine/generation/World2DGenerator.cpp
+engine/gameplay/Camera.cpp
+engine/editor/TerraformingSystem.cpp
 ```
 
 **Result:** Test executable built successfully (373 total tests)

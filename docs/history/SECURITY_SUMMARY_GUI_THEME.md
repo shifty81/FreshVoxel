@@ -7,7 +7,7 @@ This document provides a security assessment of the GUI dark theme implementatio
 ## Changes Made
 
 ### Modified Files
-- `src/ui/ImGuiContext.cpp` (Lines 81-202)
+- `engine/ui/ImGuiContext.cpp` (Lines 81-202)
 
 ### Nature of Changes
 - **Style and Appearance Only**: All changes are visual/aesthetic modifications

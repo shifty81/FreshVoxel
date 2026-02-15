@@ -76,7 +76,7 @@ LOG_WARNING_C("Skipping swap chain configuration before world creation - invalid
 
 ## Files Modified
 
-1. **src/core/Engine.cpp**:
+1. **engine/core/Engine.cpp**:
    - Lines 442-507: Added swap chain configuration before world creation
    - Lines 815-834: Updated post-creation validation logging
 

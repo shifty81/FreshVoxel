@@ -13,10 +13,10 @@ This document provides a complete overview of remaining GUI implementation tasks
 - ✅ Connected DebugRenderer to TransformGizmo for visualization
 
 **Files Modified:**
-- `include/editor/TransformGizmo.h` - Added DebugRenderer support
-- `src/editor/TransformGizmo.cpp` - Implemented rendering functions
-- `include/editor/EditorManager.h` - Added TransformGizmo member
-- `src/editor/EditorManager.cpp` - Initialize TransformGizmo
+- `engine/editor/TransformGizmo.h` - Added DebugRenderer support
+- `engine/editor/TransformGizmo.cpp` - Implemented rendering functions
+- `engine/editor/EditorManager.h` - Added TransformGizmo member
+- `engine/editor/EditorManager.cpp` - Initialize TransformGizmo
 
 ### 2. File Dialog Integration ✅
 **Status:** Fully Implemented
@@ -29,13 +29,13 @@ This document provides a complete overview of remaining GUI implementation tasks
 - ✅ Cross-platform compatibility (Windows, Linux, macOS)
 
 **Files Created:**
-- `include/editor/FileDialogManager.h` - File dialog interface
-- `src/editor/FileDialogManager.cpp` - NFD implementation
+- `engine/editor/FileDialogManager.h` - File dialog interface
+- `engine/editor/FileDialogManager.cpp` - NFD implementation
 
 **Files Modified:**
 - `vcpkg.json` - Added nativefiledialog-extended dependency
 - `CMakeLists.txt` - Added NFD package and linking
-- `src/editor/EditorManager.cpp` - Updated save/load methods with cross-platform dialogs
+- `engine/editor/EditorManager.cpp` - Updated save/load methods with cross-platform dialogs
 
 ### 3. Transform Gizmo Keyboard Shortcuts ✅
 **Status:** Fully Implemented
@@ -46,8 +46,8 @@ This document provides a complete overview of remaining GUI implementation tasks
 - ✅ Add visual feedback in UI when mode changes (toolbar updates automatically)
 
 **Files Modified:**
-- `src/core/Engine.cpp` - Added KEY_W, KEY_E, KEY_R constants for both Win32 and GLFW
-- `src/core/Engine.cpp` - Added keyboard shortcut handling in processInput() method
+- `engine/core/Engine.cpp` - Added KEY_W, KEY_E, KEY_R constants for both Win32 and GLFW
+- `engine/core/Engine.cpp` - Added keyboard shortcut handling in processInput() method
 - Keyboard shortcuts update both gizmo mode and toolbar UI for visual feedback
 
 **Implementation Details:**
@@ -78,7 +78,7 @@ if (m_inputManager->isKeyJustPressed(KEY_R)) {
 - ✅ Bidirectional sync between keyboard and toolbar
 
 **Files Modified:**
-- `src/editor/EditorManager.cpp` - Added toolbar callback to switch gizmo modes
+- `engine/editor/EditorManager.cpp` - Added toolbar callback to switch gizmo modes
 
 **Implementation Details:**
 ```cpp
@@ -116,10 +116,10 @@ m_toolbar->setToolCallback([this](EditorToolbar::Tool tool) {
 - [ ] Verify undo/redo with selections
 
 **Files to Review:**
-- `include/editor/SelectionManager.h`
-- `src/editor/SelectionManager.cpp`
-- `include/editor/SelectionRenderer.h`
-- `src/editor/SelectionRenderer.cpp`
+- `engine/editor/SelectionManager.h`
+- `engine/editor/SelectionManager.cpp`
+- `engine/editor/SelectionRenderer.h`
+- `engine/editor/SelectionRenderer.cpp`
 
 **Estimated Time:** 1-2 hours testing
 
@@ -141,15 +141,15 @@ m_toolbar->setToolCallback([this](EditorToolbar::Tool tool) {
 - ✅ Loads last used layout on startup
 
 **Files Created:**
-- `include/editor/LayoutManager.h` - Layout management header
-- `src/editor/LayoutManager.cpp` - Layout management implementation
+- `engine/editor/LayoutManager.h` - Layout management header
+- `engine/editor/LayoutManager.cpp` - Layout management implementation
 - `docs/editor/LAYOUT_MANAGEMENT.md` - Complete documentation
 
 **Files Modified:**
-- `include/editor/EditorManager.h` - Added LayoutManager integration
-- `src/editor/EditorManager.cpp` - Wired up layout methods
-- `include/ui/EditorMenuBar.h` - Added layout callbacks
-- `src/ui/EditorMenuBar.cpp` - Updated Window menu
+- `engine/editor/EditorManager.h` - Added LayoutManager integration
+- `engine/editor/EditorManager.cpp` - Wired up layout methods
+- `engine/ui/EditorMenuBar.h` - Added layout callbacks
+- `engine/ui/EditorMenuBar.cpp` - Updated Window menu
 - `CMakeLists.txt` - Added LayoutManager to build
 
 ### 7. Editor Settings Dialog ✅
@@ -171,15 +171,15 @@ m_toolbar->setToolCallback([this](EditorToolbar::Tool tool) {
 - ✅ Settings changed indicator
 
 **Files Created:**
-- `include/editor/EditorSettingsDialog.h` - Settings dialog header
-- `src/editor/EditorSettingsDialog.cpp` - Settings dialog implementation
+- `engine/editor/EditorSettingsDialog.h` - Settings dialog header
+- `engine/editor/EditorSettingsDialog.cpp` - Settings dialog implementation
 - `docs/editor/EDITOR_SETTINGS_DIALOG.md` - Complete user guide (10KB)
 
 **Files Modified:**
-- `include/editor/EditorManager.h` - Added EditorSettingsDialog integration
-- `src/editor/EditorManager.cpp` - Initialize and render settings dialog
-- `include/ui/EditorMenuBar.h` - Added editor settings callback
-- `src/ui/EditorMenuBar.cpp` - Wired up Settings > Editor Settings menu
+- `engine/editor/EditorManager.h` - Added EditorSettingsDialog integration
+- `engine/editor/EditorManager.cpp` - Initialize and render settings dialog
+- `engine/ui/EditorMenuBar.h` - Added editor settings callback
+- `engine/ui/EditorMenuBar.cpp` - Wired up Settings > Editor Settings menu
 - `CMakeLists.txt` - Added EditorSettingsDialog to build
 
 ## 🔴 Not Yet Started - Lower Priority
@@ -209,14 +209,14 @@ m_toolbar->setToolCallback([this](EditorToolbar::Tool tool) {
 - ✅ Comprehensive documentation
 
 **Files Created:**
-- `include/editor/CameraController.h` - Camera controller header
-- `src/editor/CameraController.cpp` - Camera controller implementation  
+- `engine/editor/CameraController.h` - Camera controller header
+- `engine/editor/CameraController.cpp` - Camera controller implementation  
 - `docs/editor/CAMERA_CONTROLLER.md` - Complete user documentation (16KB)
 
 **Files Modified:**
-- `include/editor/EditorManager.h` - Added CameraController integration
-- `src/editor/EditorManager.cpp` - Wired up camera methods
-- `src/core/Engine.cpp` - Added F key keyboard shortcut
+- `engine/editor/EditorManager.h` - Added CameraController integration
+- `engine/editor/EditorManager.cpp` - Wired up camera methods
+- `engine/core/Engine.cpp` - Added F key keyboard shortcut
 - `CMakeLists.txt` - Added CameraController to build
 
 **Estimated Time:** 1 week → ✅ COMPLETED

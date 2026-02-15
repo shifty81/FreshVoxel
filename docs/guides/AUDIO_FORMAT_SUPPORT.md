@@ -153,7 +153,7 @@ Solution: Install libvorbis via vcpkg (see Installation section)
 
 ## Code References
 
-- **AudioEngine**: `src/audio/AudioEngine.cpp`
+- **AudioEngine**: `engine/audio/AudioEngine.cpp`
 - **WAV Loader**: `loadWAVFile()` function
 - **OGG Loader**: `loadOGGFile()` function (when FRESH_VORBIS_AVAILABLE)
 - **Universal Loader**: `loadAudioFile()` function

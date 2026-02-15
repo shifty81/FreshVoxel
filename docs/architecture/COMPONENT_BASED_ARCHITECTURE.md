@@ -160,7 +160,7 @@ Manages camera following and bounds for 2D scenes.
 ### Step 1: Define Component Class
 
 ```cpp
-// include/ecs/StaminaComponent.h
+// engine/ecs/StaminaComponent.h
 #pragma once
 #include "ecs/IComponent.h"
 
@@ -212,7 +212,7 @@ stamina->consume(25.0f);  // Use stamina for sprint
 ### Step 3: Create System (Optional)
 
 ```cpp
-// include/ecs/StaminaSystem.h
+// engine/ecs/StaminaSystem.h
 #pragma once
 #include "ecs/SystemBase.h"
 #include "ecs/StaminaComponent.h"

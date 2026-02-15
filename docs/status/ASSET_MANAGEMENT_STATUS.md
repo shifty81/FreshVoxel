@@ -322,14 +322,14 @@ To work on drop-in asset management, start with Phase 1 items:
 - [ASSET_PACK_GUIDE.md](ASSET_PACK_GUIDE.md) - Creating asset packs
 - [asset_packs/README.md](asset_packs/README.md) - Asset pack directory info
 - [docs/EDITOR_INTEGRATION.md](docs/EDITOR_INTEGRATION.md) - Editor features
-- [include/assets/AssetManager.h](include/assets/AssetManager.h) - AssetManager API
+- [engine/assets/AssetManager.h](engine/assets/AssetManager.h) - AssetManager API
 
 ## 🤝 Contributing
 
 Want to implement any of these features? Check out:
 1. This document for what needs to be done
-2. Existing code in `src/ui/ContentBrowserPanel.cpp` for reference
-3. `include/assets/AssetManager.h` for the core API
+2. Existing code in `engine/ui/ContentBrowserPanel.cpp` for reference
+3. `engine/assets/AssetManager.h` for the core API
 4. Create a PR with your implementation!
 
 ---

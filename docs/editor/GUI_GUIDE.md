@@ -128,13 +128,13 @@ Native Win32 UI is enabled by default on Windows:
 ```cmake
 if(WIN32)
     list(APPEND ENGINE_SOURCES
-        src/ui/native/Win32Panel.cpp
-        src/ui/native/Win32MenuBar.cpp
-        src/ui/native/Win32Toolbar.cpp
-        src/ui/native/Win32ConsolePanel.cpp
-        src/ui/native/Win32InspectorPanel.cpp
-        src/ui/native/Win32SceneHierarchyPanel.cpp
-        src/ui/native/Win32ContentBrowserPanel.cpp
+        engine/ui/native/Win32Panel.cpp
+        engine/ui/native/Win32MenuBar.cpp
+        engine/ui/native/Win32Toolbar.cpp
+        engine/ui/native/Win32ConsolePanel.cpp
+        engine/ui/native/Win32InspectorPanel.cpp
+        engine/ui/native/Win32SceneHierarchyPanel.cpp
+        engine/ui/native/Win32ContentBrowserPanel.cpp
     )
     add_definitions(-DFRESH_WIN32_UI)
 endif()
@@ -146,7 +146,7 @@ endif()
 
 ### Win32SceneHierarchyPanel
 
-**File**: `include/ui/native/Win32SceneHierarchyPanel.h`
+**File**: `engine/ui/native/Win32SceneHierarchyPanel.h`
 
 Displays world entities in a native tree control:
 
@@ -168,7 +168,7 @@ class Win32SceneHierarchyPanel {
 
 ### Win32InspectorPanel
 
-**File**: `include/ui/native/Win32InspectorPanel.h`
+**File**: `engine/ui/native/Win32InspectorPanel.h`
 
 Property editor for selected entities:
 
@@ -189,7 +189,7 @@ class Win32InspectorPanel {
 
 ### Win32ContentBrowserPanel
 
-**File**: `include/ui/native/Win32ContentBrowserPanel.h`
+**File**: `engine/ui/native/Win32ContentBrowserPanel.h`
 
 Asset browser with native list view:
 
@@ -210,7 +210,7 @@ class Win32ContentBrowserPanel {
 
 ### Win32ConsolePanel
 
-**File**: `include/ui/native/Win32ConsolePanel.h`
+**File**: `engine/ui/native/Win32ConsolePanel.h`
 
 Log viewer with native list control:
 
@@ -231,7 +231,7 @@ class Win32ConsolePanel {
 
 ### Win32TerraformingPanel
 
-**File**: `include/ui/native/Win32TerraformingPanel.h`
+**File**: `engine/ui/native/Win32TerraformingPanel.h`
 
 **NEW in v0.2.6** - Native terraforming tool panel with full UI controls:
 
@@ -274,7 +274,7 @@ if (panel) {
 
 ### Win32StatusBar
 
-**File**: `include/ui/native/Win32StatusBar.h`
+**File**: `engine/ui/native/Win32StatusBar.h`
 
 Native status bar component for displaying editor state information:
 
@@ -322,7 +322,7 @@ statusBar.setFPS(60.0f);
 
 The editor uses a professional dark theme inspired by Unreal Engine:
 
-**File**: `include/ui/native/UnrealStyleTheme.h`
+**File**: `engine/ui/native/UnrealStyleTheme.h`
 
 **Primary Colors:**
 ```cpp
@@ -397,7 +397,7 @@ The Transform Gizmo allows visual manipulation of objects in the 3D viewport:
 
 ### TransformGizmo Class
 
-**File**: `include/editor/TransformGizmo.h`
+**File**: `engine/editor/TransformGizmo.h`
 
 ```cpp
 class TransformGizmo {
@@ -432,7 +432,7 @@ class TransformGizmo {
 
 ### Native Menu Bar
 
-**File**: `include/ui/native/Win32MenuBar.h`
+**File**: `engine/ui/native/Win32MenuBar.h`
 
 Native Windows menu bar with standard menus:
 
@@ -491,7 +491,7 @@ Help
 
 ### Native Toolbar
 
-**File**: `include/ui/native/Win32Toolbar.h`
+**File**: `engine/ui/native/Win32Toolbar.h`
 
 Native Windows toolbar with icon buttons:
 

@@ -6,7 +6,7 @@ This implementation transforms the Fresh Voxel Engine from a console-based menu 
 ## Key Changes
 
 ### 1. GUI-Based Main Menu (`MainMenuPanel`)
-**Location**: `include/ui/MainMenuPanel.h`, `src/ui/MainMenuPanel.cpp`
+**Location**: `engine/ui/MainMenuPanel.h`, `engine/ui/MainMenuPanel.cpp`
 
 - Created a new ImGui-based main menu panel that replaces the console interface
 - Features:
@@ -17,7 +17,7 @@ This implementation transforms the Fresh Voxel Engine from a console-based menu 
   - Professional styling with proper button layout and spacing
 
 ### 2. In-Game Settings Panel (`SettingsPanel`)
-**Location**: `include/ui/SettingsPanel.h`, `src/ui/SettingsPanel.cpp`
+**Location**: `engine/ui/SettingsPanel.h`, `engine/ui/SettingsPanel.cpp`
 
 Addresses the new requirement for mouse sensitivity and resolution controls:
 
@@ -39,7 +39,7 @@ Addresses the new requirement for mouse sensitivity and resolution controls:
 - **Settings Persistence**: All settings saved to `settings.cfg` and loaded on startup
 
 ### 3. Engine Architecture Refactor
-**Location**: `src/core/Engine.cpp`
+**Location**: `engine/core/Engine.cpp`
 
 Major refactoring to support GUI-first initialization:
 
@@ -61,7 +61,7 @@ Key changes:
 - New `initializeGameSystems()` method called after world is created
 
 ### 4. Editor Manager Integration
-**Location**: `src/editor/EditorManager.cpp`, `include/editor/EditorManager.h`
+**Location**: `engine/editor/EditorManager.cpp`, `engine/editor/EditorManager.h`
 
 - Added `MainMenuPanel` as a managed panel
 - Added `SettingsPanel` as a managed panel
@@ -70,14 +70,14 @@ Key changes:
 - Editor now always visible by default with dockable layout
 
 ### 5. Window Management Updates
-**Location**: `src/core/Window.cpp`, `include/core/Window.h`
+**Location**: `engine/core/Window.cpp`, `engine/core/Window.h`
 
 - Added `Window::setSize(width, height)` method for runtime resolution changes
 - Updates window dimensions and calls `glfwSetWindowSize()`
 - Enables resolution changes without restarting the application
 
 ### 6. Menu Bar Integration
-**Location**: `src/ui/EditorMenuBar.cpp`, `include/ui/EditorMenuBar.h`
+**Location**: `engine/ui/EditorMenuBar.cpp`, `engine/ui/EditorMenuBar.h`
 
 - Added settings callback support
 - New menu item: "Game Settings..." with keyboard shortcut (Ctrl+,)
@@ -140,20 +140,20 @@ resolution_index=3
 ## Files Modified
 
 ### New Files
-- `include/ui/MainMenuPanel.h`
-- `src/ui/MainMenuPanel.cpp`
-- `include/ui/SettingsPanel.h`
-- `src/ui/SettingsPanel.cpp`
+- `engine/ui/MainMenuPanel.h`
+- `engine/ui/MainMenuPanel.cpp`
+- `engine/ui/SettingsPanel.h`
+- `engine/ui/SettingsPanel.cpp`
 
 ### Modified Files
 - `CMakeLists.txt` - Added new source files to build
-- `src/core/Engine.cpp` - Major refactoring for GUI-first initialization
-- `include/core/Window.h` - Added setSize() method
-- `src/core/Window.cpp` - Implemented setSize()
-- `include/editor/EditorManager.h` - Added panel references
-- `src/editor/EditorManager.cpp` - Integrated new panels
-- `include/ui/EditorMenuBar.h` - Added settings callback
-- `src/ui/EditorMenuBar.cpp` - Added "Game Settings" menu item
+- `engine/core/Engine.cpp` - Major refactoring for GUI-first initialization
+- `engine/core/Window.h` - Added setSize() method
+- `engine/core/Window.cpp` - Implemented setSize()
+- `engine/editor/EditorManager.h` - Added panel references
+- `engine/editor/EditorManager.cpp` - Integrated new panels
+- `engine/ui/EditorMenuBar.h` - Added settings callback
+- `engine/ui/EditorMenuBar.cpp` - Added "Game Settings" menu item
 
 ## Benefits
 

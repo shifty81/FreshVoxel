@@ -306,7 +306,7 @@ Ensure the engine was built with correct flags:
 grep "FRESH_IMGUI_AVAILABLE" build/*
 
 # Verify input system is compiled
-ls build/CMakeFiles/FreshVoxelEngine.dir/src/input/
+ls build/CMakeFiles/FreshVoxelEngine.dir/engine/input/
 ```
 
 ## Quick Fixes to Try

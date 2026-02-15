@@ -20,16 +20,16 @@ Net: +2,330 lines
 ### Files Modified
 
 #### New Files (6)
-1. `include/ui/native/UnrealStyleTheme.h` - UE5 color theme (124 lines)
-2. `include/ui/native/Win32HUD.h` - HUD header (200 lines)
-3. `src/ui/native/Win32HUD.cpp` - HUD implementation (495 lines)
+1. `engine/ui/native/UnrealStyleTheme.h` - UE5 color theme (124 lines)
+2. `engine/ui/native/Win32HUD.h` - HUD header (200 lines)
+3. `engine/ui/native/Win32HUD.cpp` - HUD implementation (495 lines)
 4. `UNREAL_STYLE_NATIVE_UI.md` - Design documentation (374 lines / 10,500 words)
 5. `IN_GAME_UI_IMPLEMENTATION_SUMMARY.md` - Implementation guide (466 lines / 15,000 words)
 6. `UNREAL_STYLE_UI_QUICK_START.md` - Developer reference (371 lines / 9,500 words)
 
 #### Modified Files (2)
-7. `src/core/Engine.cpp` - Enhanced menus and toolbar (+326, -26 lines)
-8. `src/ui/ImGuiContext.cpp` - Unreal theme colors (+76, -76 lines)
+7. `engine/core/Engine.cpp` - Enhanced menus and toolbar (+326, -26 lines)
+8. `engine/ui/ImGuiContext.cpp` - Unreal theme colors (+76, -76 lines)
 
 ## What Was Built
 

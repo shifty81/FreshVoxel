@@ -48,7 +48,7 @@ User reported with screenshots that:
 
 ### The Actual Bug
 
-In `src/editor/EditorManager.cpp`, method `ensurePanelsOnTop()`:
+In `engine/editor/EditorManager.cpp`, method `ensurePanelsOnTop()`:
 
 ```cpp
 // WRONG CODE - BUG:
@@ -76,7 +76,7 @@ if (m_viewportPanel && m_viewportPanel->getHandle()) {
 
 ### Code Changes
 
-**File:** `src/editor/EditorManager.cpp`  
+**File:** `engine/editor/EditorManager.cpp`  
 **Method:** `ensurePanelsOnTop()`  
 **Lines:** 2052-2087
 
@@ -289,11 +289,11 @@ Always verify:
 
 ## Related Files
 
-- `src/editor/EditorManager.cpp` - Z-order fix
-- `src/core/Engine.cpp` - Generation flag
-- `include/core/Engine.h` - Generation flag declaration
-- `src/ui/native/Win32ViewportPanel.cpp` - Viewport creation
-- `src/renderer/backends/DirectX11RenderContext.cpp` - Swap chain creation
+- `engine/editor/EditorManager.cpp` - Z-order fix
+- `engine/core/Engine.cpp` - Generation flag
+- `engine/core/Engine.h` - Generation flag declaration
+- `engine/ui/native/Win32ViewportPanel.cpp` - Viewport creation
+- `engine/renderer/backends/DirectX11RenderContext.cpp` - Swap chain creation
 
 ---
 

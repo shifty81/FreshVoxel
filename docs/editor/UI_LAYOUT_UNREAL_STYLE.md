@@ -122,7 +122,7 @@ The `onWindowResize()` method now:
 ## Technical Implementation
 
 ### Files Modified
-- `src/editor/EditorManager.cpp`:
+- `engine/editor/EditorManager.cpp`:
   - Updated panel layout constants (lines 95-110)
   - Reorganized panel creation code (lines 488-574)
   - Updated `onWindowResize()` method (lines 1730-1801)

@@ -16,7 +16,7 @@ This document describes how the Fresh Voxel Engine implements a real-time viewpo
 - Dynamic chunk loading and mesh generation
 - Real-time lighting calculations in pixel shader
 
-**Code Location**: `src/core/Engine.cpp:~2700` (main game loop)
+**Code Location**: `engine/core/Engine.cpp:~2700` (main game loop)
 
 ### 2. Rendering Pipeline
 
@@ -58,18 +58,18 @@ This document describes how the Fresh Voxel Engine implements a real-time viewpo
 - Full feature DirectX 11.1 implementation
 - Hardware-accelerated rendering
 - Optimized for Windows gaming platform
-- Code: `src/renderer/backends/DirectX11RenderContext.cpp`
+- Code: `engine/renderer/backends/DirectX11RenderContext.cpp`
 
 **DirectX 12** (Advanced - Windows 10+):
 - Modern low-level graphics API
 - Explicit resource management
 - Better multi-threading support
-- Code: `src/renderer/backends/DirectX12RenderContext.cpp`
+- Code: `engine/renderer/backends/DirectX12RenderContext.cpp`
 
 **OpenGL** (Optional fallback):
 - Cross-platform compatibility
 - OpenGL 4.5+ core profile
-- Code: `src/renderer/backends/OpenGLRenderContext.cpp`
+- Code: `engine/renderer/backends/OpenGLRenderContext.cpp`
 
 ### 4. Viewport Child Window Architecture
 
@@ -90,13 +90,13 @@ Main Window (HWND)
 
 **Key Components**:
 
-1. **Win32ViewportPanel** (`include/ui/native/Win32ViewportPanel.h`):
+1. **Win32ViewportPanel** (`engine/ui/native/Win32ViewportPanel.h`):
    - Child window with its own HWND
    - Owns a dedicated DirectX swap chain
    - Handles mouse input and viewport interactions
    - Positioned dynamically based on panel layout
 
-2. **Swap Chain Per Viewport** (`src/renderer/backends/DirectX11RenderContext.cpp`):
+2. **Swap Chain Per Viewport** (`engine/renderer/backends/DirectX11RenderContext.cpp`):
    - `recreateSwapChain()` creates swap chain for viewport HWND
    - Separate from main window swap chain
    - Ensures rendering targets viewport, not main window
@@ -107,9 +107,9 @@ Main Window (HWND)
    - Prevents full-screen rendering issues
 
 **Code Locations**:
-- Viewport creation: `src/editor/EditorManager.cpp` - `initialize()`
-- Swap chain setup: `src/renderer/backends/DirectX11RenderContext.cpp` - `recreateSwapChain()`
-- Render target binding: `src/renderer/backends/DirectX11RenderContext.cpp` - `beginFrame()` (NEW FIX)
+- Viewport creation: `engine/editor/EditorManager.cpp` - `initialize()`
+- Swap chain setup: `engine/renderer/backends/DirectX11RenderContext.cpp` - `recreateSwapChain()`
+- Render target binding: `engine/renderer/backends/DirectX11RenderContext.cpp` - `beginFrame()` (NEW FIX)
 
 ### 5. Lighting Model
 
@@ -372,22 +372,22 @@ The critical fix implemented in this PR (binding render targets each frame) ensu
 ## Related Code Files
 
 ### Renderer
-- `src/renderer/backends/DirectX11RenderContext.cpp` - DirectX 11 implementation (FIXED)
-- `src/renderer/backends/DirectX12RenderContext.cpp` - DirectX 12 implementation
-- `src/renderer/backends/OpenGLRenderContext.cpp` - OpenGL implementation
-- `include/renderer/RenderContext.h` - Abstract renderer interface
+- `engine/renderer/backends/DirectX11RenderContext.cpp` - DirectX 11 implementation (FIXED)
+- `engine/renderer/backends/DirectX12RenderContext.cpp` - DirectX 12 implementation
+- `engine/renderer/backends/OpenGLRenderContext.cpp` - OpenGL implementation
+- `engine/renderer/RenderContext.h` - Abstract renderer interface
 
 ### Editor
-- `src/editor/EditorManager.cpp` - Editor UI management
-- `src/ui/native/Win32ViewportPanel.cpp` - Viewport child window
-- `include/ui/native/Win32ViewportPanel.h` - Viewport interface
+- `engine/editor/EditorManager.cpp` - Editor UI management
+- `engine/ui/native/Win32ViewportPanel.cpp` - Viewport child window
+- `engine/ui/native/Win32ViewportPanel.h` - Viewport interface
 
 ### Core
-- `src/core/Engine.cpp` - Main game loop and rendering
-- `src/core/Win32Window.cpp` - Windows windowing
-- `include/core/Engine.h` - Engine interface
+- `engine/core/Engine.cpp` - Main game loop and rendering
+- `engine/core/Win32Window.cpp` - Windows windowing
+- `engine/core/Engine.h` - Engine interface
 
 ### Voxel Rendering
-- `src/voxel/Chunk.cpp` - Chunk mesh generation
-- `src/voxel/VoxelWorld.cpp` - World management
-- `include/voxel/VoxelTypes.h` - Voxel type definitions
+- `engine/voxel/Chunk.cpp` - Chunk mesh generation
+- `engine/voxel/VoxelWorld.cpp` - World management
+- `engine/voxel/VoxelTypes.h` - Voxel type definitions

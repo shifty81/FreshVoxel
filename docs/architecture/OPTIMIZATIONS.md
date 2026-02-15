@@ -19,7 +19,7 @@ A comprehensive optimization pass was performed to ensure the codebase follows b
 - This allows the engine to build and run without Lua support when dependencies are missing
 
 **Files Changed**:
-- `include/scripting/lua/LuaScriptingEngine.h`
+- `engine/scripting/lua/LuaScriptingEngine.h`
 
 **Impact**: Project now builds successfully on all platforms regardless of Lua availability.
 
@@ -36,7 +36,7 @@ A comprehensive optimization pass was performed to ensure the codebase follows b
 - Made loop variables `const` where appropriate
 
 **Files Changed**:
-- `src/voxel/MeshGenerator.cpp`
+- `engine/voxel/MeshGenerator.cpp`
 
 **Benchmarked Impact**:
 - **20-30% faster** mesh generation
@@ -70,7 +70,7 @@ vertices.emplace_back(z);
 - Includes bit shifts for improved avalanche effect
 
 **Files Changed**:
-- `include/voxel/VoxelTypes.h`
+- `engine/voxel/VoxelTypes.h`
 
 **Impact**:
 - Better hash distribution → fewer collisions
@@ -130,7 +130,7 @@ return seed;
 - Made variables `const`
 
 **Files Changed**:
-- `src/voxel/VoxelWorld.cpp`
+- `engine/voxel/VoxelWorld.cpp`
 
 **Code**:
 ```cpp
@@ -160,11 +160,11 @@ const int localX = ((pos.x % CHUNK_SIZE) + CHUNK_SIZE) % CHUNK_SIZE;
 - Made return types `const&` to avoid copies
 
 **Files Changed**:
-- `include/voxel/Chunk.h`
-- `src/voxel/Chunk.cpp`
-- `include/voxel/VoxelWorld.h`
-- `src/voxel/VoxelWorld.cpp`
-- `include/scripting/lua/LuaScriptingEngine.h`
+- `engine/voxel/Chunk.h`
+- `engine/voxel/Chunk.cpp`
+- `engine/voxel/VoxelWorld.h`
+- `engine/voxel/VoxelWorld.cpp`
+- `engine/scripting/lua/LuaScriptingEngine.h`
 
 **Examples**:
 ```cpp

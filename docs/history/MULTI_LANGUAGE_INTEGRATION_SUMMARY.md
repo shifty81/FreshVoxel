@@ -36,8 +36,8 @@ This document summarizes the comprehensive multi-language integration system imp
 **Purpose:** Enable runtime type introspection for editor integration and serialization.
 
 **Implementation:**
-- `include/core/Reflection.h` - Complete reflection system
-- `src/core/Reflection.cpp` - Implementation
+- `engine/core/Reflection.h` - Complete reflection system
+- `engine/core/Reflection.cpp` - Implementation
 - `tests/core/ReflectionTests.cpp` - 11 comprehensive tests
 - `docs/REFLECTION_SYSTEM.md` - Full documentation
 
@@ -84,8 +84,8 @@ std::any value = posProperty->getValue(&transform);
 
 **Implementation:**
 - Integrated Sol2 v3 (header-only library)
-- `include/scripting/lua/LuaScriptingEngine.h` - Enhanced Lua engine
-- `src/scripting/lua/LuaScriptingEngine.cpp` - Full implementation
+- `engine/scripting/lua/LuaScriptingEngine.h` - Enhanced Lua engine
+- `engine/scripting/lua/LuaScriptingEngine.cpp` - Full implementation
 - `scripts/example_gameplay.lua` - Example gameplay systems
 - `docs/LUA_SOL2_INTEGRATION.md` - Comprehensive documentation
 
@@ -158,8 +158,8 @@ end
 
 **Implementation:**
 - Integrated pybind11 v2.11.1
-- `include/scripting/python/PythonBindings.h` - Python bindings API
-- `src/scripting/python/PythonBindings.cpp` - pybind11 implementation
+- `engine/scripting/python/PythonBindings.h` - Python bindings API
+- `engine/scripting/python/PythonBindings.cpp` - pybind11 implementation
 - `tools/automation/asset_validator.py` - Asset validation tool
 - `docs/PYTHON_BINDINGS.md` - Complete documentation
 
@@ -299,7 +299,7 @@ foreach (var prop in typeInfo.Properties) {
 
 ```
 fresh/
-├── include/
+├── engine/
 │   ├── core/
 │   │   └── Reflection.h              # Reflection system
 │   └── scripting/
@@ -308,7 +308,7 @@ fresh/
 │       │   └── LuaScriptingEngine.h  # Enhanced with Sol2
 │       └── python/
 │           └── PythonBindings.h      # Python bindings
-├── src/
+├── engine/
 │   ├── core/
 │   │   └── Reflection.cpp
 │   └── scripting/

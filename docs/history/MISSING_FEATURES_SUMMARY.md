@@ -505,28 +505,28 @@
 
 ```cpp
 // Search for TODOs
-grep -r "TODO" include/ src/
+grep -r "TODO" engine/
 
 // Count by file
-grep -r "TODO" include/ src/ | cut -d: -f1 | sort | uniq -c
+grep -r "TODO" engine/ | cut -d: -f1 | sort | uniq -c
 
 // Most TODOs (13) in:
-src/scripting/lua/ScriptingEngine.cpp
+engine/scripting/lua/ScriptingEngine.cpp
 
 // Other key files with TODOs:
-src/scripting/EventSystem.cpp (6)
-src/ui/EditorMenuBar.cpp (10)
-src/core/ResourceManager.cpp (3)
+engine/scripting/EventSystem.cpp (6)
+engine/ui/EditorMenuBar.cpp (10)
+engine/core/ResourceManager.cpp (3)
 ```
 
 ### For Stub Implementations
 
 ```cpp
 // Empty or minimal implementations
-src/ai/BehaviorTree.cpp - wander(), followTarget()
-src/voxel/ChunkStreamer.cpp - background generation
-src/assets/VoxelMaterialPack.cpp - texture atlas
-src/core/SceneManager.cpp - save/load
+engine/ai/BehaviorTree.cpp - wander(), followTarget()
+engine/voxel/ChunkStreamer.cpp - background generation
+engine/assets/VoxelMaterialPack.cpp - texture atlas
+engine/core/SceneManager.cpp - save/load
 ```
 
 ---

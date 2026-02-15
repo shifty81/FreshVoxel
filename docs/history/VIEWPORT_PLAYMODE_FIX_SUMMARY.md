@@ -22,7 +22,7 @@ The user reported three critical issues with the editor:
 After thorough code analysis, the following root causes were identified:
 
 ### 1. Viewport Not Kept Visible During Play Mode
-**Location**: `src/editor/EditorManager.cpp` - `setVisible()` method
+**Location**: `engine/editor/EditorManager.cpp` - `setVisible()` method
 
 **Issue**: 
 - The `setVisible(false)` call during play mode would hide ALL editor components
@@ -40,7 +40,7 @@ After thorough code analysis, the following root causes were identified:
 ```
 
 ### 2. Z-Order Not Enforced After Visibility Changes
-**Location**: `src/editor/EditorManager.cpp` - `setVisible()` method
+**Location**: `engine/editor/EditorManager.cpp` - `setVisible()` method
 
 **Issue**:
 - Z-order (which window appears on top) was set during initialization
@@ -67,7 +67,7 @@ This means the "gaps showing world" issue was likely:
 ## Solution Implemented
 
 ### Change 1: Enforce Viewport Always Visible
-**File**: `src/editor/EditorManager.cpp`  
+**File**: `engine/editor/EditorManager.cpp`  
 **Function**: `EditorManager::setVisible()`  
 **Lines**: 1619-1626 (AFTER FIX)
 
@@ -89,7 +89,7 @@ if (m_viewportPanel) {
 - Ensures viewport is always shown in both editor and play modes
 
 ### Change 2: Enforce Z-Order After Visibility Changes
-**File**: `src/editor/EditorManager.cpp`  
+**File**: `engine/editor/EditorManager.cpp`  
 **Function**: `EditorManager::setVisible()`  
 **Line**: 1628 (AFTER FIX)
 
@@ -221,7 +221,7 @@ See `VIEWPORT_AND_PLAYMODE_FIX_TESTING.md` for detailed test cases.
 ## Code Changes Summary
 
 ### Files Modified
-1. `src/editor/EditorManager.cpp`
+1. `engine/editor/EditorManager.cpp`
    - Modified `setVisible()` method
    - Added viewport visibility enforcement
    - Added Z-order enforcement

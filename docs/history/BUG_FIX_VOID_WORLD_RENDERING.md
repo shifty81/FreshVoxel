@@ -48,7 +48,7 @@ When shaders aren't initialized, `m_shaderProgram` is 0, causing the function to
 ## Solution
 
 ### Code Changes
-**File:** `src/core/Engine.cpp`
+**File:** `engine/core/Engine.cpp`
 
 Added initialization of OpenGL rendering to `initializeGameSystems()`:
 
@@ -130,7 +130,7 @@ To verify the fix:
 ## Additional Improvements
 
 ### Documentation Updates
-**File:** `include/renderer/GraphicsAPI.h`
+**File:** `engine/renderer/GraphicsAPI.h`
 - Removed outdated comments claiming DirectX backends were "stub implementations"
 - Updated to reflect that DirectX 11 and DirectX 12 are fully functional
 - Clarified API selection logic
