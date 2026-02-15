@@ -35,7 +35,7 @@ The issue reported three problems:
 
 ## Changes Made
 
-### 1. InputManager.cpp (src/input/InputManager.cpp)
+### 1. InputManager.cpp (engine/input/InputManager.cpp)
 ```cpp
 // Changed from conditional tracking to always tracking
 mouseDelta = glm::vec2(xOffset, yOffset);
@@ -44,7 +44,7 @@ mouseDelta = glm::vec2(xOffset, yOffset);
 - Enables proper unit testing without GLFW window
 - Maintains all existing functionality
 
-### 2. Engine.cpp (src/core/Engine.cpp)
+### 2. Engine.cpp (engine/core/Engine.cpp)
 ```cpp
 // Added helpful error messages
 LOG_ERROR_C("Make sure to run the executable from the build directory where shaders/ folder exists", "Engine");
@@ -53,7 +53,7 @@ LOG_ERROR_C("The shaders are copied to: <build_directory>/shaders/", "Engine");
 - Provides actionable guidance when shader loading fails
 - Explains where shaders should be located
 
-### 3. GalaxyGenerator.cpp (src/galaxy/GalaxyGenerator.cpp)
+### 3. GalaxyGenerator.cpp (engine/galaxy/GalaxyGenerator.cpp)
 ```cpp
 #include <algorithm>  // Added missing header
 ```

@@ -258,12 +258,11 @@ fresh/
 │   └── Release/                    # Release binaries
 ├── CMakeLists.txt                  # Build configuration
 ├── vcpkg.json                      # Dependency manifest
-├── include/                        # Header files
+├── engine/                        # Source and header files
 │   ├── core/                      # Engine core
 │   ├── renderer/                  # Rendering system (DirectX 11/12)
 │   ├── voxel/                     # Voxel engine
 │   └── ...
-├── src/                           # Implementation files
 ├── shaders/                       # HLSL/GLSL shaders
 └── dotnet/                        # .NET 9 bindings (optional)
 ```

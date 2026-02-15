@@ -257,7 +257,7 @@ The Fresh Voxel Engine is now more complete, polished, and ready for continued d
 ## Files Changed
 
 ### Modified Files
-- `src/core/Engine.cpp` (213 lines added, 35 removed)
+- `engine/core/Engine.cpp` (213 lines added, 35 removed)
   - Implemented 24 TODO items
   - Added named constants
   - Improved error handling

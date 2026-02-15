@@ -28,7 +28,7 @@ This filled the viewport with black every paint cycle, covering the DirectX rend
 ## Solutions Implemented
 
 ### Fix 1: Remove WS_EX_CLIENTEDGE
-**Location**: `src/ui/native/Win32ViewportPanel.cpp`, line 80
+**Location**: `engine/ui/native/Win32ViewportPanel.cpp`, line 80
 
 Changed window creation from:
 ```cpp
@@ -45,7 +45,7 @@ Kept `WS_BORDER` flag for a simple, solid border.
 **Result**: Viewport now has a solid, opaque, single-pixel border without 3D effects or transparency.
 
 ### Fix 2: Remove Black Fill from WM_PAINT
-**Location**: `src/ui/native/Win32ViewportPanel.cpp`, lines 213-221
+**Location**: `engine/ui/native/Win32ViewportPanel.cpp`, lines 213-221
 
 Removed the `FillRect` call that was covering DirectX rendering:
 ```cpp
@@ -57,7 +57,7 @@ EndPaint(hwnd, &ps);
 **Result**: DirectX rendering is now fully visible. Clear color (sky blue) and voxel scene are no longer covered.
 
 ### Fix 3: Proper Z-Order Management
-**Location**: `src/ui/native/Win32ViewportPanel.cpp`, lines 99-102
+**Location**: `engine/ui/native/Win32ViewportPanel.cpp`, lines 99-102
 
 Added explicit z-order management:
 ```cpp
@@ -72,7 +72,7 @@ Clarified comments throughout to explain the opacity and DirectX rendering requi
 
 ## Files Modified
 
-1. **src/ui/native/Win32ViewportPanel.cpp**
+1. **engine/ui/native/Win32ViewportPanel.cpp**
    - Window class registration (lines 31-42)
    - Window creation (lines 75-91)
    - Z-order management (lines 99-102)

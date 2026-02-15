@@ -12,7 +12,7 @@ The `Win32HUD` class is fully implemented and initialized in `EditorManager`, bu
 
 ### ✅ What's Complete
 
-1. **Win32HUD Implementation** (`src/ui/native/Win32HUD.cpp`)
+1. **Win32HUD Implementation** (`engine/ui/native/Win32HUD.cpp`)
    - Full GDI-based rendering implementation (519 lines)
    - Hotbar with 10 slots (1-0 keys)
    - Health and stamina bars
@@ -166,11 +166,11 @@ If immediate HUD rendering is not critical:
 
 ## Related Files
 
-- `src/ui/native/Win32HUD.cpp` - HUD implementation
-- `include/ui/native/Win32HUD.h` - HUD interface
-- `src/editor/EditorManager.cpp` - Where HUD is created and updated
-- `src/ui/HotbarPanel.cpp` - Compatibility wrapper
-- `src/core/Win32Window.cpp` - Main window implementation
+- `engine/ui/native/Win32HUD.cpp` - HUD implementation
+- `engine/ui/native/Win32HUD.h` - HUD interface
+- `engine/editor/EditorManager.cpp` - Where HUD is created and updated
+- `engine/ui/HotbarPanel.cpp` - Compatibility wrapper
+- `engine/core/Win32Window.cpp` - Main window implementation
 
 ## Conclusion
 

@@ -47,14 +47,14 @@ endif()
 # Windows-native UI (independent of ImGui)
 if(WIN32)
     list(APPEND ENGINE_SOURCES
-        src/core/Win32Window.cpp
-        src/input/Win32InputManager.cpp
-        src/ui/native/Win32Panel.cpp
-        src/ui/native/Win32MenuBar.cpp
-        src/ui/native/Win32Toolbar.cpp
-        src/ui/native/Win32HUD.cpp
-        src/ui/native/Win32TreeView.cpp
-        src/ui/native/Win32ListView.cpp
+        engine/core/Win32Window.cpp
+        engine/input/Win32InputManager.cpp
+        engine/ui/native/Win32Panel.cpp
+        engine/ui/native/Win32MenuBar.cpp
+        engine/ui/native/Win32Toolbar.cpp
+        engine/ui/native/Win32HUD.cpp
+        engine/ui/native/Win32TreeView.cpp
+        engine/ui/native/Win32ListView.cpp
         # ... Windows integration features
     )
     add_definitions(-DFRESH_WIN32_UI)
@@ -63,8 +63,8 @@ endif()
 # ImGui UI (optional, separate)
 if(imgui_FOUND)
     list(APPEND ENGINE_SOURCES
-        src/editor/EditorManager.cpp
-        src/ui/ImGuiContext.cpp
+        engine/editor/EditorManager.cpp
+        engine/ui/ImGuiContext.cpp
         # ... ImGui panels
     )
 endif()
@@ -108,7 +108,7 @@ Since the current environment is Linux, the following work requires a Windows de
 ### Phase 1: Core Win32 UI Dialogs
 
 #### 1. Main Menu Implementation
-Create `include/ui/native/Win32MainMenu.h` and `src/ui/native/Win32MainMenu.cpp`
+Create `engine/ui/native/Win32MainMenu.h` and `engine/ui/native/Win32MainMenu.cpp`
 
 Features needed:
 - Native Windows menu bar
@@ -118,7 +118,7 @@ Features needed:
 - Integration with Win32MenuBar component
 
 #### 2. Settings Dialog
-Create `include/ui/native/Win32SettingsDialog.h` and `src/ui/native/Win32SettingsDialog.cpp`
+Create `engine/ui/native/Win32SettingsDialog.h` and `engine/ui/native/Win32SettingsDialog.cpp`
 
 Features needed:
 - Modal dialog window
@@ -131,7 +131,7 @@ Features needed:
 - Settings persistence to `settings.cfg`
 
 #### 3. World Creation Dialog
-Create `include/ui/native/Win32WorldCreationDialog.h` and `src/ui/native/Win32WorldCreationDialog.cpp`
+Create `engine/ui/native/Win32WorldCreationDialog.h` and `engine/ui/native/Win32WorldCreationDialog.cpp`
 
 Features needed:
 - Modal dialog for new world creation
@@ -143,7 +143,7 @@ Features needed:
 - Create/Cancel buttons
 
 #### 4. World Loading Dialog
-Create `include/ui/native/Win32WorldLoadDialog.h` and `src/ui/native/Win32WorldLoadDialog.cpp`
+Create `engine/ui/native/Win32WorldLoadDialog.h` and `engine/ui/native/Win32WorldLoadDialog.cpp`
 
 Features needed:
 - Modal dialog for loading existing worlds
@@ -156,7 +156,7 @@ Features needed:
 ### Phase 2: Engine Integration
 
 #### 1. Update Engine.cpp
-Modify `src/core/Engine.cpp` to use Win32 UI:
+Modify `engine/core/Engine.cpp` to use Win32 UI:
 
 ```cpp
 #ifdef FRESH_WIN32_UI
@@ -336,9 +336,9 @@ When you run the exe:
 
 ### Modified
 - `CMakeLists.txt` - Separated Win32 UI from ImGui, added Windows libraries
-- `include/generation/World2DGenerator.h` - Fixed C++20 compatibility
-- `src/generation/World2DGenerator.cpp` - Added default constructor
-- `src/renderer/ModelLoader.cpp` - Made tinyobjloader optional
+- `engine/generation/World2DGenerator.h` - Fixed C++20 compatibility
+- `engine/generation/World2DGenerator.cpp` - Added default constructor
+- `engine/renderer/ModelLoader.cpp` - Made tinyobjloader optional
 
 ### Created
 - `WIN32_UI_DEVELOPMENT_PLAN.md` - Complete implementation guide with code examples

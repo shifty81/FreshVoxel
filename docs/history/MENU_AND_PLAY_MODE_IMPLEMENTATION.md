@@ -129,11 +129,11 @@ bool isInPlayMode() const;
 ## Code Changes
 
 ### Files Modified
-1. `include/core/Engine.h`
+1. `engine/core/Engine.h`
    - Added play mode method declarations
    - Added `isInPlayMode()` query method
 
-2. `src/core/Engine.cpp`
+2. `engine/core/Engine.cpp`
    - Added `#include "editor/TerraformingSystem.h"`
    - Added `#include <shellapi.h>` for ShellExecuteA
    - Added KEY_ESCAPE constant definitions

@@ -90,8 +90,8 @@ endif()
 
 ```bash
 # Delete ImGui context wrapper
-rm include/ui/ImGuiContext.h
-rm src/ui/ImGuiContext.cpp
+rm engine/ui/ImGuiContext.h
+rm engine/ui/ImGuiContext.cpp
 ```
 
 ### 2.2 Archive ImGui-based Panel Files (Optional)
@@ -100,8 +100,8 @@ If these files contain ImGui implementations, move to archived/ directory:
 
 ```bash
 mkdir -p archived/imgui-panels
-mv include/ui/MainMenuPanel.h archived/imgui-panels/ 2>/dev/null || true
-mv src/ui/MainMenuPanel.cpp archived/imgui-panels/ 2>/dev/null || true
+mv engine/ui/MainMenuPanel.h archived/imgui-panels/ 2>/dev/null || true
+mv engine/ui/MainMenuPanel.cpp archived/imgui-panels/ 2>/dev/null || true
 ```
 
 **Note:** Check these files first - they may already use Win32 native implementations.
@@ -112,7 +112,7 @@ mv src/ui/MainMenuPanel.cpp archived/imgui-panels/ 2>/dev/null || true
 
 ### 3.1 Remove ImGui Include from EditorManager
 
-**File:** `src/editor/EditorManager.cpp`
+**File:** `engine/editor/EditorManager.cpp`
 
 **Line 40:** REMOVE:
 ```cpp
@@ -121,7 +121,7 @@ mv src/ui/MainMenuPanel.cpp archived/imgui-panels/ 2>/dev/null || true
 
 ### 3.2 Remove FRESH_IMGUI_AVAILABLE Conditionals
 
-**File:** `src/editor/EditorManager.cpp`
+**File:** `engine/editor/EditorManager.cpp`
 
 **Find and remove ALL `#ifdef FRESH_IMGUI_AVAILABLE` blocks.**
 
@@ -156,7 +156,7 @@ return true;
 
 **Action:** Search for all occurrences:
 ```bash
-grep -n "FRESH_IMGUI_AVAILABLE" src/editor/EditorManager.cpp
+grep -n "FRESH_IMGUI_AVAILABLE" engine/editor/EditorManager.cpp
 ```
 
 Then remove each `#ifdef FRESH_IMGUI_AVAILABLE` / `#else` / `#endif` block, keeping only the Win32 native code path.
@@ -164,10 +164,10 @@ Then remove each `#ifdef FRESH_IMGUI_AVAILABLE` / `#else` / `#endif` block, keep
 ### 3.3 Update Panel Header Files
 
 **Files to update:**
-- `include/ui/ConsolePanel.h`
-- `include/ui/SceneHierarchyPanel.h`
-- `include/ui/InspectorPanel.h`
-- `include/ui/ContentBrowserPanel.h`
+- `engine/ui/ConsolePanel.h`
+- `engine/ui/SceneHierarchyPanel.h`
+- `engine/ui/InspectorPanel.h`
+- `engine/ui/ContentBrowserPanel.h`
 
 **BEFORE:**
 ```cpp
@@ -205,7 +205,7 @@ Apply to all four files above (remove `#ifdef _WIN32` since we're Windows-only).
 
 ### 3.4 Remove ImGui Fallback in EditorSettingsDialog
 
-**File:** `src/editor/EditorSettingsDialog.cpp`
+**File:** `engine/editor/EditorSettingsDialog.cpp`
 
 **REMOVE these TODO comments and stub implementations:**
 
@@ -219,7 +219,7 @@ LOG_WARNING_C("EditorSettingsDialog::render() - ImGui UI not available, use Win3
 **Replace with:**
 ```cpp
 // Windows native UI - EditorSettingsDialog is implemented using Win32SettingsDialog
-// See include/ui/native/Win32SettingsDialog.h for the native implementation
+// See engine/ui/native/Win32SettingsDialog.h for the native implementation
 LOG_INFO_C("EditorSettingsDialog uses Win32SettingsDialog (native Windows UI)", "EditorSettingsDialog");
 ```
 
@@ -355,7 +355,7 @@ cmake --build . --config Release
 
 ```bash
 # Search for any remaining ImGui references in code
-grep -r "ImGui" include/ src/ --include="*.h" --include="*.cpp" | grep -v "Removed ImGui"
+grep -r "ImGui" engine/ --include="*.h" --include="*.cpp" | grep -v "Removed ImGui"
 
 # Should return minimal results (only comments about removal)
 ```
@@ -443,10 +443,10 @@ git diff
 **Expected changes:**
 - Modified: vcpkg.json
 - Modified: CMakeLists.txt
-- Deleted: include/ui/ImGuiContext.h
-- Deleted: src/ui/ImGuiContext.cpp
-- Modified: src/editor/EditorManager.cpp
-- Modified: 4+ include/ui/*.h files
+- Deleted: engine/ui/ImGuiContext.h
+- Deleted: engine/ui/ImGuiContext.cpp
+- Modified: engine/editor/EditorManager.cpp
+- Modified: 4+ engine/ui/*.h files
 - Modified: README.md
 - Modified: multiple docs/*.md files
 - Added: WINDOWS_NATIVE_ONLY_POLICY.md

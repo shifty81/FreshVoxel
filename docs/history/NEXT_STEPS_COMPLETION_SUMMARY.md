@@ -35,7 +35,7 @@ After thorough code review, we discovered:
 
 ### Changes Made
 
-#### 1. Header File Changes (`include/editor/EditorManager.h`)
+#### 1. Header File Changes (`engine/editor/EditorManager.h`)
 
 **Added:**
 ```cpp
@@ -51,7 +51,7 @@ void setPlayer(class Player* player)
 
 **Impact:** +10 lines
 
-#### 2. Implementation File Changes (`src/editor/EditorManager.cpp`)
+#### 2. Implementation File Changes (`engine/editor/EditorManager.cpp`)
 
 **Added Includes:**
 ```cpp
@@ -106,7 +106,7 @@ m_menuBar->setPasteCallback([this, world]() {
 
 **Impact:** +52 lines (net)
 
-#### 3. Engine File Changes (`src/core/Engine.cpp`)
+#### 3. Engine File Changes (`engine/core/Engine.cpp`)
 
 **Added After Player Initialization:**
 ```cpp
@@ -244,7 +244,7 @@ During the investigation, we verified these systems exist and are implemented:
    - All wired up with keyboard shortcuts
 
 4. **Inventory System** ✅
-   - `Inventory` class in `include/rpg/Inventory.h`
+   - `Inventory` class in `engine/rpg/Inventory.h`
    - `InventoryComponent` for ECS integration
    - Resource management implemented
 

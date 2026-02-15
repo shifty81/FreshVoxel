@@ -155,18 +155,18 @@ class EditorManager {
 **Total: 13 files (8 new, 5 modified)**
 
 ### New Files (8)
-1. `include/core/Project.h` - ProjectManager class
-2. `src/core/Project.cpp` - Implementation
+1. `engine/core/Project.h` - ProjectManager class
+2. `engine/core/Project.cpp` - Implementation
 3. `docs/architecture/PROJECT_WORKFLOW.md` - User guide
 4. `docs/architecture/PROJECT_IMPLEMENTATION_SUMMARY.md` - Technical doc
 5. `docs/testing/VIEWPORT_TESTING_PLAN.md` - Testing guide
 
 ### Modified Files (5)
 1. `CMakeLists.txt` - Added Project.cpp
-2. `include/core/Engine.h` - Added ProjectManager
-3. `src/core/Engine.cpp` - Menu updates, rendering clarifications
-4. `include/editor/EditorManager.h` - Project methods
-5. `src/editor/EditorManager.cpp` - Implementations
+2. `engine/core/Engine.h` - Added ProjectManager
+3. `engine/core/Engine.cpp` - Menu updates, rendering clarifications
+4. `engine/editor/EditorManager.h` - Project methods
+5. `engine/editor/EditorManager.cpp` - Implementations
 6. `README.md` - Workflow updates
 
 ## Breaking Changes

@@ -9,7 +9,7 @@ User reported: "THE MOUSE STILL DOESN'T WORK ALLOWING FREE LOOK WHEN RIGHT CLICK
 ## Root Causes Identified
 
 ### 1. Mouse Free-Look Bug
-**Location**: `src/input/Win32InputManager.cpp:163-203` (setCursorMode function)
+**Location**: `engine/input/Win32InputManager.cpp:163-203` (setCursorMode function)
 
 **Problem**: 
 - Every time `setCursorMode(true)` was called to capture the cursor, it set `firstMouse = true`
@@ -24,7 +24,7 @@ User reported: "THE MOUSE STILL DOESN'T WORK ALLOWING FREE LOOK WHEN RIGHT CLICK
 - This ensures the first real mouse movement is properly processed
 
 ### 2. Menu Functions Not Working
-**Location**: Multiple files - `src/editor/EditorManager.cpp`, `src/ui/MainMenuPanel.cpp`, etc.
+**Location**: Multiple files - `engine/editor/EditorManager.cpp`, `engine/ui/MainMenuPanel.cpp`, etc.
 
 **Problem**:
 - ImGui was removed from vcpkg.json and CMakeLists.txt at some point
@@ -44,12 +44,12 @@ User reported: "THE MOUSE STILL DOESN'T WORK ALLOWING FREE LOOK WHEN RIGHT CLICK
 ## Changes Made
 
 ### Files Modified
-1. **src/input/Win32InputManager.cpp**
+1. **engine/input/Win32InputManager.cpp**
    - Fixed setCursorMode() cursor capture logic
    - Added detailed comments explaining the firstMouse flag behavior
    - Clarified client area coordinate usage
 
-2. **src/editor/EditorManager.cpp**
+2. **engine/editor/EditorManager.cpp**
    - Added #ifdef FRESH_IMGUI_AVAILABLE guards around ImGui panel activation
    - Added fallback behavior showing informative message when ImGui unavailable
 

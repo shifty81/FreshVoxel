@@ -202,7 +202,7 @@ After comprehensive analysis of the Fresh Voxel Engine codebase, documentation, 
 **Why:** 89 TODO/FIXME comments in code (excluding third-party libraries)
 
 **Action:**
-1. Review all TODO comments: `grep -r "TODO\|FIXME" src/ include/`
+1. Review all TODO comments: `grep -r "TODO\|FIXME" engine/`
 2. Categorize by priority (critical, nice-to-have, won't-fix)
 3. Create GitHub issues for critical items
 4. Implement or remove non-critical TODOs
@@ -331,7 +331,7 @@ After comprehensive analysis of the Fresh Voxel Engine codebase, documentation, 
 **Why:** Reusable Win32 UI components for faster development
 
 **Action:**
-1. Create `include/ui/native/Win32Controls/` directory
+1. Create `engine/ui/native/Win32Controls/` directory
 2. Implement reusable components:
    - `Win32Button` - Themed button
    - `Win32Label` - Themed label

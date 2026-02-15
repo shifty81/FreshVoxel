@@ -13,7 +13,7 @@ This document summarizes the major architectural changes to transform Fresh Engi
 ### 1. Core Architecture
 
 #### New ProjectManager Class
-- **File**: `include/core/Project.h`, `src/core/Project.cpp`
+- **File**: `engine/core/Project.h`, `engine/core/Project.cpp`
 - **Purpose**: Manages project lifecycle (create, open, save, close)
 - **Features**:
   - Project creation with templates
@@ -29,7 +29,7 @@ This document summarizes the major architectural changes to transform Fresh Engi
   - Generation parameters
 
 #### Engine Integration
-- **File**: `include/core/Engine.h`, `src/core/Engine.cpp`
+- **File**: `engine/core/Engine.h`, `engine/core/Engine.cpp`
 - Added `m_projectManager` member
 - Initialize ProjectManager on engine startup
 - Pass ProjectManager reference to EditorManager
@@ -37,7 +37,7 @@ This document summarizes the major architectural changes to transform Fresh Engi
 ### 2. UI/UX Changes
 
 #### Updated File Menu
-- **File**: `src/core/Engine.cpp` (`setupNativeMenuBar()`)
+- **File**: `engine/core/Engine.cpp` (`setupNativeMenuBar()`)
 - **Changes**:
   - `New Scene` → `New Project` (Ctrl+N)
   - `Open Scene` → `Open Project` (Ctrl+O)
@@ -46,7 +46,7 @@ This document summarizes the major architectural changes to transform Fresh Engi
   - `Save All` now saves both project settings and current world
 
 #### EditorManager Updates
-- **File**: `include/editor/EditorManager.h`, `src/editor/EditorManager.cpp`
+- **File**: `engine/editor/EditorManager.h`, `engine/editor/EditorManager.cpp`
 - Added `newProject()` method
 - Added `openProject()` method  
 - Added `setProjectManager()` method
@@ -267,17 +267,17 @@ The following items from the original roadmap remain:
 ## Files Changed
 
 ### New Files
-- `include/core/Project.h`
-- `src/core/Project.cpp`
+- `engine/core/Project.h`
+- `engine/core/Project.cpp`
 - `docs/architecture/PROJECT_WORKFLOW.md`
 - `docs/architecture/PROJECT_IMPLEMENTATION_SUMMARY.md` (this file)
 
 ### Modified Files
 - `CMakeLists.txt` - Added Project.cpp to build
-- `include/core/Engine.h` - Added ProjectManager member and getter
-- `src/core/Engine.cpp` - Initialize ProjectManager, updated menu
-- `include/editor/EditorManager.h` - Added project methods and member
-- `src/editor/EditorManager.cpp` - Implemented project methods
+- `engine/core/Engine.h` - Added ProjectManager member and getter
+- `engine/core/Engine.cpp` - Initialize ProjectManager, updated menu
+- `engine/editor/EditorManager.h` - Added project methods and member
+- `engine/editor/EditorManager.cpp` - Implemented project methods
 
 ## Conclusion
 

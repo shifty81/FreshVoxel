@@ -34,10 +34,10 @@ This represents a major milestone in making the Fresh Voxel Engine editor truly 
 - Robust edge case handling
 
 **Files**:
-- `include/editor/SelectionManager.h`
-- `src/editor/SelectionManager.cpp`
-- `include/editor/SelectionRenderer.h`
-- `src/editor/SelectionRenderer.cpp`
+- `engine/editor/SelectionManager.h`
+- `engine/editor/SelectionManager.cpp`
+- `engine/editor/SelectionRenderer.h`
+- `engine/editor/SelectionRenderer.cpp`
 - `tests/editor/SelectionManagerTests.cpp` (37 tests)
 - `tests/editor/SelectionRendererTests.cpp` (20 tests)
 - `tests/editor/README.md`
@@ -59,9 +59,9 @@ This represents a major milestone in making the Fresh Voxel Engine editor truly 
 - Message boxes for user feedback
 
 **Files** (existing, validated):
-- `include/ui/WindowsDialogManager.h`
-- `src/ui/WindowsDialogManager.cpp`
-- Integration in `src/editor/EditorManager.cpp`
+- `engine/ui/WindowsDialogManager.h`
+- `engine/ui/WindowsDialogManager.cpp`
+- Integration in `engine/editor/EditorManager.cpp`
 
 ### Week 4: Cut/Copy/Paste Implementation ✅
 
@@ -89,12 +89,12 @@ This represents a major milestone in making the Fresh Voxel Engine editor truly 
 - Confirm/cancel workflow
 
 **Files**:
-- `include/editor/TerraformingSystem.h` (enhanced)
-- `src/editor/TerraformingSystem.cpp` (enhanced)
-- `include/editor/SelectionManager.h` (enhanced)
-- `src/editor/SelectionManager.cpp` (enhanced)
-- `include/editor/SelectionRenderer.h` (enhanced)
-- `src/editor/SelectionRenderer.cpp` (enhanced)
+- `engine/editor/TerraformingSystem.h` (enhanced)
+- `engine/editor/TerraformingSystem.cpp` (enhanced)
+- `engine/editor/SelectionManager.h` (enhanced)
+- `engine/editor/SelectionManager.cpp` (enhanced)
+- `engine/editor/SelectionRenderer.h` (enhanced)
+- `engine/editor/SelectionRenderer.cpp` (enhanced)
 - `WEEK4_PASTE_PREVIEW_DESIGN.md`
 - `WEEK4_IMPLEMENTATION_SUMMARY.md`
 

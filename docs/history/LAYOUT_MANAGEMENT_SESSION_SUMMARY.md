@@ -16,8 +16,8 @@ Successfully implemented a comprehensive Layout Management system for the Fresh 
 
 ### ✅ Core Implementation
 1. **LayoutManager Class**
-   - Created header file: `include/editor/LayoutManager.h`
-   - Created implementation: `src/editor/LayoutManager.cpp`
+   - Created header file: `engine/editor/LayoutManager.h`
+   - Created implementation: `engine/editor/LayoutManager.cpp`
    - Full save/load functionality for workspace layouts
    - INI-based persistence (configs/layouts.ini)
 
@@ -74,17 +74,17 @@ Successfully implemented a comprehensive Layout Management system for the Fresh 
 
 ### New Files Created
 ```
-include/editor/LayoutManager.h              (117 lines)
-src/editor/LayoutManager.cpp                (270 lines)
+engine/editor/LayoutManager.h              (117 lines)
+engine/editor/LayoutManager.cpp                (270 lines)
 docs/editor/LAYOUT_MANAGEMENT.md            (8.6KB)
 ```
 
 ### Existing Files Modified
 ```
-include/editor/EditorManager.h              (+28 lines)
-src/editor/EditorManager.cpp                (+81 lines)
-include/ui/EditorMenuBar.h                  (+15 lines)
-src/ui/EditorMenuBar.cpp                    (+25 lines)
+engine/editor/EditorManager.h              (+28 lines)
+engine/editor/EditorManager.cpp                (+81 lines)
+engine/ui/EditorMenuBar.h                  (+15 lines)
+engine/ui/EditorMenuBar.cpp                    (+25 lines)
 CMakeLists.txt                              (+1 line)
 docs/history/GUI_REMAINING_TASKS.md         (updated)
 ```

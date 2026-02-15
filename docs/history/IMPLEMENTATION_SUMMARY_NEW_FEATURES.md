@@ -117,8 +117,8 @@ The user asked for three things:
 ### 3. NEW Feature: 2D World Generation System
 
 **Files Created:**
-- `include/generation/World2DGenerator.h` (7,439 bytes)
-- `src/generation/World2DGenerator.cpp` (15,395 bytes)
+- `engine/generation/World2DGenerator.h` (7,439 bytes)
+- `engine/generation/World2DGenerator.cpp` (15,395 bytes)
 
 **Classes Implemented:**
 
@@ -216,7 +216,7 @@ struct Segment {
 
 ### 4. NEW Feature: Transform Gizmo Foundation
 
-**File:** `include/editor/TransformGizmo.h` (7,267 bytes)
+**File:** `engine/editor/TransformGizmo.h` (7,267 bytes)
 
 **Implementation Status:** Header complete, .cpp implementation needed
 
@@ -409,9 +409,9 @@ QUICK_START_NEW_FEATURES.md          11,241 bytes
 
 ### Source Code (New)
 ```
-include/generation/World2DGenerator.h     7,439 bytes
-src/generation/World2DGenerator.cpp      15,395 bytes
-include/editor/TransformGizmo.h           7,267 bytes
+engine/generation/World2DGenerator.h     7,439 bytes
+engine/generation/World2DGenerator.cpp      15,395 bytes
+engine/editor/TransformGizmo.h           7,267 bytes
 ```
 
 ### Build System (Modified)

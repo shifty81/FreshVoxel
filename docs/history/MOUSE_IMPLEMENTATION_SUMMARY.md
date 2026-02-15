@@ -9,10 +9,10 @@ This PR documents and validates the **comprehensive mouse support** already pres
 ### 1. Codebase Analysis ✅
 
 Reviewed the entire input and UI system:
-- **InputManager** (include/input/InputManager.h, src/input/InputManager.cpp)
-- **UI System** (include/ui/, src/ui/)
-- **Editor System** (include/editor/, src/editor/)
-- **Main Engine Loop** (src/core/Engine.cpp)
+- **InputManager** (engine/input/InputManager.h, engine/input/InputManager.cpp)
+- **UI System** (engine/ui/, engine/ui/)
+- **Editor System** (engine/editor/, engine/editor/)
+- **Main Engine Loop** (engine/core/Engine.cpp)
 
 ### 2. Mouse Functionality Verification ✅
 
@@ -202,7 +202,7 @@ This PR documents the existing functionality and provides users with complete in
 
 - `CONTROLS.md` - Comprehensive mouse controls documentation
 - `README.md` - Updated quick controls reference
-- `src/ui/MainMenu.cpp` - Added architectural comments
+- `engine/ui/MainMenu.cpp` - Added architectural comments
 - `tests/input/InputManagerTests.cpp` - Enhanced mouse test coverage
 
 ## Impact

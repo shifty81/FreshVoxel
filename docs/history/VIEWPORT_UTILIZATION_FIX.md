@@ -137,7 +137,7 @@ This fix builds on previous viewport-related fixes:
 
 ## Files Modified
 
-- `src/core/Engine.cpp`: Added swap chain configuration before world creation (lines 481-505) and updated post-creation validation (lines 815-834)
+- `engine/core/Engine.cpp`: Added swap chain configuration before world creation (lines 481-505) and updated post-creation validation (lines 815-834)
 
 ## Related Documentation
 

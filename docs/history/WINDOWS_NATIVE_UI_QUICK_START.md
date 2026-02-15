@@ -21,7 +21,7 @@ Add the NativeMainMenu source files to the build:
 if(WIN32)
     list(APPEND ENGINE_SOURCES
         # ... existing Win32 sources ...
-        src/ui/NativeMainMenu.cpp  # Add this line
+        engine/ui/NativeMainMenu.cpp  # Add this line
     )
 endif()
 ```

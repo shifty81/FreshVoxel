@@ -7,17 +7,17 @@ This PR implements a fully native Windows GUI system for the Fresh Voxel Engine,
 ## Changes
 
 ### New Files
-- **`include/core/Win32Window.h`** - Native Win32 window class header
-- **`src/core/Win32Window.cpp`** - Native Win32 window implementation
-- **`include/input/Win32InputManager.h`** - Native Win32 input manager header
-- **`src/input/Win32InputManager.cpp`** - Native Win32 input manager implementation
+- **`engine/core/Win32Window.h`** - Native Win32 window class header
+- **`engine/core/Win32Window.cpp`** - Native Win32 window implementation
+- **`engine/input/Win32InputManager.h`** - Native Win32 input manager header
+- **`engine/input/Win32InputManager.cpp`** - Native Win32 input manager implementation
 - **`WINDOWS_NATIVE_GUI_HOWTO.md`** - User guide for Win32 native GUI
 - **`WINDOWS_NATIVE_GUI_MIGRATION.md`** - Detailed migration guide from GLFW
 - **`WINDOWS_NATIVE_GUI_IMPLEMENTATION.md`** - Technical implementation summary
 
 ### Modified Files
-- **`include/ui/ImGuiContext.h`** - Added Win32 backend support
-- **`src/ui/ImGuiContext.cpp`** - Implemented Win32 initialization and handling
+- **`engine/ui/ImGuiContext.h`** - Added Win32 backend support
+- **`engine/ui/ImGuiContext.cpp`** - Implemented Win32 initialization and handling
 - **`CMakeLists.txt`** - Added Win32 source files for Windows builds
 - **`vcpkg.json`** - Added `win32-binding` feature for ImGui
 - **`README.md`** - Updated to mention Windows native GUI option

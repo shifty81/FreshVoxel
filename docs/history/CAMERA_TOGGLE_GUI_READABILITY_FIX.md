@@ -12,7 +12,7 @@ Users reported two critical issues with the Fresh Voxel Engine:
 
 ### Issue 1: F Key Toggle Override
 
-**Location**: `src/core/Engine.cpp`, lines 805-816 (before fix)
+**Location**: `engine/core/Engine.cpp`, lines 805-816 (before fix)
 
 The automatic cursor management code was interfering with the user's explicit F key toggle:
 
@@ -39,7 +39,7 @@ if (currentMode == InputMode::UIMode && !m_inputManager->isAltHeld()) {
 
 ### Issue 2: White Background on White Text
 
-**Location**: `src/editor/EditorManager.cpp`, lines 220-223 (before fix)
+**Location**: `engine/editor/EditorManager.cpp`, lines 220-223 (before fix)
 
 The `WindowsThemeManager` was overriding the carefully crafted dark theme from `ImGuiContext`:
 
@@ -75,13 +75,13 @@ if (m_windowsThemeManager->initialize()) {
 
 Added a state tracking system to respect user's explicit mode changes:
 
-**File**: `include/core/Engine.h`
+**File**: `engine/core/Engine.h`
 ```cpp
 // Added member variable
 bool m_userToggledCursor = false;
 ```
 
-**File**: `src/core/Engine.cpp`
+**File**: `engine/core/Engine.cpp`
 ```cpp
 // When F key is pressed
 if (!guiCapturesKeyboard && m_inputManager->isKeyJustPressed(GLFW_KEY_F)) {
@@ -121,7 +121,7 @@ else if (currentMode == InputMode::GameMode) {
 
 Modified the WindowsThemeManager initialization to always use dark theme:
 
-**File**: `src/editor/EditorManager.cpp`
+**File**: `engine/editor/EditorManager.cpp`
 ```cpp
 // Initialize Windows Theme Manager
 m_windowsThemeManager = std::make_unique<WindowsThemeManager>();
@@ -186,17 +186,17 @@ Engine Initialization:
 
 ### Files Modified
 
-1. **include/core/Engine.h**
+1. **engine/core/Engine.h**
    - Added `m_userToggledCursor` member variable
    - Documented purpose: prevent automatic cursor management override
 
-2. **src/core/Engine.cpp** (lines changed: 741-828)
+2. **engine/core/Engine.cpp** (lines changed: 741-828)
    - Line 743: Set `m_userToggledCursor = true` when F key pressed
    - Lines 804-807: Clear flag when user interacts with GUI
    - Line 812: Added `!m_userToggledCursor` check to automatic cursor management
    - Lines 826-827: Clear flag when entering GameMode
 
-3. **src/editor/EditorManager.cpp** (lines changed: 219-226)
+3. **engine/editor/EditorManager.cpp** (lines changed: 219-226)
    - Line 224: Changed from `applyToImGui()` to `setTheme(WindowsTheme::Dark)`
    - Updated log message to reflect forced dark theme
 

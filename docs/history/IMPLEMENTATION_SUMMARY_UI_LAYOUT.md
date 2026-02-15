@@ -24,7 +24,7 @@ Successfully reorganized the Fresh Voxel Engine editor UI to match Unreal Engine
 ### 2. Code Changes
 
 #### File Modified
-- `src/editor/EditorManager.cpp` (~150 lines changed)
+- `engine/editor/EditorManager.cpp` (~150 lines changed)
 
 #### Constants Updated
 ```cpp
@@ -223,7 +223,7 @@ All these are defined as constants and can be tweaked easily.
 
 ```
 Modified:
-  src/editor/EditorManager.cpp              (~150 lines changed)
+  engine/editor/EditorManager.cpp              (~150 lines changed)
 
 Added:
   UI_LAYOUT_UNREAL_STYLE.md                 (technical spec)

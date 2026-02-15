@@ -134,17 +134,17 @@ void resetLayout();
 
 ### Components
 
-1. **LayoutManager** (`include/editor/LayoutManager.h`)
+1. **LayoutManager** (`engine/editor/LayoutManager.h`)
    - Core layout management logic
    - File I/O for persistence
    - Predefined layout definitions
 
-2. **EditorManager** (`include/editor/EditorManager.h`)
+2. **EditorManager** (`engine/editor/EditorManager.h`)
    - Integration point for layout system
    - Applies layouts to panel visibility states
    - Provides high-level layout operations
 
-3. **EditorMenuBar** (`include/ui/EditorMenuBar.h`)
+3. **EditorMenuBar** (`engine/ui/EditorMenuBar.h`)
    - User interface for layout operations
    - Window menu integration
    - Layout selection UI

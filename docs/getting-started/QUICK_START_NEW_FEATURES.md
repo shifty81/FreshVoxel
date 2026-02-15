@@ -47,9 +47,9 @@ You wanted to know:
 
 **Files Created:**
 ```
-include/generation/World2DGenerator.h    - 2D world generation API
-src/generation/World2DGenerator.cpp      - Implementation
-include/editor/TransformGizmo.h          - 3D manipulation gizmos
+engine/generation/World2DGenerator.h    - 2D world generation API
+engine/generation/World2DGenerator.cpp      - Implementation
+engine/editor/TransformGizmo.h          - 3D manipulation gizmos
 ```
 
 ---
@@ -279,19 +279,19 @@ custom.settings.treeFrequency = 0.1f;  // More trees
 
 ### World Generation
 ```
-include/generation/TerrainGenerator.h   - Current 3D generator (base class)
-include/generation/World2DGenerator.h   - NEW: 2D generator
-include/generation/Noise.h              - Perlin/Simplex noise
-src/generation/TerrainGenerator.cpp     - 3D implementation
-src/generation/World2DGenerator.cpp     - NEW: 2D implementation
+engine/generation/TerrainGenerator.h   - Current 3D generator (base class)
+engine/generation/World2DGenerator.h   - NEW: 2D generator
+engine/generation/Noise.h              - Perlin/Simplex noise
+engine/generation/TerrainGenerator.cpp     - 3D implementation
+engine/generation/World2DGenerator.cpp     - NEW: 2D implementation
 ```
 
 ### Editor System  
 ```
-include/editor/EditorManager.h          - Main editor coordinator
-include/editor/WorldEditor.h            - World editing interface
-include/editor/TransformGizmo.h         - NEW: Transform gizmos
-include/ui/panels/VoxelToolPalette.h   - Voxel editing tools
+engine/editor/EditorManager.h          - Main editor coordinator
+engine/editor/WorldEditor.h            - World editing interface
+engine/editor/TransformGizmo.h         - NEW: Transform gizmos
+engine/ui/panels/VoxelToolPalette.h   - Voxel editing tools
 ```
 
 ### Documentation

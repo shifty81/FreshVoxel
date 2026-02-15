@@ -131,18 +131,18 @@ target_include_directories(${PROJECT_NAME}
 # Add scripting source files
 set(ENGINE_SOURCES
     ${ENGINE_SOURCES}
-    src/scripting/lua/ScriptingEngine.cpp
+    engine/scripting/lua/ScriptingEngine.cpp
 )
 
 set(ENGINE_HEADERS
     ${ENGINE_HEADERS}
-    include/scripting/lua/ScriptingEngine.h
+    engine/scripting/lua/ScriptingEngine.h
 )
 ```
 
 ### Step 4: Implement ScriptingEngine Methods
 
-Edit `src/scripting/lua/ScriptingEngine.cpp`:
+Edit `engine/scripting/lua/ScriptingEngine.cpp`:
 
 #### Initialize Method (with LuaBridge)
 ```cpp

@@ -39,7 +39,7 @@ The original issue asked: **"is the asset management fully implemented yet?"** a
 
 ### 1. JSON Manifest Parsing
 
-**File:** `src/assets/ModularAssetSystem.cpp`
+**File:** `engine/assets/ModularAssetSystem.cpp`
 
 - Added nlohmann-json header inclusion with `#ifdef FRESH_JSON_AVAILABLE`
 - Implemented `parseManifest()` with full field parsing:
@@ -59,7 +59,7 @@ The original issue asked: **"is the asset management fully implemented yet?"** a
 
 ### 2. Asset Placement Implementation
 
-**File:** `src/assets/ModularAssetSystem.cpp`
+**File:** `engine/assets/ModularAssetSystem.cpp`
 
 The `placeAssetsInWorld()` method now:
 - Creates actual voxel geometry instead of just logging
@@ -89,8 +89,8 @@ else if (y >= startY + height * 0.5) {
 ### 3. Terrain Integration
 
 **Files:** 
-- `include/generation/TerrainGenerator.h`
-- `src/generation/TerrainGenerator.cpp`
+- `engine/generation/TerrainGenerator.h`
+- `engine/generation/TerrainGenerator.cpp`
 
 Added `generateChunkWithAssets()` method:
 ```cpp
@@ -112,8 +112,8 @@ void TerrainGenerator::generateChunkWithAssets(Chunk* chunk, VoxelWorld* world)
 ### 4. Chunk Boundary Culling Fix
 
 **Files:**
-- `include/voxel/MeshGenerator.h`
-- `src/voxel/MeshGenerator.cpp`
+- `engine/voxel/MeshGenerator.h`
+- `engine/voxel/MeshGenerator.cpp`
 
 **Problem:** Original code always rendered faces at chunk boundaries:
 ```cpp
@@ -206,11 +206,11 @@ Comprehensive guide including:
 
 1. `vcpkg.json` - Added nlohmann-json dependency
 2. `CMakeLists.txt` - Find and link nlohmann-json
-3. `src/assets/ModularAssetSystem.cpp` - JSON + placement implementation
-4. `include/generation/TerrainGenerator.h` - Added asset method
-5. `src/generation/TerrainGenerator.cpp` - Asset integration
-6. `include/voxel/MeshGenerator.h` - Neighbor-aware generation
-7. `src/voxel/MeshGenerator.cpp` - Boundary culling fix
+3. `engine/assets/ModularAssetSystem.cpp` - JSON + placement implementation
+4. `engine/generation/TerrainGenerator.h` - Added asset method
+5. `engine/generation/TerrainGenerator.cpp` - Asset integration
+6. `engine/voxel/MeshGenerator.h` - Neighbor-aware generation
+7. `engine/voxel/MeshGenerator.cpp` - Boundary culling fix
 8. `ASSET_PACK_GUIDE.md` - Complete documentation (NEW)
 
 ## Testing Recommendations

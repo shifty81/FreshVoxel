@@ -6,7 +6,7 @@ This implementation adds extensive new features to the Fresh Voxel Engine to cre
 ## Implemented Features
 
 ### 1. Season System (SeasonManager)
-**Location:** `include/gameplay/SeasonManager.h`, `src/gameplay/SeasonManager.cpp`
+**Location:** `engine/gameplay/SeasonManager.h`, `engine/gameplay/SeasonManager.cpp`
 
 **Features:**
 - Four seasons: Spring, Summer, Fall, Winter
@@ -31,7 +31,7 @@ if (m_seasonManager) {
 ```
 
 ### 2. Weather System (WeatherManager)
-**Location:** `include/gameplay/WeatherManager.h`, `src/gameplay/WeatherManager.cpp`
+**Location:** `engine/gameplay/WeatherManager.h`, `engine/gameplay/WeatherManager.cpp`
 
 **Features:**
 - Seven weather types: Clear, Cloudy, Rain, Snow, Fog, Storm, Blizzard
@@ -63,7 +63,7 @@ if (m_weatherManager) {
 ```
 
 ### 3. Enhanced World Generation
-**Location:** `src/generation/TerrainGenerator.cpp`
+**Location:** `engine/generation/TerrainGenerator.cpp`
 
 **Features:**
 - **Waterways Generation:**
@@ -86,7 +86,7 @@ if (m_weatherManager) {
   - Optimized chunk streaming for 5K x 5K worlds
 
 ### 4. Raft/Water Traversal System
-**Location:** `include/gameplay/Raft.h`, `src/gameplay/Raft.cpp`
+**Location:** `engine/gameplay/Raft.h`, `engine/gameplay/Raft.cpp`
 
 **Features:**
 - Placeable raft entity for water traversal
@@ -111,7 +111,7 @@ if (m_weatherManager) {
 ## Integration Points
 
 ### Engine Integration
-All systems are integrated into the main Engine class (`src/core/Engine.cpp`):
+All systems are integrated into the main Engine class (`engine/core/Engine.cpp`):
 
 1. **Initialization:**
    - Season and Weather managers created in `initializeGameSystems()`
@@ -128,9 +128,9 @@ All systems are integrated into the main Engine class (`src/core/Engine.cpp`):
 
 ### Build System
 Updated `CMakeLists.txt` to include:
-- `src/gameplay/SeasonManager.cpp`
-- `src/gameplay/WeatherManager.cpp`
-- `src/gameplay/Raft.cpp`
+- `engine/gameplay/SeasonManager.cpp`
+- `engine/gameplay/WeatherManager.cpp`
+- `engine/gameplay/Raft.cpp`
 
 ## Testing Instructions
 
@@ -237,20 +237,20 @@ streamer->setViewDistance(32); // Can go up to 64 now
 - Systems are modular and can be enabled/disabled independently
 
 ## Files Modified
-- `include/core/Engine.h` - Added manager member variables
-- `src/core/Engine.cpp` - Integrated systems into game loop
+- `engine/core/Engine.h` - Added manager member variables
+- `engine/core/Engine.cpp` - Integrated systems into game loop
 - `CMakeLists.txt` - Added new source files
-- `src/generation/TerrainGenerator.cpp` - Enhanced generation
-- `src/voxel/ChunkStreamer.cpp` - Increased max view distance
-- `src/voxel/VoxelWorld.cpp` - Increased default render distance
+- `engine/generation/TerrainGenerator.cpp` - Enhanced generation
+- `engine/voxel/ChunkStreamer.cpp` - Increased max view distance
+- `engine/voxel/VoxelWorld.cpp` - Increased default render distance
 
 ## Files Created
-- `include/gameplay/SeasonManager.h`
-- `src/gameplay/SeasonManager.cpp`
-- `include/gameplay/WeatherManager.h`
-- `src/gameplay/WeatherManager.cpp`
-- `include/gameplay/Raft.h`
-- `src/gameplay/Raft.cpp`
+- `engine/gameplay/SeasonManager.h`
+- `engine/gameplay/SeasonManager.cpp`
+- `engine/gameplay/WeatherManager.h`
+- `engine/gameplay/WeatherManager.cpp`
+- `engine/gameplay/Raft.h`
+- `engine/gameplay/Raft.cpp`
 
 ## Conclusion
 

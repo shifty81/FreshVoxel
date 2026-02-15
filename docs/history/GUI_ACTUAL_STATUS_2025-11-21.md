@@ -18,7 +18,7 @@ After comprehensive code review, the GUI implementation status is **BETTER THAN 
 
 **Reality:** NativeMainMenu is FULLY implemented and integrated!
 
-- ✅ **Implemented:** `src/ui/NativeMainMenu.cpp` (350+ lines of complete code)
+- ✅ **Implemented:** `engine/ui/NativeMainMenu.cpp` (350+ lines of complete code)
 - ✅ **Integrated in EditorManager:** Used in `EditorManager::newWorld()` (line 1089)
 - ✅ **Connected to callbacks:** World creation/loading callbacks properly set up
 - ✅ **Triggered from multiple places:**
@@ -50,7 +50,7 @@ if (mainMenu.initialize(parentHwnd)) {
 
 **Reality:** Replaced by Win32TerraformingPanel which is fully implemented!
 
-- ✅ **File:** `src/ui/native/Win32TerraformingPanel.cpp` (604 lines)
+- ✅ **File:** `engine/ui/native/Win32TerraformingPanel.cpp` (604 lines)
 - ✅ **VoxelToolPalette:** Now a compatibility wrapper that forwards to Win32TerraformingPanel
 - ✅ **Fully functional:** Complete native implementation with all terraforming tools
 
@@ -180,7 +180,7 @@ The `GUI_WORK_REMAINING_SUMMARY.md` document appears to be **outdated** and does
 4. **Several panels listed as incomplete** → All have substantial implementations (200+ lines each)
 
 ### Verification Method
-- ✅ Examined all source files in `src/ui/native/`
+- ✅ Examined all source files in `engine/ui/native/`
 - ✅ Checked for TODO/FIXME comments (found 0 in native UI code)
 - ✅ Verified line counts (all substantial implementations)
 - ✅ Traced integration points in EditorManager and Engine

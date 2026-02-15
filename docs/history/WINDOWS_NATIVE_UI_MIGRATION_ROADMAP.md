@@ -81,7 +81,7 @@ Core controls needed (in order of priority):
 
 #### Priority 1: Main Menu (Week 3)
 **Files to migrate:**
-- `src/ui/MainMenuPanel.cpp/h`
+- `engine/ui/MainMenuPanel.cpp/h`
 
 **Native controls needed:**
 - Dialog window
@@ -95,7 +95,7 @@ Core controls needed (in order of priority):
 
 #### Priority 2: World Creation Dialog (Week 3)
 **Files to migrate:**
-- `src/ui/MainMenuPanel.cpp` (renderNewWorldDialog, renderLoadWorldDialog)
+- `engine/ui/MainMenuPanel.cpp` (renderNewWorldDialog, renderLoadWorldDialog)
 
 **Native controls needed:**
 - Modal dialog
@@ -109,7 +109,7 @@ Core controls needed (in order of priority):
 
 #### Priority 3: Editor Menu Bar (Week 4)
 **Files to migrate:**
-- `src/ui/EditorMenuBar.cpp/h`
+- `engine/ui/EditorMenuBar.cpp/h`
 
 **Native controls needed:**
 - Native menu bar (already partially implemented in Win32MenuBar)
@@ -122,7 +122,7 @@ Core controls needed (in order of priority):
 
 #### Priority 4: Editor Toolbar (Week 4)
 **Files to migrate:**
-- `src/ui/EditorToolbar.cpp/h`
+- `engine/ui/EditorToolbar.cpp/h`
 
 **Native controls needed:**
 - Toolbar control
@@ -139,7 +139,7 @@ Core controls needed (in order of priority):
 
 #### Priority 5: Scene Hierarchy Panel (Week 7)
 **Files to migrate:**
-- `src/ui/SceneHierarchyPanel.cpp/h`
+- `engine/ui/SceneHierarchyPanel.cpp/h`
 
 **Native controls needed:**
 - Dockable window
@@ -152,7 +152,7 @@ Core controls needed (in order of priority):
 
 #### Priority 6: Inspector Panel (Week 8)
 **Files to migrate:**
-- `src/ui/InspectorPanel.cpp/h`
+- `engine/ui/InspectorPanel.cpp/h`
 
 **Native controls needed:**
 - Dockable window
@@ -165,7 +165,7 @@ Core controls needed (in order of priority):
 
 #### Priority 7: Content Browser Panel (Week 9)
 **Files to migrate:**
-- `src/ui/ContentBrowserPanel.cpp/h`
+- `engine/ui/ContentBrowserPanel.cpp/h`
 
 **Native controls needed:**
 - Dockable window
@@ -179,7 +179,7 @@ Core controls needed (in order of priority):
 
 #### Priority 8: Console Panel (Week 10)
 **Files to migrate:**
-- `src/ui/ConsolePanel.cpp/h`
+- `engine/ui/ConsolePanel.cpp/h`
 
 **Native controls needed:**
 - Dockable window
@@ -197,9 +197,9 @@ Core controls needed (in order of priority):
 
 #### Priority 9: Settings Panels (Week 11)
 **Files to migrate:**
-- `src/ui/SettingsPanel.cpp/h`
-- `src/ui/EngineConfigPanel.cpp/h`
-- `src/ui/WindowsCustomizationPanel.cpp/h`
+- `engine/ui/SettingsPanel.cpp/h`
+- `engine/ui/EngineConfigPanel.cpp/h`
+- `engine/ui/WindowsCustomizationPanel.cpp/h`
 
 **Native controls needed:**
 - Dialog window
@@ -212,8 +212,8 @@ Core controls needed (in order of priority):
 
 #### Priority 10: Tool Palettes (Week 12)
 **Files to migrate:**
-- `src/ui/VoxelToolPalette.cpp/h`
-- `src/ui/HotbarPanel.cpp/h`
+- `engine/ui/VoxelToolPalette.cpp/h`
+- `engine/ui/HotbarPanel.cpp/h`
 
 **Native controls needed:**
 - Floating toolbar
@@ -226,7 +226,7 @@ Core controls needed (in order of priority):
 
 #### Priority 11: Editor Manager (Weeks 13-14)
 **Files to migrate:**
-- `src/editor/EditorManager.cpp/h`
+- `engine/editor/EditorManager.cpp/h`
 
 **Native controls needed:**
 - Window docking system
@@ -571,9 +571,9 @@ private:
 - [DWM API](https://docs.microsoft.com/en-us/windows/win32/dwm/dwm-overview)
 
 ### Existing Codebase References
-- `src/core/Win32Window.cpp` - Native window implementation
-- `src/ui/native/Win32MenuBar.cpp` - Native menu bar
-- `src/ui/WindowsThemeManager.cpp` - Theme management
+- `engine/core/Win32Window.cpp` - Native window implementation
+- `engine/ui/native/Win32MenuBar.cpp` - Native menu bar
+- `engine/ui/WindowsThemeManager.cpp` - Theme management
 
 ---
 

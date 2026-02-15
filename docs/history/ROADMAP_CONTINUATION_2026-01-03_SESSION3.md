@@ -68,7 +68,7 @@ This session continued implementing the Fresh Voxel Engine roadmap, focusing on 
 
 **Files Modified:**
 - `CMakeLists.txt` - Added tinyobjloader detection and linking, added test files
-- `src/core/ResourceManager.cpp` - Implemented actual resource loading
+- `engine/core/ResourceManager.cpp` - Implemented actual resource loading
 
 **Files Created:**
 - `docs/guides/RESOURCE_LOADING.md` - Comprehensive usage guide

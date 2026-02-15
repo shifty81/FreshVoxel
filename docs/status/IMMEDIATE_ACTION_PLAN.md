@@ -441,7 +441,7 @@
 
 **Goal for Today:** Create the SelectionManager class
 
-1. **Create header file** `include/editor/SelectionManager.h`:
+1. **Create header file** `engine/editor/SelectionManager.h`:
    ```cpp
    #pragma once
    #include <vector>
@@ -480,7 +480,7 @@
    };
    ```
 
-2. **Create implementation** `src/editor/SelectionManager.cpp`:
+2. **Create implementation** `engine/editor/SelectionManager.cpp`:
    ```cpp
    #include "editor/SelectionManager.h"
    #include <algorithm>
@@ -519,8 +519,8 @@
 3. **Add to CMakeLists.txt**:
    ```cmake
    # In the editor section
-   include/editor/SelectionManager.h
-   src/editor/SelectionManager.cpp
+   engine/editor/SelectionManager.h
+   engine/editor/SelectionManager.cpp
    ```
 
 4. **Test compilation**:

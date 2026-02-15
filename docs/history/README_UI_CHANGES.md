@@ -48,7 +48,7 @@ Your editor UI has been completely reorganized to match **Unreal Engine's layout
 ## 📁 Files Changed
 
 ### Code
-- `src/editor/EditorManager.cpp` - Panel layout and positioning logic
+- `engine/editor/EditorManager.cpp` - Panel layout and positioning logic
 
 ### Documentation (NEW)
 - `UI_LAYOUT_UNREAL_STYLE.md` - Technical specification

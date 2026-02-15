@@ -31,8 +31,8 @@ A 400+ line document providing:
 
 ### 2. Proof of Concept: Native Main Menu
 **Files:**
-- `include/ui/NativeMainMenu.h` (130 lines)
-- `src/ui/NativeMainMenu.cpp` (460 lines)
+- `engine/ui/NativeMainMenu.h` (130 lines)
+- `engine/ui/NativeMainMenu.cpp` (460 lines)
 
 A **fully functional** native Windows implementation of the main menu featuring:
 
@@ -297,8 +297,8 @@ The proof of concept proves that native Windows UI can completely replace ImGui 
 
 ### New Files
 - `WINDOWS_NATIVE_UI_MIGRATION_ROADMAP.md` - Complete migration plan
-- `include/ui/NativeMainMenu.h` - Native main menu header
-- `src/ui/NativeMainMenu.cpp` - Native main menu implementation
+- `engine/ui/NativeMainMenu.h` - Native main menu header
+- `engine/ui/NativeMainMenu.cpp` - Native main menu implementation
 
 ### Modified Files
 - (None yet - POC is standalone)

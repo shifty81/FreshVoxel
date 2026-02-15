@@ -56,17 +56,17 @@ Download from [LLVM Releases](https://releases.llvm.org/download.html) or use Vi
 
 **Format a single file:**
 ```bash
-clang-format -i src/core/Engine.cpp
+clang-format -i engine/core/Engine.cpp
 ```
 
 **Format all C++ files:**
 ```bash
-find include/ src/ -name "*.cpp" -o -name "*.h" | xargs clang-format -i
+find engine/ -name "*.cpp" -o -name "*.h" | xargs clang-format -i
 ```
 
 **Check formatting without modifying:**
 ```bash
-clang-format --dry-run --Werror src/core/Engine.cpp
+clang-format --dry-run --Werror engine/core/Engine.cpp
 ```
 
 #### IDE Integration
@@ -318,7 +318,7 @@ The EditorConfig defines standards for:
 
 1. **Format your code:**
    ```bash
-   clang-format -i src/your_file.cpp
+   clang-format -i engine/your_file.cpp
    ```
 
 2. **Build and test:**

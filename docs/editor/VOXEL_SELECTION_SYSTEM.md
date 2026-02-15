@@ -8,7 +8,7 @@ The Voxel Selection System provides comprehensive tools for selecting, manipulat
 
 ### 1. SelectionManager
 
-**Location:** `include/editor/SelectionManager.h`, `src/editor/SelectionManager.cpp`
+**Location:** `engine/editor/SelectionManager.h`, `engine/editor/SelectionManager.cpp`
 
 The SelectionManager handles all voxel selection operations, including:
 - Box selection with mouse drag
@@ -74,7 +74,7 @@ void pasteFromClipboard(const glm::ivec3& pastePos, VoxelWorld* world);
 
 ### 2. SelectionRenderer
 
-**Location:** `include/editor/SelectionRenderer.h`, `src/editor/SelectionRenderer.cpp`
+**Location:** `engine/editor/SelectionRenderer.h`, `engine/editor/SelectionRenderer.cpp`
 
 The SelectionRenderer provides visual feedback for selections using wireframe rendering.
 
@@ -364,6 +364,6 @@ When modifying the selection system:
 
 - [IMMEDIATE_ACTION_PLAN.md](IMMEDIATE_ACTION_PLAN.md) - Development roadmap
 - [COMPREHENSIVE_ROADMAP.md](COMPREHENSIVE_ROADMAP.md) - Long-term planning
-- Editor integration: `include/editor/EditorManager.h`
-- Debug rendering: `include/devtools/DebugRenderer.h`
-- Voxel world: `include/voxel/VoxelWorld.h`
+- Editor integration: `engine/editor/EditorManager.h`
+- Debug rendering: `engine/devtools/DebugRenderer.h`
+- Voxel world: `engine/voxel/VoxelWorld.h`

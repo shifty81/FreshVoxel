@@ -135,7 +135,7 @@ LOG: "Toolbar: Transform Gizmo set to Rotate mode"
 ### 1. Engine.cpp - Input Handler
 
 ```cpp
-// File: src/core/Engine.cpp
+// File: engine/core/Engine.cpp
 // Location: Engine::processInput() method
 
 // Transform Gizmo mode shortcuts (W/E/R)
@@ -155,7 +155,7 @@ if (m_editorManager && m_editorManager->getTransformGizmo()) {
 ### 2. EditorManager.cpp - Toolbar Callback
 
 ```cpp
-// File: src/editor/EditorManager.cpp  
+// File: engine/editor/EditorManager.cpp  
 // Location: EditorManager::initialize() method
 
 m_toolbar->setToolCallback([this](EditorToolbar::Tool tool) {

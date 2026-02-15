@@ -14,7 +14,7 @@ Successfully implemented a complete day/night cycle system for the Fresh Voxel E
 
 ### 1. Core TimeManager Class
 
-**File:** `include/gameplay/TimeManager.h` (248 lines)
+**File:** `engine/gameplay/TimeManager.h` (248 lines)
 - Time progression system (0-24000 ticks)
 - Pause/resume functionality
 - Time rate control (speed multipliers)
@@ -24,7 +24,7 @@ Successfully implemented a complete day/night cycle system for the Fresh Voxel E
 - Event callback system
 - Full Doxygen documentation
 
-**File:** `src/gameplay/TimeManager.cpp` (269 lines)
+**File:** `engine/gameplay/TimeManager.cpp` (269 lines)
 - Complete implementation of all TimeManager features
 - Smooth lighting transitions
 - Sky color gradients
@@ -183,8 +183,8 @@ Modified:
   IMMEDIATE_ACTION_PLAN.md             (+13/-13 lines)
 
 Created:
-  include/gameplay/TimeManager.h       (248 lines)
-  src/gameplay/TimeManager.cpp         (269 lines)
+  engine/gameplay/TimeManager.h       (248 lines)
+  engine/gameplay/TimeManager.cpp         (269 lines)
   tests/gameplay/TimeManagerTests.cpp  (345 lines)
   DAY_NIGHT_CYCLE_GUIDE.md            (379 lines)
   examples/TimeManagerExample.cpp      (350 lines)

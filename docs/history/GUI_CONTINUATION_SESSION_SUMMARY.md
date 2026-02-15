@@ -68,8 +68,8 @@ Starting with a vague requirement ("lets continue on GUI"), we:
 #### Technical Details
 
 **Files Modified:**
-- `src/ui/native/Win32SettingsDialog.cpp` - 553 lines added/changed
-- `include/ui/native/Win32SettingsDialog.h` - Major refactor
+- `engine/ui/native/Win32SettingsDialog.cpp` - 553 lines added/changed
+- `engine/ui/native/Win32SettingsDialog.h` - Major refactor
 
 **Key Implementations:**
 ```cpp
@@ -373,14 +373,14 @@ generate_vs2022.bat
 **Hash:** 698b6d2  
 **Message:** "Implement Win32SettingsDialog with full functionality"  
 **Files:** 2 changed, 553 insertions(+), 68 deletions(-)
-- `src/ui/native/Win32SettingsDialog.cpp` - Complete rewrite
-- `include/ui/native/Win32SettingsDialog.h` - Interface refactor
+- `engine/ui/native/Win32SettingsDialog.cpp` - Complete rewrite
+- `engine/ui/native/Win32SettingsDialog.h` - Interface refactor
 
 ### Commit 2: UnrealStyleTheme Enhancement
 **Hash:** 5642f3a  
 **Message:** "Implement UnrealStyleTheme ApplyToWindow method"  
 **Files:** 1 changed, 14 insertions(+), 3 deletions(-)
-- `include/ui/native/UnrealStyleTheme.h` - ApplyToWindow implementation
+- `engine/ui/native/UnrealStyleTheme.h` - ApplyToWindow implementation
 
 ---
 

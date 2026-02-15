@@ -72,21 +72,21 @@ See `WINDOWS_NATIVE_UI_MIGRATION_PLAN.md` for details.
 
 ### Code Files (4 modified)
 
-**include/core/Engine.h:**
+**engine/core/Engine.h:**
 - Added `m_rightMouseHeldForCamera` state variable
 - Updated `createNewWorld()` signature: `(name, seed, is3D = true)`
 
-**src/core/Engine.cpp:**
+**engine/core/Engine.cpp:**
 - Lines 867-920: Unreal-style mouse control implementation
 - Lines 931-960: RMB-based camera movement
 - Lines 280-325: World type parameter support
 - Constructor updated with new member initialization
 
-**include/ui/MainMenuPanel.h:**
+**engine/ui/MainMenuPanel.h:**
 - Added `m_isWorld3D` member variable
 - Added `isWorld3D()` getter method
 
-**src/ui/MainMenuPanel.cpp:**
+**engine/ui/MainMenuPanel.cpp:**
 - Lines 183-195: World type radio button UI
 - Lines 150-153: Increased dialog height
 - Constructor initialization updated

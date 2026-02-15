@@ -10,7 +10,7 @@ We have implemented a fully native Windows GUI system using Win32 APIs, providin
 
 ## What Was Implemented
 
-### 1. Win32Window Class (`include/core/Win32Window.h`, `src/core/Win32Window.cpp`)
+### 1. Win32Window Class (`engine/core/Win32Window.h`, `engine/core/Win32Window.cpp`)
 
 A complete Windows-native window implementation that:
 - Uses Win32 `CreateWindowEx` for window creation
@@ -27,7 +27,7 @@ A complete Windows-native window implementation that:
 - Framebuffer resize detection
 - Compatible interface with existing Window class
 
-### 2. Win32InputManager Class (`include/input/Win32InputManager.h`, `src/input/Win32InputManager.cpp`)
+### 2. Win32InputManager Class (`engine/input/Win32InputManager.h`, `engine/input/Win32InputManager.cpp`)
 
 A Windows-native input manager that:
 - Handles Win32 virtual key codes (VK_*)
@@ -42,7 +42,7 @@ A Windows-native input manager that:
 - Just-pressed detection for single-frame input
 - Compatible interface with existing InputManager
 
-### 3. Enhanced ImGuiContext (`include/ui/ImGuiContext.h`, `src/ui/ImGuiContext.cpp`)
+### 3. Enhanced ImGuiContext (`engine/ui/ImGuiContext.h`, `engine/ui/ImGuiContext.cpp`)
 
 Updated to support both GLFW and Win32 backends:
 - New `initializeWin32()` method for Win32 window initialization
@@ -66,8 +66,8 @@ Added Win32 source files for Windows builds:
 ```cmake
 if(WIN32)
     list(APPEND ENGINE_SOURCES
-        src/core/Win32Window.cpp
-        src/input/Win32InputManager.cpp
+        engine/core/Win32Window.cpp
+        engine/input/Win32InputManager.cpp
         ...
     )
 endif()
@@ -285,17 +285,17 @@ The implementation is complete and ready for integration and testing. All core f
 ## Files Modified/Created
 
 ### Created Files
-- `include/core/Win32Window.h`
-- `src/core/Win32Window.cpp`
-- `include/input/Win32InputManager.h`
-- `src/input/Win32InputManager.cpp`
+- `engine/core/Win32Window.h`
+- `engine/core/Win32Window.cpp`
+- `engine/input/Win32InputManager.h`
+- `engine/input/Win32InputManager.cpp`
 - `WINDOWS_NATIVE_GUI_MIGRATION.md`
 - `WINDOWS_NATIVE_GUI_HOWTO.md`
 - `WINDOWS_NATIVE_GUI_IMPLEMENTATION.md` (this file)
 
 ### Modified Files
-- `include/ui/ImGuiContext.h`
-- `src/ui/ImGuiContext.cpp`
+- `engine/ui/ImGuiContext.h`
+- `engine/ui/ImGuiContext.cpp`
 - `CMakeLists.txt`
 - `vcpkg.json`
 - `README.md`

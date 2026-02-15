@@ -8,23 +8,23 @@ This document describes the integration of the native Win32 menu bar into the Fr
 
 ### 1. Win32Window Class Updates
 
-**File: `include/core/Win32Window.h`**
+**File: `engine/core/Win32Window.h`**
 - Added forward declaration of `Win32MenuBar`
 - Added `#include <memory>` for smart pointers
 - Added `getMenuBar()` method to get or create the menu bar instance
 - Added `std::unique_ptr<Win32MenuBar> m_menuBar` member variable
 
-**File: `src/core/Win32Window.cpp`**
+**File: `engine/core/Win32Window.cpp`**
 - Added `#include "ui/native/Win32MenuBar.h"`
 - Implemented `getMenuBar()` method that lazily creates the menu bar on first access
 - Added `WM_COMMAND` message handling in `WindowProc` to route menu commands to the menu bar
 
 ### 2. Engine Class Updates
 
-**File: `include/core/Engine.h`**
+**File: `engine/core/Engine.h`**
 - Added `setupNativeMenuBar()` private method declaration (Windows-only, guarded by `#ifdef _WIN32`)
 
-**File: `src/core/Engine.cpp`**
+**File: `engine/core/Engine.cpp`**
 - Added call to `setupNativeMenuBar()` immediately after window creation (Windows-only)
 - Implemented `setupNativeMenuBar()` method that creates a basic menu structure:
   - **File Menu**: New World, Open World, Save World, Exit
@@ -148,12 +148,12 @@ Following the incremental migration plan:
 
 ## Related Files
 
-- `include/core/Win32Window.h` - Window class header
-- `src/core/Win32Window.cpp` - Window class implementation
-- `include/core/Engine.h` - Engine class header
-- `src/core/Engine.cpp` - Engine class implementation
-- `include/ui/native/Win32MenuBar.h` - Menu bar class header
-- `src/ui/native/Win32MenuBar.cpp` - Menu bar class implementation
+- `engine/core/Win32Window.h` - Window class header
+- `engine/core/Win32Window.cpp` - Window class implementation
+- `engine/core/Engine.h` - Engine class header
+- `engine/core/Engine.cpp` - Engine class implementation
+- `engine/ui/native/Win32MenuBar.h` - Menu bar class header
+- `engine/ui/native/Win32MenuBar.cpp` - Menu bar class implementation
 - `WINDOWS_NATIVE_UI_MIGRATION_PLAN.md` - Overall migration plan
 
 ## Compatibility

@@ -33,7 +33,7 @@ Created a transparent overlay window (`Win32HUDOverlay`) that:
 ## Files Created
 
 ### Header File
-**File:** `include/ui/native/Win32HUDOverlay.h`
+**File:** `engine/ui/native/Win32HUDOverlay.h`
 
 Key features:
 - `Win32HUDOverlay` class declaration
@@ -43,7 +43,7 @@ Key features:
 - Visibility control methods
 
 ### Implementation File
-**File:** `src/ui/native/Win32HUDOverlay.cpp`
+**File:** `engine/ui/native/Win32HUDOverlay.cpp`
 
 Key components:
 - Window class registration
@@ -58,7 +58,7 @@ Key components:
 
 ### EditorManager Changes
 
-**File:** `src/editor/EditorManager.cpp`
+**File:** `engine/editor/EditorManager.cpp`
 
 1. **Initialization** (lines ~498-511):
    ```cpp
@@ -88,14 +88,14 @@ Key components:
    }
    ```
 
-**File:** `include/editor/EditorManager.h`
+**File:** `engine/editor/EditorManager.h`
 - Added `Win32HUDOverlay` forward declaration
 - Added `m_hudOverlay` member variable
 
 ### Build System Changes
 
 **File:** `CMakeLists.txt`
-- Added `src/ui/native/Win32HUDOverlay.cpp` to Windows source files
+- Added `engine/ui/native/Win32HUDOverlay.cpp` to Windows source files
 
 ---
 
@@ -224,12 +224,12 @@ All elements use the Unreal Engine dark theme color scheme.
 ## Related Files and Documentation
 
 ### Source Files
-- `include/ui/native/Win32HUDOverlay.h` - Overlay class header
-- `src/ui/native/Win32HUDOverlay.cpp` - Overlay implementation
-- `include/ui/native/Win32HUD.h` - HUD class header (existing)
-- `src/ui/native/Win32HUD.cpp` - HUD implementation (existing)
-- `src/editor/EditorManager.cpp` - Integration point
-- `include/editor/EditorManager.h` - Manager header
+- `engine/ui/native/Win32HUDOverlay.h` - Overlay class header
+- `engine/ui/native/Win32HUDOverlay.cpp` - Overlay implementation
+- `engine/ui/native/Win32HUD.h` - HUD class header (existing)
+- `engine/ui/native/Win32HUD.cpp` - HUD implementation (existing)
+- `engine/editor/EditorManager.cpp` - Integration point
+- `engine/editor/EditorManager.h` - Manager header
 
 ### Documentation
 - `GUI_WIN32HUD_INTEGRATION_NOTE.md` - Original problem analysis

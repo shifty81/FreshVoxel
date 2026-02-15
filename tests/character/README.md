@@ -101,7 +101,7 @@ When modifying character system code:
 
 ## References
 
-- Character system implementation: `src/character/`
-- Character headers: `include/character/`
+- Character system implementation: `engine/character/`
+- Character headers: `engine/character/`
 - Test framework: Google Test (gtest)
 - Roadmap: See ROADMAP.md Phase 7

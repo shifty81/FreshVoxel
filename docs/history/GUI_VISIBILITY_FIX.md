@@ -16,7 +16,7 @@ In `Engine::initializeGameSystems()` at line 753, the code was setting `m_inGame
 
 ## The Fix
 
-**File Changed:** `src/core/Engine.cpp`
+**File Changed:** `engine/core/Engine.cpp`
 
 **Three minimal changes:**
 
@@ -159,5 +159,5 @@ These memories will help prevent similar issues in future development.
 ## References
 
 - Issue thread: GUI disappears after world creation
-- Related code: `src/core/Engine.cpp` lines 400, 753-754, 780-781, 806, 2457-2537
+- Related code: `engine/core/Engine.cpp` lines 400, 753-754, 780-781, 806, 2457-2537
 - Related docs: `MENU_AND_PLAY_MODE_IMPLEMENTATION.md`

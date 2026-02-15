@@ -11,10 +11,10 @@ This document outlines the completion of critical features from the Fresh Voxel 
 ### 1. Inventory System (Weeks 9-10) - COMPLETE
 
 #### Files Created:
-- `include/ui/InventoryPanel.h` (173 lines)
-- `src/ui/InventoryPanel.cpp` (239 lines)
-- `include/gameplay/InventoryManager.h` (233 lines)
-- `src/gameplay/InventoryManager.cpp` (219 lines)
+- `engine/ui/InventoryPanel.h` (173 lines)
+- `engine/ui/InventoryPanel.cpp` (239 lines)
+- `engine/gameplay/InventoryManager.h` (233 lines)
+- `engine/gameplay/InventoryManager.cpp` (219 lines)
 
 #### Features Implemented:
 - **InventoryPanel**: Grid-based UI with 40 slots
@@ -46,8 +46,8 @@ This document outlines the completion of critical features from the Fresh Voxel 
 ### 2. Crafting System (Weeks 11-12) - COMPLETE
 
 #### Files Created:
-- `include/ui/CraftingPanel.h` (197 lines)
-- `src/ui/CraftingPanel.cpp` (299 lines)
+- `engine/ui/CraftingPanel.h` (197 lines)
+- `engine/ui/CraftingPanel.cpp` (299 lines)
 - `tests/gameplay/InventoryIntegrationTests.cpp` (248 lines)
 
 #### Features Implemented:
@@ -89,11 +89,11 @@ This document outlines the completion of critical features from the Fresh Voxel 
 ### 3. Voxel Type Expansion - COMPLETE
 
 #### Files Created:
-- `include/voxel/VoxelTypeInfo.h` (138 lines)
-- `src/voxel/VoxelTypeInfo.cpp` (367 lines)
+- `engine/voxel/VoxelTypeInfo.h` (138 lines)
+- `engine/voxel/VoxelTypeInfo.cpp` (367 lines)
 
 #### Files Modified:
-- `include/voxel/VoxelTypes.h` - Expanded VoxelType enum
+- `engine/voxel/VoxelTypes.h` - Expanded VoxelType enum
 
 #### Voxel Types Expanded: 21 → 46 types
 

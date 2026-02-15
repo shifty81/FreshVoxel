@@ -17,7 +17,7 @@ Enhanced the existing ResourceManager with production-ready features including a
 ### Files Modified (3 total)
 
 #### Core Implementation
-1. **include/core/ResourceManager.h** (+50 lines)
+1. **engine/core/ResourceManager.h** (+50 lines)
    - Added `<future>`, `<queue>`, `<thread>`, `<condition_variable>` headers
    - Added `LoadingRequest` struct for async requests
    - Added `loadAsync<T>()` template method
@@ -26,7 +26,7 @@ Enhanced the existing ResourceManager with production-ready features including a
    - Added placeholders map for fallback resources
    - Updated constructor/destructor declarations
 
-2. **src/core/ResourceManager.cpp** (+150 lines)
+2. **engine/core/ResourceManager.cpp** (+150 lines)
    - Implemented constructor/destructor with async loader lifecycle
    - Added `startAsyncLoader()` and `stopAsyncLoader()` methods
    - Implemented `asyncLoadingWorker()` background thread function
@@ -455,8 +455,8 @@ Before marking complete, verify:
 ## References
 
 ### Implementation Files
-- `include/core/ResourceManager.h` - Header with async API
-- `src/core/ResourceManager.cpp` - Implementation with worker thread
+- `engine/core/ResourceManager.h` - Header with async API
+- `engine/core/ResourceManager.cpp` - Implementation with worker thread
 - `RESOURCE_SYSTEM_GUIDE.md` - User documentation
 - `IMMEDIATE_ACTION_PLAN.md` - Week 8 marked complete
 

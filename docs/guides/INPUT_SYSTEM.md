@@ -285,4 +285,4 @@ switch (inputManager->getInputMode()) {
 
 - [Controls Documentation](../CONTROLS.md) - Complete control reference
 - [Editor Guide](EDITOR_INTEGRATION.md) - Editor-specific controls
-- [Input Manager API](../include/input/InputManager.h) - Full API reference
+- [Input Manager API](../engine/input/InputManager.h) - Full API reference

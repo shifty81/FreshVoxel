@@ -5,7 +5,7 @@
 ### 1. Console Spam ✅ FIXED
 **Problem:** The console was spamming "Using native Win32 UI panels" message continuously.
 
-**Root Cause:** Line 764 in `src/editor/EditorManager.cpp` had a LOG_INFO call inside the render loop that executed every frame.
+**Root Cause:** Line 764 in `engine/editor/EditorManager.cpp` had a LOG_INFO call inside the render loop that executed every frame.
 
 **Solution:** Removed the LOG_INFO statement.
 
@@ -169,7 +169,7 @@ void EditorManager::newWorld()
 
 ## Files Modified
 
-### src/editor/EditorManager.cpp
+### engine/editor/EditorManager.cpp
 **Lines 760-764:** Removed LOG_INFO spam
 ```cpp
 // BEFORE:

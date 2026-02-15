@@ -21,7 +21,7 @@ Based on the problem statement, the following issues were reported:
 
 ### 1. Fixed Panel Gaps ✅
 
-**File:** `src/ui/native/Win32Panel.cpp`
+**File:** `engine/ui/native/Win32Panel.cpp`
 
 **Problem:** Win32Panel used `WS_EX_CLIENTEDGE` extended window style which creates a sunken 3D border effect with multiple edges (light top/left, dark bottom/right). This causes thin visible gaps between the light and dark edges that look like cracks.
 
@@ -39,7 +39,7 @@ Based on the problem statement, the following issues were reported:
 
 ### 2. Added Toolbar Button Icons ✅
 
-**File:** `src/core/Engine.cpp` (lines 2391-2543)
+**File:** `engine/core/Engine.cpp` (lines 2391-2543)
 
 **Problem:** All 20 toolbar buttons were created with `nullptr` for the icon parameter, showing only text labels. Users couldn't identify buttons without clicking them.
 
@@ -257,11 +257,11 @@ By removing this style and using simple border drawing in WM_PAINT, we get:
 
 ## Files Modified
 
-1. **src/ui/native/Win32Panel.cpp**
+1. **engine/ui/native/Win32Panel.cpp**
    - Removed WS_EX_CLIENTEDGE from CreateWindowExW
    - Updated comments to explain the fix
 
-2. **src/core/Engine.cpp**
+2. **engine/core/Engine.cpp**
    - Added loadShellIcon helper lambda
    - Applied icons to all 20 toolbar buttons (5001-5043)
    - Maintained all existing functionality

@@ -19,7 +19,7 @@ This document describes the migration from GLFW-based windowing to fully native 
 ## New Classes
 
 ### Win32Window
-**Location**: `include/core/Win32Window.h`, `src/core/Win32Window.cpp`
+**Location**: `engine/core/Win32Window.h`, `engine/core/Win32Window.cpp`
 
 Replacement for the GLFW-based `Window` class. Provides:
 - Native Win32 window creation
@@ -40,7 +40,7 @@ void setMouseButtonCallback(MouseButtonCallback callback);
 ```
 
 ### Win32InputManager
-**Location**: `include/input/Win32InputManager.h`, `src/input/Win32InputManager.cpp`
+**Location**: `engine/input/Win32InputManager.h`, `engine/input/Win32InputManager.cpp`
 
 Replacement for the GLFW-based `InputManager` class. Provides:
 - Win32 virtual key code handling
@@ -59,7 +59,7 @@ void setCursorMode(bool captured);
 ```
 
 ### Updated ImGuiContext
-**Location**: `include/ui/ImGuiContext.h`, `src/ui/ImGuiContext.cpp`
+**Location**: `engine/ui/ImGuiContext.h`, `engine/ui/ImGuiContext.cpp`
 
 Now supports both GLFW and Win32 backends:
 

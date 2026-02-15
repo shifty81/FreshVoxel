@@ -250,7 +250,7 @@ std::unique_ptr<Win32HUD> hud = std::make_unique<Win32HUD>();
 ### Common Tasks
 
 #### Adding a New Menu
-1. Open `src/core/Engine.cpp`
+1. Open `engine/core/Engine.cpp`
 2. Find `setupNativeMenuBar()` function
 3. Add your menu:
 ```cpp
@@ -260,7 +260,7 @@ menuBar->addMenuItem(myMenu, "Action 2", []() { /* ... */ });
 ```
 
 #### Adding a New Toolbar Button
-1. Open `src/core/Engine.cpp`
+1. Open `engine/core/Engine.cpp`
 2. Find `setupNativeToolbar()` function
 3. Add your button:
 ```cpp
@@ -270,13 +270,13 @@ toolbar->addButton(9999, "MyButton", nullptr, []() {
 ```
 
 #### Customizing HUD Appearance
-1. Open `src/ui/native/Win32HUD.cpp`
+1. Open `engine/ui/native/Win32HUD.cpp`
 2. Find rendering functions (e.g., `renderHotbar()`)
 3. Modify colors, sizes, positions as needed
 4. Use `UnrealStyleTheme` constants for consistency
 
 #### Changing ImGui Colors
-1. Open `src/ui/ImGuiContext.cpp`
+1. Open `engine/ui/ImGuiContext.cpp`
 2. Find the color setup section
 3. Use Unreal theme colors:
 ```cpp
@@ -353,8 +353,8 @@ All colors follow Unreal Engine 5 standards:
 
 - **Full Details**: See `UNREAL_STYLE_NATIVE_UI.md`
 - **Implementation**: See `IN_GAME_UI_IMPLEMENTATION_SUMMARY.md`
-- **Color Theme**: See `include/ui/native/UnrealStyleTheme.h`
-- **HUD API**: See `include/ui/native/Win32HUD.h`
+- **Color Theme**: See `engine/ui/native/UnrealStyleTheme.h`
+- **HUD API**: See `engine/ui/native/Win32HUD.h`
 
 ## Support
 

@@ -29,7 +29,7 @@ This code was filling the viewport with black every time Windows sent a WM_PAINT
 
 ### Fix 1: Remove WS_EX_CLIENTEDGE Extended Style
 
-**File**: `src/ui/native/Win32ViewportPanel.cpp`
+**File**: `engine/ui/native/Win32ViewportPanel.cpp`
 
 Changed from:
 ```cpp
@@ -146,7 +146,7 @@ This is why the fix removes the FillRect call - DirectX needs exclusive control 
 
 ## Files Modified
 
-- `src/ui/native/Win32ViewportPanel.cpp` - Viewport window creation and message handling
+- `engine/ui/native/Win32ViewportPanel.cpp` - Viewport window creation and message handling
 
 ## Related Documentation
 

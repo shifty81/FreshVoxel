@@ -292,4 +292,4 @@ vcpkg install tinyobjloader
 
 ## API Reference
 
-See the header file `include/core/ResourceManager.h` for complete API documentation.
+See the header file `engine/core/ResourceManager.h` for complete API documentation.

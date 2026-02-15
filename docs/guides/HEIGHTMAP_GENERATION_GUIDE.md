@@ -366,7 +366,7 @@ if (isFlat) {
 
 ## See Also
 
-- `include/generation/HeightmapWorldGenerator.h` - API reference
+- `engine/generation/HeightmapWorldGenerator.h` - API reference
 - `tests/generation/HeightmapWorldGeneratorTests.cpp` - Unit tests
 - `docs/guides/TERRAIN_GENERATION.md` - General terrain guide
 - **stb_image** documentation for supported formats

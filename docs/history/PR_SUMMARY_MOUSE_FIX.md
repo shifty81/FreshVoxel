@@ -87,15 +87,15 @@ Created `MOUSE_INPUT_FIX_SUMMARY.md` (223 lines):
 
 ## Files Changed
 
-1. **include/core/Engine.h** (+3 lines)
+1. **engine/core/Engine.h** (+3 lines)
    - Added `m_lastCursorCaptured` member variable
 
-2. **src/core/Engine.cpp** (+40 lines, -12 lines)
+2. **engine/core/Engine.cpp** (+40 lines, -12 lines)
    - Initialize `m_lastCursorCaptured` in constructor
    - Refactored cursor management in `update()`
    - Fixed shader constant warnings
 
-3. **include/input/InputManager.h** (+9 lines)
+3. **engine/input/InputManager.h** (+9 lines)
    - Added `isCursorCaptured()` getter method
 
 4. **ROADMAP.md** (+237 lines)

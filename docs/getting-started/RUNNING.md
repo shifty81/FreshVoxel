@@ -102,7 +102,7 @@ fresh/
 │   └── Debug/             ← Windows Debug build
 │       └── FreshVoxelEngine.exe
 ├── shaders/               ← Source shader files (not used at runtime)
-├── src/
+├── engine/
 └── ...
 ```
 

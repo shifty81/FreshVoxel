@@ -16,7 +16,7 @@ The `EditorManager::setVisible(bool)` method was only setting an internal boolea
 
 ### Changed Files
 
-#### 1. `include/editor/EditorManager.h`
+#### 1. `engine/editor/EditorManager.h`
 - Changed `setVisible()` from an inline method to a declared method that will be implemented in the .cpp file
 
 **Before:**
@@ -32,7 +32,7 @@ void setVisible(bool visible)
 void setVisible(bool visible);
 ```
 
-#### 2. `src/editor/EditorManager.cpp`
+#### 2. `engine/editor/EditorManager.cpp`
 - Implemented `EditorManager::setVisible()` to actually show/hide Win32 native panels
 - The implementation respects individual panel visibility flags (`m_showSceneHierarchy`, `m_showInspector`, etc.)
 - Panels are only shown if BOTH the editor is visible AND the panel's individual flag is true
@@ -142,10 +142,10 @@ void EditorManager::setVisible(bool visible)
 
 ## Related Files
 
-- `src/editor/EditorManager.cpp` - Main fix implementation
-- `include/editor/EditorManager.h` - Method declaration change
-- `src/core/Engine.cpp` - Calls `setVisible()` during mode changes
-- `src/ui/native/Win32Panel.cpp` - Base panel class with `setVisible()` implementation
+- `engine/editor/EditorManager.cpp` - Main fix implementation
+- `engine/editor/EditorManager.h` - Method declaration change
+- `engine/core/Engine.cpp` - Calls `setVisible()` during mode changes
+- `engine/ui/native/Win32Panel.cpp` - Base panel class with `setVisible()` implementation
 
 ## Notes
 

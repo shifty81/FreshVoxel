@@ -18,7 +18,7 @@ The implementation addresses five key mechanics and systems:
 
 ### Implementation
 
-**Entity-Component-System (ECS)** located in `include/ecs/`:
+**Entity-Component-System (ECS)** located in `engine/ecs/`:
 
 - **Entity** (`Entity.h`): Lightweight identifier (ID) for game objects
 - **Component** (`IComponent.h`): Pure data containers with `COMPONENT_TYPE` macro
@@ -27,17 +27,17 @@ The implementation addresses five key mechanics and systems:
 
 ### New Components Added
 
-1. **HealthComponent** (`include/ecs/HealthComponent.h`)
+1. **HealthComponent** (`engine/ecs/HealthComponent.h`)
    - Manages entity health, damage, healing, death state
    - Demonstrates modularity and encapsulation
    - Fully unit tested in `tests/ecs/HealthComponentTests.cpp`
 
-2. **MovementComponent** (`include/ecs/MovementComponent.h`)
+2. **MovementComponent** (`engine/ecs/MovementComponent.h`)
    - Manages velocity, acceleration, speed
    - Independent movement behavior
    - Fully unit tested in `tests/ecs/MovementComponentTests.cpp`
 
-3. **CombatSystem** (`include/ecs/CombatSystem.h`)
+3. **CombatSystem** (`engine/ecs/CombatSystem.h`)
    - Processes combat interactions
    - Integrates with EventSystem for loose coupling
    - Integration tested in `tests/ecs/CombatSystemTests.cpp`
@@ -75,7 +75,7 @@ TEST(HealthComponentTest, TakeDamage_ReducesHealth) {
 
 ### Implementation
 
-**EventSystem** located in `include/scripting/EventSystem.h`:
+**EventSystem** located in `engine/scripting/EventSystem.h`:
 
 - **EventData**: Key-value container for event information
 - **EventCallback**: Function called when event fires
@@ -435,9 +435,9 @@ TEST(DashSystemTest, Dash_AppliesSpeedBoost) {
 ## Files Added/Modified
 
 ### New Components
-- `include/ecs/HealthComponent.h`
-- `include/ecs/MovementComponent.h`
-- `include/ecs/CombatSystem.h`
+- `engine/ecs/HealthComponent.h`
+- `engine/ecs/MovementComponent.h`
+- `engine/ecs/CombatSystem.h`
 
 ### New Tests
 - `tests/ecs/HealthComponentTests.cpp`
@@ -458,7 +458,7 @@ TEST(DashSystemTest, Dash_AppliesSpeedBoost) {
 
 ### Modified Files
 - `CMakeLists.txt` - Added new tests to build
-- `include/scripting/EventSystem.h` - Added gameplay event types
+- `engine/scripting/EventSystem.h` - Added gameplay event types
 
 ## Building and Running Tests
 
@@ -527,6 +527,6 @@ Fresh Voxel Engine now has a robust architectural foundation that supports ease 
 
 - [Architecture Documentation](docs/architecture/)
 - [Testing Documentation](docs/guides/TESTING_BEST_PRACTICES.md)
-- [Component Examples](include/ecs/)
+- [Component Examples](engine/ecs/)
 - [Test Examples](tests/ecs/)
 - [Configuration Examples](config/)

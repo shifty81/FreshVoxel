@@ -588,9 +588,9 @@ Planned features for voxel material system:
 ## See Also
 
 - [ASSET_PACK_GUIDE.md](../ASSET_PACK_GUIDE.md) - Complete asset pack documentation
-- [Material.h](../include/renderer/Material.h) - PBR material implementation
-- [VoxelMaterialPack.h](../include/assets/VoxelMaterialPack.h) - API reference
-- [ModularAssetSystem.h](../include/assets/ModularAssetSystem.h) - 3D asset packs
+- [Material.h](../engine/renderer/Material.h) - PBR material implementation
+- [VoxelMaterialPack.h](../engine/assets/VoxelMaterialPack.h) - API reference
+- [ModularAssetSystem.h](../engine/assets/ModularAssetSystem.h) - 3D asset packs
 
 ---
 

@@ -445,8 +445,8 @@ See the `plugins/worldgen/` directory for example plugins:
 
 ## Additional Resources
 
-- [IWorldGenerator API Reference](../include/generation/IWorldGenerator.h)
-- [IEngineMode API Reference](../include/core/IEngineMode.h)
+- [IWorldGenerator API Reference](../engine/generation/IWorldGenerator.h)
+- [IEngineMode API Reference](../engine/core/IEngineMode.h)
 - [Plugin System Architecture](../architecture/EDITOR_RUNTIME_SEPARATION.md#plugin-system-architecture)
 - [World Generation Guide](WORLD_GENERATION.md)
 

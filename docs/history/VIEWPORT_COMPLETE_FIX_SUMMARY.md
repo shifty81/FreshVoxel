@@ -229,19 +229,19 @@ WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN
 ## Key Code Locations
 
 ### Viewport Initialization:
-- `src/core/Engine.cpp` lines 376-440
-- `src/editor/EditorManager.cpp` lines 557-568
-- `src/ui/native/Win32ViewportPanel.cpp` lines 53-107
+- `engine/core/Engine.cpp` lines 376-440
+- `engine/editor/EditorManager.cpp` lines 557-568
+- `engine/ui/native/Win32ViewportPanel.cpp` lines 53-107
 
 ### Swap Chain Creation:
-- `src/renderer/backends/DirectX11RenderContext.cpp` lines 739-850
+- `engine/renderer/backends/DirectX11RenderContext.cpp` lines 739-850
 
 ### Main Loop:
-- `src/core/Engine.cpp` lines 874-960 (run function)
-- `src/core/Engine.cpp` lines 1499-1578 (render function)
+- `engine/core/Engine.cpp` lines 874-960 (run function)
+- `engine/core/Engine.cpp` lines 1499-1578 (render function)
 
 ### Panel Layout:
-- `src/editor/EditorManager.cpp` lines 490-650
+- `engine/editor/EditorManager.cpp` lines 490-650
 
 ## Performance Notes
 

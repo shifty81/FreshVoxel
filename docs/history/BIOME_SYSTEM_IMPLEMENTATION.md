@@ -118,7 +118,7 @@ Each biome has the following properties:
 ## Files Created
 
 ### Header File
-**Path:** `include/generation/BiomeSystem.h`  
+**Path:** `engine/generation/BiomeSystem.h`  
 **Lines:** 182  
 **Contents:**
 - `BiomeType` enum (18 biomes)
@@ -137,7 +137,7 @@ bool isInTransitionZone(int worldX, int worldZ, float threshold) const;
 ```
 
 ### Implementation File
-**Path:** `src/generation/BiomeSystem.cpp`  
+**Path:** `engine/generation/BiomeSystem.cpp`  
 **Lines:** 663  
 **Contents:**
 - Complete implementation of all methods

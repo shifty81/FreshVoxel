@@ -50,10 +50,10 @@ Rather than a complete rewrite, we made **surgical, minimal changes** that prese
 
 | File | Changes |
 |------|---------|
-| `include/editor/EditorManager.h` | Moved refreshAllPanels() to public |
-| `src/core/Engine.cpp` | Editor-first init, Scene terminology, factory init |
-| `src/editor/EditorManager.cpp` | Scene terminology in dialogs |
-| `include/voxel/VoxelWorld.h` | Documentation clarifying Scene/World |
+| `engine/editor/EditorManager.h` | Moved refreshAllPanels() to public |
+| `engine/core/Engine.cpp` | Editor-first init, Scene terminology, factory init |
+| `engine/editor/EditorManager.cpp` | Scene terminology in dialogs |
+| `engine/voxel/VoxelWorld.h` | Documentation clarifying Scene/World |
 | `CMakeLists.txt` | Added NFD to tests, added WorldGeneratorFactory |
 | `README.md` | Editor-first workflow emphasis |
 
@@ -61,8 +61,8 @@ Rather than a complete rewrite, we made **surgical, minimal changes** that prese
 
 | File | Purpose |
 |------|---------|
-| `include/generation/IWorldGenerator.h` | Plugin interface for generators |
-| `src/generation/WorldGeneratorFactory.cpp` | Factory implementation |
+| `engine/generation/IWorldGenerator.h` | Plugin interface for generators |
+| `engine/generation/WorldGeneratorFactory.cpp` | Factory implementation |
 | `docs/architecture/PLUGIN_SYSTEM.md` | Plugin documentation (10KB) |
 | `docs/architecture/SCENE_MANAGEMENT.md` | Scene workflow documentation (10KB) |
 
@@ -351,9 +351,9 @@ The plugin system makes world generation an **optional, extensible feature** rat
 ## Files to Review
 
 **Core Changes:**
-- `src/core/Engine.cpp` - Editor-first initialization
-- `include/generation/IWorldGenerator.h` - Plugin interface
-- `src/generation/WorldGeneratorFactory.cpp` - Factory implementation
+- `engine/core/Engine.cpp` - Editor-first initialization
+- `engine/generation/IWorldGenerator.h` - Plugin interface
+- `engine/generation/WorldGeneratorFactory.cpp` - Factory implementation
 
 **Documentation:**
 - `docs/architecture/PLUGIN_SYSTEM.md` - Plugin guide
@@ -361,7 +361,7 @@ The plugin system makes world generation an **optional, extensible feature** rat
 - `README.md` - Updated overview
 
 **Build Fixes:**
-- `include/editor/EditorManager.h` - Public refreshAllPanels()
+- `engine/editor/EditorManager.h` - Public refreshAllPanels()
 - `CMakeLists.txt` - NFD linking for tests
 
 ---

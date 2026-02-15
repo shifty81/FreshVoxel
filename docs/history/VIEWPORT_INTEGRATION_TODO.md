@@ -32,14 +32,14 @@ The Win32ViewportPanel provides a dedicated child window for 3D rendering, separ
 1. **Fixed Viewport Height Calculation**
    - **Issue:** Viewport height was calculated as `clientHeight - 80 - 10`, which caused it to overlap with the console panel positioned at y=600.
    - **Fix:** Changed viewport height to `600 - 80 - 10` (510 pixels) to properly fit above the console panel.
-   - **File:** `src/editor/EditorManager.cpp` line 537
+   - **File:** `engine/editor/EditorManager.cpp` line 537
 
 2. **Added Dynamic Window Resize Handling**
    - **Feature:** Implemented `onWindowResize()` method in EditorManager to dynamically update panel layouts when the main window is resized.
    - **Implementation:** 
-     - Added method declaration in `include/editor/EditorManager.h`
-     - Implemented method in `src/editor/EditorManager.cpp`
-     - Integrated in `src/core/Engine.cpp` update loop to detect window resize and trigger layout updates
+     - Added method declaration in `engine/editor/EditorManager.h`
+     - Implemented method in `engine/editor/EditorManager.cpp`
+     - Integrated in `engine/core/Engine.cpp` update loop to detect window resize and trigger layout updates
    - **Benefits:** Panels (including viewport) now properly resize when users resize the main window, maintaining proper layout and preventing overlaps.
 
 3. **Enhanced Panel Layout Management**
@@ -73,24 +73,24 @@ Current panel positions and behavior:
 ## Implementation Details
 
 ### 1. IRenderContext Interface Updates
-Added to `include/renderer/RenderContext.h`:
+Added to `engine/renderer/RenderContext.h`:
 ```cpp
 virtual bool setViewportWindow(void* viewportHwnd) = 0;
 virtual bool recreateSwapChain(int width, int height) = 0;
 ```
 
 ### 2. DirectX 11 Implementation
-Added to `src/renderer/backends/DirectX11RenderContext.cpp`:
+Added to `engine/renderer/backends/DirectX11RenderContext.cpp`:
 - `setViewportWindow()` - Stores viewport HWND
 - `recreateSwapChain()` - Recreates swap chain for viewport window
 
 ### 3. DirectX 12 Implementation
-Added to `src/renderer/backends/DirectX12RenderContext.cpp`:
+Added to `engine/renderer/backends/DirectX12RenderContext.cpp`:
 - `setViewportWindow()` - Stores viewport HWND
 - `recreateSwapChain()` - Recreates swap chain for viewport window
 
 ### 4. Engine Integration
-In `src/core/Engine.cpp`:
+In `engine/core/Engine.cpp`:
 - `initializeGameSystems()` - Sets viewport window and creates swap chain
 - `update()` - Handles viewport resize and mouse-in-viewport checks
 - `render()` - Uses viewport dimensions for rendering

@@ -8,22 +8,22 @@ This document describes the integration of the native Win32 toolbar into the Fre
 
 ### 1. Win32Window Class Updates
 
-**File: `include/core/Win32Window.h`**
+**File: `engine/core/Win32Window.h`**
 - Added forward declaration of `Win32Toolbar`
 - Added `getToolbar()` method to get or create the toolbar instance
 - Added `std::unique_ptr<Win32Toolbar> m_toolbar` member variable
 
-**File: `src/core/Win32Window.cpp`**
+**File: `engine/core/Win32Window.cpp`**
 - Added `#include "ui/native/Win32Toolbar.h"`
 - Implemented `getToolbar()` method that lazily creates the toolbar on first access
 - Updated `WM_COMMAND` message handling to route toolbar commands to the toolbar handler
 
 ### 2. Engine Class Updates
 
-**File: `include/core/Engine.h`**
+**File: `engine/core/Engine.h`**
 - Added `setupNativeToolbar()` private method declaration (Windows-only)
 
-**File: `src/core/Engine.cpp`**
+**File: `engine/core/Engine.cpp`**
 - Added call to `setupNativeToolbar()` immediately after menu bar setup
 - Implemented `setupNativeToolbar()` method that creates a basic toolbar with:
   - **File Operations**: New, Open, Save buttons
@@ -252,12 +252,12 @@ The toolbar automatically adjusts its size to fit buttons via `TB_AUTOSIZE` mess
 
 ## Related Files
 
-- `include/core/Win32Window.h` - Window class header
-- `src/core/Win32Window.cpp` - Window class implementation
-- `include/core/Engine.h` - Engine class header
-- `src/core/Engine.cpp` - Engine class implementation
-- `include/ui/native/Win32Toolbar.h` - Toolbar class header
-- `src/ui/native/Win32Toolbar.cpp` - Toolbar class implementation
+- `engine/core/Win32Window.h` - Window class header
+- `engine/core/Win32Window.cpp` - Window class implementation
+- `engine/core/Engine.h` - Engine class header
+- `engine/core/Engine.cpp` - Engine class implementation
+- `engine/ui/native/Win32Toolbar.h` - Toolbar class header
+- `engine/ui/native/Win32Toolbar.cpp` - Toolbar class implementation
 - `WINDOWS_NATIVE_UI_MIGRATION_PLAN.md` - Overall migration plan
 - `NATIVE_MENU_BAR_INTEGRATION.md` - Menu bar integration details
 

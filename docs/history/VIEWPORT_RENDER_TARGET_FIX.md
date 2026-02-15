@@ -12,7 +12,7 @@ In DirectX 11, the graphics pipeline maintains state between draw calls. The out
 
 ### The Specific Issue
 
-In `DirectX11RenderContext::beginFrame()` (src/renderer/backends/DirectX11RenderContext.cpp, lines 291-304), the original code was:
+In `DirectX11RenderContext::beginFrame()` (engine/renderer/backends/DirectX11RenderContext.cpp, lines 291-304), the original code was:
 
 ```cpp
 bool DirectX11RenderContext::beginFrame()
@@ -203,14 +203,14 @@ No errors about render targets, swap chains, or invalid dimensions should appear
 
 ### Files Modified
 
-- `src/renderer/backends/DirectX11RenderContext.cpp` - Added render target binding in `beginFrame()`
+- `engine/renderer/backends/DirectX11RenderContext.cpp` - Added render target binding in `beginFrame()`
 
 ### Related Files (Not Modified)
 
-- `src/renderer/backends/DirectX12RenderContext.cpp` - Already had correct implementation
-- `src/core/Engine.cpp` - Viewport swap chain configuration (already correct)
-- `include/renderer/backends/DirectX11RenderContext.h` - Interface definitions
-- `include/renderer/RenderContext.h` - Abstract interface
+- `engine/renderer/backends/DirectX12RenderContext.cpp` - Already had correct implementation
+- `engine/core/Engine.cpp` - Viewport swap chain configuration (already correct)
+- `engine/renderer/backends/DirectX11RenderContext.h` - Interface definitions
+- `engine/renderer/RenderContext.h` - Abstract interface
 
 ### Why DirectX 12 Didn't Need This Fix
 

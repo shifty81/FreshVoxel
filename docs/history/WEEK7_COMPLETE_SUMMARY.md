@@ -25,7 +25,7 @@ Implemented full OGG/Vorbis audio codec support for the AudioEngine, enabling co
    - Added linking: `Vorbis::vorbisfile`, `Vorbis::vorbis`, `Ogg::ogg`
    - Added `FRESH_VORBIS_AVAILABLE` preprocessor definition
 
-3. **src/audio/AudioEngine.cpp** (+120 lines)
+3. **engine/audio/AudioEngine.cpp** (+120 lines)
    - Added vorbis headers: `#include <vorbis/codec.h>` and `#include <vorbis/vorbisfile.h>`
    - Implemented `loadOGGFile()` function (90 lines) for OGG → PCM decoding
    - Implemented `loadAudioFile()` universal loader with format auto-detection
@@ -302,7 +302,7 @@ Before marking complete, verify:
 - `vcpkg.json` - Dependency declaration
 - `CMakeLists.txt` lines 120-127 - Package finding
 - `CMakeLists.txt` lines 552-558 - Library linking
-- `src/audio/AudioEngine.cpp` - Implementation
+- `engine/audio/AudioEngine.cpp` - Implementation
 - `AUDIO_FORMAT_SUPPORT.md` - User documentation
 
 ### External Documentation

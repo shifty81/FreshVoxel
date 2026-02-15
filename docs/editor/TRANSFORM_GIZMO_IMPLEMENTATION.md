@@ -8,7 +8,7 @@ This document describes the implementation of the **Transform Gizmo** system for
 
 ### Core Transform Gizmo System
 
-**File:** `src/editor/TransformGizmo.cpp` (New Implementation - 500+ lines)
+**File:** `engine/editor/TransformGizmo.cpp` (New Implementation - 500+ lines)
 
 The TransformGizmo class provides a complete 3D manipulation interface with the following features:
 

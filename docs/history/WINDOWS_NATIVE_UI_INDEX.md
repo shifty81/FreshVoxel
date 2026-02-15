@@ -42,8 +42,8 @@ This PR delivers a complete solution for replacing ImGui with native Windows UI 
 ### Source Code
 
 5. **Proof of Concept:**
-   - [`include/ui/NativeMainMenu.h`](include/ui/NativeMainMenu.h) - Header file
-   - [`src/ui/NativeMainMenu.cpp`](src/ui/NativeMainMenu.cpp) - Implementation
+   - [`engine/ui/NativeMainMenu.h`](engine/ui/NativeMainMenu.h) - Header file
+   - [`engine/ui/NativeMainMenu.cpp`](engine/ui/NativeMainMenu.cpp) - Implementation
 
 ---
 
@@ -211,7 +211,7 @@ open WINDOWS_NATIVE_UI_IMPLEMENTATION_SUMMARY.md
 ```cmake
 if(WIN32)
     list(APPEND ENGINE_SOURCES
-        src/ui/NativeMainMenu.cpp
+        engine/ui/NativeMainMenu.cpp
     )
 endif()
 ```

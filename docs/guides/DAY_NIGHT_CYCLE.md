@@ -380,8 +380,8 @@ Event callbacks are set on the C++ TimeManager instance:
 ## See Also
 
 - `examples/scripts/day_night_demo.lua` - Interactive demo script
-- `include/gameplay/TimeManager.h` - Full C++ API reference
-- `src/gameplay/TimeManager.cpp` - Implementation details
+- `engine/gameplay/TimeManager.h` - Full C++ API reference
+- `engine/gameplay/TimeManager.cpp` - Implementation details
 
 ## Future Enhancements
 

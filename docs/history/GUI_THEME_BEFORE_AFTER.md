@@ -238,7 +238,7 @@ Visibility: Excellent
 
 ### Single File Modified
 ```
-File: src/ui/ImGuiContext.cpp
+File: engine/ui/ImGuiContext.cpp
 Lines: 81-202 (117 lines added, 6 removed)
 Function: ImGuiContext::initialize()
 ```

@@ -56,26 +56,26 @@ Instead of:
 
 ### Files Modified
 
-1. **src/editor/EditorManager.cpp**
+1. **engine/editor/EditorManager.cpp**
    - Added `#ifndef FRESH_WIN32_UI` guards around ImGui menu bar rendering
    - Added `#ifndef FRESH_WIN32_UI` guards around ImGui toolbar rendering  
    - Added `#ifndef FRESH_WIN32_UI` guards around ImGui hotbar rendering
    - Result: Native Win32 components are used exclusively on Windows
 
-2. **src/ui/ImGuiContext.cpp**
+2. **engine/ui/ImGuiContext.cpp**
    - Enabled `ImGuiConfigFlags_ViewportsEnable` for multi-viewport support
    - Updated viewport rendering code to use `IMGUI_HAS_DOCK` instead of `IMGUI_HAS_VIEWPORT`
    - Added window background alpha handling for platform windows
    - Result: ImGui panels feel more like native windows
 
 3. **CMakeLists.txt**
-   - Added `src/ui/native/Win32ConsolePanel.cpp` to build
+   - Added `engine/ui/native/Win32ConsolePanel.cpp` to build
 
 ### Files Created
 
-1. **include/ui/native/Win32ConsolePanel.h** - Native console panel header
-2. **src/ui/native/Win32ConsolePanel.cpp** - Native console panel implementation  
-3. **include/ui/native/Win32SettingsDialog.h** - Native settings dialog header (stub)
+1. **engine/ui/native/Win32ConsolePanel.h** - Native console panel header
+2. **engine/ui/native/Win32ConsolePanel.cpp** - Native console panel implementation  
+3. **engine/ui/native/Win32SettingsDialog.h** - Native settings dialog header (stub)
 
 ## Architecture
 

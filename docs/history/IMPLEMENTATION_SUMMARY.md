@@ -42,13 +42,13 @@ The original problem statement described three key approaches for integrating cu
 
 ### Core Implementation
 
-1. **include/assets/VoxelMaterialPack.h** (231 lines)
+1. **engine/assets/VoxelMaterialPack.h** (231 lines)
    - `VoxelFaceTextures` struct for per-face texture paths
    - `VoxelMaterialDefinition` struct with texture and material properties
    - `VoxelMaterialPack` class for loading and managing a single pack
    - `VoxelMaterialPackManager` singleton for multi-pack management
    
-2. **src/assets/VoxelMaterialPack.cpp** (920 lines)
+2. **engine/assets/VoxelMaterialPack.cpp** (920 lines)
    - JSON manifest parsing with nlohmann/json
    - Fallback implementation when JSON not available
    - Texture loading via `TextureManager`
@@ -59,12 +59,12 @@ The original problem statement described three key approaches for integrating cu
 
 ### Integration
 
-3. **include/renderer/VoxelTextureLoader.h** (modified)
+3. **engine/renderer/VoxelTextureLoader.h** (modified)
    - Added `useMaterialPacks` parameter to `getTexture()` method
    - Enables checking material packs before default textures
 
 4. **CMakeLists.txt** (modified)
-   - Added `src/assets/VoxelMaterialPack.cpp` to build
+   - Added `engine/assets/VoxelMaterialPack.cpp` to build
 
 ### Documentation
 

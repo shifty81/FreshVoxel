@@ -39,7 +39,7 @@ The Fresh Voxel Engine GUI now has a **modern dark night mode theme** with **exc
 
 ### Code (1 file)
 ```
-src/ui/ImGuiContext.cpp
+engine/ui/ImGuiContext.cpp
   - Lines 81-202
   - 117 lines added
   - 6 lines removed

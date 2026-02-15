@@ -354,7 +354,7 @@ Total: ~3-4 hours from idea to production-ready feature!
 
 ```
 fresh/
-├── include/ecs/                    # Component-Based Architecture
+├── engine/ecs/                    # Component-Based Architecture
 │   ├── Entity.h                    # Lightweight ID
 │   ├── IComponent.h                # Component base class
 │   ├── EntityManager.h             # ECS coordinator
@@ -363,7 +363,7 @@ fresh/
 │   ├── MovementComponent.h         # NEW: Movement behavior
 │   └── CombatSystem.h              # NEW: Combat with events
 │
-├── include/scripting/              # Event-Driven Architecture
+├── engine/scripting/              # Event-Driven Architecture
 │   └── EventSystem.h               # Event pub-sub system
 │
 ├── config/                         # Data-Driven Design

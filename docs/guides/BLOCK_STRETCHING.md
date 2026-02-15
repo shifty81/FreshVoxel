@@ -253,7 +253,7 @@ ctest --output-on-failure
 - [ ] Multi-block stretching (stretch connected blocks together)
 
 ## See Also
-- [GalaxySector.h](../include/galaxy/GalaxySector.h) - Asteroid and station data structures
-- [GalaxyGenerator.h](../include/galaxy/GalaxyGenerator.h) - Procedural generation
-- [VoxelBlock.h](../include/voxelship/VoxelBlock.h) - Block implementation
-- [BlockBuilder.h](../include/editor/BlockBuilder.h) - Builder mode tools
+- [GalaxySector.h](../engine/galaxy/GalaxySector.h) - Asteroid and station data structures
+- [GalaxyGenerator.h](../engine/galaxy/GalaxyGenerator.h) - Procedural generation
+- [VoxelBlock.h](../engine/voxelship/VoxelBlock.h) - Block implementation
+- [BlockBuilder.h](../engine/editor/BlockBuilder.h) - Builder mode tools

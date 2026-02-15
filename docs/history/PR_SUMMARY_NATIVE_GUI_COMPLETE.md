@@ -42,11 +42,11 @@ Hide the ImGui chrome on Windows and let the native Win32 controls be the primar
 ### Files Changed
 
 - `CMakeLists.txt` - Added Win32ConsolePanel.cpp to build
-- `src/editor/EditorManager.cpp` - Hide ImGui chrome on Windows
-- `src/ui/ImGuiContext.cpp` - Enable multi-viewport support
-- `include/ui/native/Win32ConsolePanel.h` - Native console header
-- `src/ui/native/Win32ConsolePanel.cpp` - Native console implementation
-- `include/ui/native/Win32SettingsDialog.h` - Native settings header (stub)
+- `engine/editor/EditorManager.cpp` - Hide ImGui chrome on Windows
+- `engine/ui/ImGuiContext.cpp` - Enable multi-viewport support
+- `engine/ui/native/Win32ConsolePanel.h` - Native console header
+- `engine/ui/native/Win32ConsolePanel.cpp` - Native console implementation
+- `engine/ui/native/Win32SettingsDialog.h` - Native settings header (stub)
 - `NATIVE_GUI_COMPLETION_SUMMARY.md` - Documentation
 - `README.md` - Updated feature list
 

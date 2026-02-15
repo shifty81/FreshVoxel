@@ -7,7 +7,7 @@ Both the Fresh Engine's main C++ editor and the new C# Dialogue Editor share a u
 ## Theme Implementation Status
 
 ### ✅ Main C++ Editor (Pre-existing)
-**Location**: `include/ui/native/UnrealStyleTheme.h`
+**Location**: `engine/ui/native/UnrealStyleTheme.h`
 
 The main editor already had a complete Unreal-style dark theme implemented:
 
@@ -161,9 +161,9 @@ WindowsThemeManager
 ```
 
 **Files**:
-- `include/ui/native/UnrealStyleTheme.h` - Color definitions
-- `include/ui/WindowsThemeManager.h` - Theme management
-- `src/ui/WindowsThemeManager.cpp` - ImGui application
+- `engine/ui/native/UnrealStyleTheme.h` - Color definitions
+- `engine/ui/WindowsThemeManager.h` - Theme management
+- `engine/ui/WindowsThemeManager.cpp` - ImGui application
 
 **Usage**:
 ```cpp
@@ -300,10 +300,10 @@ The result is a cohesive, professional-looking game engine editor suite that fee
 ## References
 
 **Main Editor Theme**:
-- `include/ui/native/UnrealStyleTheme.h`
-- `include/ui/WindowsThemeManager.h`
-- `src/ui/WindowsThemeManager.cpp`
-- `src/ui/native/Win32HUD.cpp` (usage example)
+- `engine/ui/native/UnrealStyleTheme.h`
+- `engine/ui/WindowsThemeManager.h`
+- `engine/ui/WindowsThemeManager.cpp`
+- `engine/ui/native/Win32HUD.cpp` (usage example)
 
 **Dialogue Editor Theme**:
 - `dotnet/DialogueEditor/UnrealStyleRenderer.cs`

@@ -484,8 +484,8 @@ if(CMAKE_BUILD_TYPE MATCHES Debug)
 endif()
 
 # Organize source files
-file(GLOB_RECURSE SOURCES "src/*.cpp")
-file(GLOB_RECURSE HEADERS "include/*.h")
+file(GLOB_RECURSE SOURCES "engine/*.cpp")
+file(GLOB_RECURSE HEADERS "engine/*.h")
 ```
 
 ### Git and Version Control

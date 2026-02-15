@@ -30,7 +30,7 @@ The viewport implementation for the Fresh Voxel Engine has been **completed** wi
 **Impact:** Eliminates panel overlap and ensures proper layout on all window sizes.
 
 **Files Changed:**
-- `src/editor/EditorManager.cpp` line 547
+- `engine/editor/EditorManager.cpp` line 547
 
 ---
 
@@ -44,10 +44,10 @@ The viewport implementation for the Fresh Voxel Engine has been **completed** wi
 
 #### Header Declaration
 - Added `onWindowResize(int clientWidth, int clientHeight)` method to `EditorManager`
-- Method declared in `include/editor/EditorManager.h`
+- Method declared in `engine/editor/EditorManager.h`
 
 #### Core Implementation
-- Implemented in `src/editor/EditorManager.cpp` (lines 1528-1587)
+- Implemented in `engine/editor/EditorManager.cpp` (lines 1528-1587)
 - Updates positions and sizes for all panels:
   - **Left panels** (Inspector, Scene Hierarchy) - Fixed position and size
   - **Content Browser** - Fixed size, position updated
@@ -55,7 +55,7 @@ The viewport implementation for the Fresh Voxel Engine has been **completed** wi
   - **Viewport** - Dynamic width and height, fills available space
 
 #### Engine Integration
-- Integrated in `src/core/Engine.cpp` update loop (lines 991-1007)
+- Integrated in `engine/core/Engine.cpp` update loop (lines 991-1007)
 - Detects window resize via `Win32Window::wasFramebufferResized()`
 - Calls `EditorManager::onWindowResize()` with new dimensions
 - Resets framebuffer resize flag to prevent repeated processing
@@ -90,7 +90,7 @@ constexpr int MIN_VIEWPORT_HEIGHT = 300;
 constexpr int MIN_CONSOLE_WIDTH = 600;
 ```
 
-**Location:** `src/editor/EditorManager.cpp` (anonymous namespace)
+**Location:** `engine/editor/EditorManager.cpp` (anonymous namespace)
 
 **Benefits:**
 - Centralized layout configuration
@@ -126,7 +126,7 @@ constexpr int MIN_CONSOLE_WIDTH = 600;
 
 ### DirectX 11 Support ✅
 
-**Implementation:** `src/renderer/backends/DirectX11RenderContext.cpp`
+**Implementation:** `engine/renderer/backends/DirectX11RenderContext.cpp`
 
 Key methods:
 - `setViewportWindow(void* viewportHandle)` - Sets viewport HWND (line 712)
@@ -139,7 +139,7 @@ Key methods:
 
 ### DirectX 12 Support ✅
 
-**Implementation:** `src/renderer/backends/DirectX12RenderContext.cpp`
+**Implementation:** `engine/renderer/backends/DirectX12RenderContext.cpp`
 
 Key methods:
 - `setViewportWindow(void* viewportHandle)` - Sets viewport HWND (line 780)
@@ -152,7 +152,7 @@ Key methods:
 
 ### OpenGL Support ✅
 
-**Implementation:** `include/renderer/backends/OpenGLRenderContext.h`
+**Implementation:** `engine/renderer/backends/OpenGLRenderContext.h`
 
 Key methods:
 - `setViewportWindow(void* viewportHwnd)` - Inline stub (line 63)
@@ -166,7 +166,7 @@ Key methods:
 
 ### Viewport Bounds Checking ✅
 
-**Implementation:** `src/core/Engine.cpp` (lines 1032-1040)
+**Implementation:** `engine/core/Engine.cpp` (lines 1032-1040)
 
 **Features:**
 - Mouse position checked against viewport window rectangle
@@ -186,7 +186,7 @@ if (m_editorManager && m_editorManager->getViewportPanel()) {
 
 ### Camera Control Integration ✅
 
-**Implementation:** `src/core/Engine.cpp` (line 1054)
+**Implementation:** `engine/core/Engine.cpp` (line 1054)
 
 **Behavior:**
 - Right-click camera control requires: `rightMousePressed && !guiCapturesMouse && mouseInViewport`
@@ -199,7 +199,7 @@ if (m_editorManager && m_editorManager->getViewportPanel()) {
 
 ### Automatic Swap Chain Recreation ✅
 
-**Implementation:** `src/core/Engine.cpp` (lines 1009-1023)
+**Implementation:** `engine/core/Engine.cpp` (lines 1009-1023)
 
 **Process:**
 1. Detect viewport resize via `wasResized()` flag
@@ -269,17 +269,17 @@ The following items require building and running on Windows to verify:
 ## Files Modified
 
 ### Header Files
-1. `include/editor/EditorManager.h`
+1. `engine/editor/EditorManager.h`
    - Added `onWindowResize()` method declaration
 
 ### Source Files
-1. `src/editor/EditorManager.cpp`
+1. `engine/editor/EditorManager.cpp`
    - Added panel layout constants (lines 93-105)
    - Fixed viewport height calculation (line 547)
    - Updated panel creation to use constants (lines 481-550)
    - Implemented `onWindowResize()` method (lines 1528-1587)
 
-2. `src/core/Engine.cpp`
+2. `engine/core/Engine.cpp`
    - Added window resize detection (lines 992-1007)
    - Already had viewport resize handling (lines 1009-1023)
    - Already had mouse bounds checking (lines 1032-1040)
@@ -299,7 +299,7 @@ The following items require building and running on Windows to verify:
 
 ### Win32ViewportPanel Class ✅
 
-**File:** `include/ui/native/Win32ViewportPanel.h`, `src/ui/native/Win32ViewportPanel.cpp`
+**File:** `engine/ui/native/Win32ViewportPanel.h`, `engine/ui/native/Win32ViewportPanel.cpp`
 
 **Key Features:**
 - Native Win32 child window for DirectX rendering
@@ -322,7 +322,7 @@ void clearResizedFlag();
 
 ### Win32Panel Base Class ✅
 
-**File:** `include/ui/native/Win32Panel.h`, `src/ui/native/Win32Panel.cpp`
+**File:** `engine/ui/native/Win32Panel.h`, `engine/ui/native/Win32Panel.cpp`
 
 **Inheritance:** All native panels (Inspector, Scene Hierarchy, Content Browser, Console) inherit from Win32Panel
 
@@ -429,9 +429,9 @@ The viewport implementation for Fresh Voxel Engine is **100% complete** from a c
 - `VIEWPORT_INTEGRATION_TODO.md` - Detailed viewport implementation status
 - `GUI_ACTUAL_STATUS_2025-11-21.md` - Overall GUI implementation status
 - `GUI_WORK_REMAINING_SUMMARY.md` - Remaining GUI work (viewport is complete)
-- `src/editor/EditorManager.cpp` - Panel layout and management
-- `src/core/Engine.cpp` - Viewport integration in game loop
-- `include/ui/native/Win32ViewportPanel.h` - Viewport panel interface
+- `engine/editor/EditorManager.cpp` - Panel layout and management
+- `engine/core/Engine.cpp` - Viewport integration in game loop
+- `engine/ui/native/Win32ViewportPanel.h` - Viewport panel interface
 
 ---
 

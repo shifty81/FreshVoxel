@@ -45,7 +45,7 @@ if (currentMode == InputMode::UIMode && !m_inputManager->isAltHeld()) {
 Added a member variable to Engine to track cursor capture state:
 
 ```cpp
-// include/core/Engine.h
+// engine/core/Engine.h
 bool m_lastCursorCaptured = false;
 ```
 
@@ -81,7 +81,7 @@ bool actualCursorCaptured = m_inputManager->isCursorCaptured();
 Added `isCursorCaptured()` to InputManager for state queries:
 
 ```cpp
-// include/input/InputManager.h
+// engine/input/InputManager.h
 bool isCursorCaptured() const
 {
     return cursorCaptured;
@@ -92,18 +92,18 @@ bool isCursorCaptured() const
 
 ### Files Modified
 
-1. **include/core/Engine.h**
+1. **engine/core/Engine.h**
    - Added `m_lastCursorCaptured` member variable
    - Tracks last known cursor capture state
 
-2. **src/core/Engine.cpp**
+2. **engine/core/Engine.cpp**
    - Initialize `m_lastCursorCaptured` in constructor
    - Refactored cursor management logic in `update()`
    - Only changes cursor mode when state actually differs
    - Syncs with InputManager's actual state
    - Fixed shader constant warnings with `[[maybe_unused]]`
 
-3. **include/input/InputManager.h**
+3. **engine/input/InputManager.h**
    - Added `isCursorCaptured()` getter method
    - Allows external code to query cursor state
 

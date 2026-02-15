@@ -124,7 +124,7 @@ By extracting the Z-order management into `ensurePanelsOnTop()`:
 
 ## Files Modified
 
-- `src/editor/EditorManager.cpp`:
+- `engine/editor/EditorManager.cpp`:
   - Line 536-545: Moved viewport creation to be first
   - Line 627: Call to `ensurePanelsOnTop()` after initialization
   - Line 1053: Call to `ensurePanelsOnTop()` in updateWorld()
@@ -132,7 +132,7 @@ By extracting the Z-order management into `ensurePanelsOnTop()`:
   - Line 1940-1968: Implementation of `ensurePanelsOnTop()` helper function
   - Removed duplicate viewport creation code that was after all other panels
 
-- `include/editor/EditorManager.h`:
+- `engine/editor/EditorManager.h`:
   - Line 560-568: Added `ensurePanelsOnTop()` private method declaration with documentation
 
 ## Related Issues

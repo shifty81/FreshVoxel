@@ -371,7 +371,7 @@ ctest --output-on-failure -R Galaxy
 - [ ] Captain recruitment missions
 
 ## See Also
-- [GalaxySector.h](../include/galaxy/GalaxySector.h) - Data structures
-- [GalaxyGenerator.h](../include/galaxy/GalaxyGenerator.h) - Generation logic
+- [GalaxySector.h](../engine/galaxy/GalaxySector.h) - Data structures
+- [GalaxyGenerator.h](../engine/galaxy/GalaxyGenerator.h) - Generation logic
 - [BLOCK_STRETCHING.md](BLOCK_STRETCHING.md) - Block stretching feature
 - [examples/README.md](../examples/README.md) - Demo scenarios

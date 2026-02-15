@@ -172,10 +172,10 @@ Modified to:
 - **C++ Standard**: C++20
 
 ### Dependencies Added to Tests
-- `src/editor/SelectionManager.cpp`
-- `src/editor/SelectionRenderer.cpp`
-- `src/devtools/DebugRenderer.cpp`
-- `src/voxel/VoxelWorld.cpp` (existing)
+- `engine/editor/SelectionManager.cpp`
+- `engine/editor/SelectionRenderer.cpp`
+- `engine/devtools/DebugRenderer.cpp`
+- `engine/voxel/VoxelWorld.cpp` (existing)
 
 ### Test Structure
 ```

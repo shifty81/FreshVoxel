@@ -23,8 +23,8 @@ Implemented the foundational character generation system as specified in ROADMAP
 #### A. Bone Hierarchy System
 
 **Files Created:**
-- `include/character/Bone.h` - Bone class with hierarchical transforms
-- `src/character/Bone.cpp` - Implementation
+- `engine/character/Bone.h` - Bone class with hierarchical transforms
+- `engine/character/Bone.cpp` - Implementation
 
 **Features:**
 - ✅ Parent-child bone relationships
@@ -41,8 +41,8 @@ Implemented the foundational character generation system as specified in ROADMAP
 #### B. Humanoid Skeleton
 
 **Files Created:**
-- `include/character/HumanoidSkeleton.h` - 18-bone humanoid rig
-- `src/character/HumanoidSkeleton.cpp` - Implementation
+- `engine/character/HumanoidSkeleton.h` - 18-bone humanoid rig
+- `engine/character/HumanoidSkeleton.cpp` - Implementation
 
 **Features:**
 - ✅ 18-bone standard humanoid skeleton:
@@ -62,8 +62,8 @@ Implemented the foundational character generation system as specified in ROADMAP
 #### C. Voxel Character Generation
 
 **Files Integrated:**
-- Existing `include/character/VoxelCharacter.h` (unchanged, already complete)
-- Existing `src/character/VoxelCharacter.cpp` (unchanged, already complete)
+- Existing `engine/character/VoxelCharacter.h` (unchanged, already complete)
+- Existing `engine/character/VoxelCharacter.cpp` (unchanged, already complete)
 
 **Features Already Present:**
 - ✅ Procedural voxel generation from skeleton
@@ -82,8 +82,8 @@ Implemented the foundational character generation system as specified in ROADMAP
 Implemented comprehensive heightmap-based terrain generation system from user request.
 
 **Files Created:**
-- `include/generation/HeightmapWorldGenerator.h` - Heightmap generator API
-- `src/generation/HeightmapWorldGenerator.cpp` - Full implementation
+- `engine/generation/HeightmapWorldGenerator.h` - Heightmap generator API
+- `engine/generation/HeightmapWorldGenerator.cpp` - Full implementation
 
 #### Features Implemented
 

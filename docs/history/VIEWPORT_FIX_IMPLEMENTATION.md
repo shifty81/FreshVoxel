@@ -201,17 +201,17 @@ Target dimensions: WxH
 
 ## Files Modified
 
-1. `include/core/Engine.h` - Added validateViewportState() declaration
-2. `src/core/Engine.cpp` - Multiple fixes:
+1. `engine/core/Engine.h` - Added validateViewportState() declaration
+2. `engine/core/Engine.cpp` - Multiple fixes:
    - Viewport initialization with dimension validation
    - Simplified main loop for editor-first workflow
    - Improved render() to handle no-world case
    - Added validateViewportState() implementation
-3. `src/renderer/backends/DirectX11RenderContext.cpp` - Multiple fixes:
+3. `engine/renderer/backends/DirectX11RenderContext.cpp` - Multiple fixes:
    - Improved setViewportWindow() logging
    - Changed swap effect to FLIP_SEQUENTIAL
    - Comprehensive logging in recreateSwapChain()
-4. `src/ui/native/Win32ViewportPanel.cpp` - Multiple fixes:
+4. `engine/ui/native/Win32ViewportPanel.cpp` - Multiple fixes:
    - Removed WS_BORDER to eliminate gaps
    - Improved WM_PAINT handling
    - Added WM_NCPAINT handler

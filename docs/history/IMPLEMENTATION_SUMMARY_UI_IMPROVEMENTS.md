@@ -59,21 +59,21 @@
 ## Files Modified
 
 ### Code Changes
-1. **include/core/Engine.h**
+1. **engine/core/Engine.h**
    - Added `m_rightMouseHeldForCamera` state variable
    - Updated `createNewWorld()` signature to accept world type
 
-2. **src/core/Engine.cpp**
+2. **engine/core/Engine.cpp**
    - Implemented Unreal-style mouse control logic (lines 867-920)
    - Updated camera movement to only process when RMB held (lines 931-960)
    - Modified block interaction to respect camera mode
    - Updated world creation to support 2D/3D types
 
-3. **include/ui/MainMenuPanel.h**
+3. **engine/ui/MainMenuPanel.h**
    - Added `m_isWorld3D` member variable
    - Added `isWorld3D()` getter method
 
-4. **src/ui/MainMenuPanel.cpp**
+4. **engine/ui/MainMenuPanel.cpp**
    - Added world type radio buttons to creation dialog
    - Added descriptive text for each world type
    - Increased dialog size to accommodate new options
