@@ -395,323 +395,62 @@ message(STATUS "Dependency checking completed")
 # Enable GLM experimental features
 add_definitions(-DGLM_ENABLE_EXPERIMENTAL)
 
-message(STATUS "Preparing to define source files...")
+# ==============================================================================
+# Build Targets (Atlas-style modular architecture)
+# ==============================================================================
+# Fresh ships as multiple executables, all linked against the same engine core:
+#   FreshEditor  - Full editor + runtime (superset)
+#   FreshClient  - Player runtime
+#   FreshServer  - Headless authoritative server
+#   FreshRuntime - Runtime launcher with CLI options
 
-# Source files
-set(ENGINE_SOURCES
-    src/main.cpp
-    src/core/Engine.cpp
-    src/core/Project.cpp
-    src/core/Window.cpp
-    src/core/Logger.cpp
-    src/core/MemoryManager.cpp
-    src/core/ResourceManager.cpp
-    src/core/SceneManager.cpp
-    src/core/Reflection.cpp
-    src/renderer/ShaderManager.cpp
-    src/renderer/RenderContext.cpp
-    src/renderer/Material.cpp
-    src/renderer/Texture.cpp
-    src/renderer/stb_image_impl.cpp
-    src/renderer/ModelLoader.cpp
-    src/renderer/TextureManager.cpp
-    src/renderer/VoxelTextureLoader.cpp
-    src/voxel/Chunk.cpp
-    src/voxel/VoxelWorld.cpp
-    src/voxel/MeshGenerator.cpp
-    src/voxel/ChunkStreamer.cpp
-    src/generation/NoiseGenerator.cpp
-    src/generation/TerrainGenerator.cpp
-    src/generation/BiomeSystem.cpp
-    src/generation/HeightmapWorldGenerator.cpp
-    src/generation/World2DGenerator.cpp
-    src/generation/WorldGeneratorFactory.cpp
-    src/generation/WorldGenerationTask.cpp
-    src/physics/PhysicsSystem.cpp
-    src/physics/CollisionDetection.cpp
-    src/physics/PhysicsComponent.cpp
-    src/physics/PhysicsSystemEnhanced.cpp
-    src/interaction/RaycastSystem.cpp
-    src/interaction/VoxelInteraction.cpp
-    src/interaction/VoxelTool.cpp
-    src/interaction/ToolManager.cpp
-    src/ai/AISystem.cpp
-    src/ai/BehaviorTree.cpp
-    src/ai/LLMClient.cpp
-    src/ai/ProjectContext.cpp
-    src/audio/AudioEngine.cpp
-    src/scripting/EventSystem.cpp
-    src/character/VoxelCharacter.cpp
-    src/character/BodyPartLibrary.cpp
-    src/character/AnimationClip.cpp
-    src/character/AnimationController.cpp
-    src/character/IKSolver.cpp
-    src/character/CharacterRenderer.cpp
-    src/editor/EditorGUI.cpp
-    src/editor/WorldEditor.cpp
-    src/editor/TerraformingSystem.cpp
-    src/editor/BlockBuilder.cpp
-    src/editor/SelectionManager.cpp
-    src/editor/SelectionRenderer.cpp
-    src/editor/TransformGizmo.cpp
-    src/editor/FileDialogManager.cpp
-    src/editor/LayoutManager.cpp
-    src/editor/EditorSettingsDialog.cpp
-    src/editor/CameraController.cpp
-    src/serialization/WorldSerializer.cpp
-    src/ui/MainMenu.cpp
-    src/ui/EditorToolbar.cpp
-    src/input/InputManager.cpp
-    src/gameplay/Camera.cpp
-    src/gameplay/Player.cpp
-    src/gameplay/TimeManager.cpp
-    src/gameplay/SeasonManager.cpp
-    src/gameplay/WeatherManager.cpp
-    src/gameplay/Raft.cpp
-    src/assets/ModularAssetSystem.cpp
-    src/assets/VoxelMaterialPack.cpp
-    src/assets/AssetManager.cpp
-    src/assets/AssetManagerExports.cpp
-    src/ecs/EntityManager.cpp
-    src/ecs/TransformComponent.cpp
-    src/ecs/RendererComponent.cpp
-    src/ecs/MaterialComponent.cpp
-    src/ecs/Transform2DComponent.cpp
-    src/ecs/Sprite2DComponent.cpp
-    src/ecs/RigidBody2DComponent.cpp
-    src/ecs/Collider2DComponent.cpp
-    src/ecs/Animation2DComponent.cpp
-    src/ecs/Camera2DComponent.cpp
-    src/ecs/Physics2DSystem.cpp
-    src/ecs/Collision2DSystem.cpp
-    src/ecs/Animation2DSystem.cpp
-    src/ecs/Camera2DSystem.cpp
-    src/voxelship/VoxelBlock.cpp
-    src/voxelship/VoxelStructureComponent.cpp
-    src/galaxy/GalaxySector.cpp
-    src/galaxy/GalaxyGenerator.cpp
-    src/rpg/Inventory.cpp
-    src/rpg/InventoryComponent.cpp
-    src/rpg/CraftingSystem.cpp
-    src/rpg/ProgressionComponent.cpp
-    src/rpg/FactionComponent.cpp
-    src/rpg/LootSystem.cpp
-    src/rpg/TradingSystem.cpp
-    src/networking/NetworkMessage.cpp
-    src/networking/ClientConnection.cpp
-    src/networking/GameServer.cpp
-    src/networking/SectorServer.cpp
-    src/devtools/DebugRenderer.cpp
-    src/devtools/PerformanceProfiler.cpp
-    src/devtools/MemoryTracker.cpp
-    src/devtools/DebugConsole.cpp
-    src/devtools/DevToolsManager.cpp
-    src/scripting/lua/ScriptingEngine.cpp
-    src/scripting/lua/LuaScriptingEngine.cpp
-    src/scripting/lua/LuaECSBindings.cpp
-    src/scripting/lua/LuaTimeBindings.cpp
-)
+message(STATUS "Configuring modular build targets...")
 
-# Add platform-specific rendering backends
-if(ENABLE_DIRECTX)
-    list(APPEND ENGINE_SOURCES
-        src/renderer/backends/DirectX11RenderContext.cpp
-        src/renderer/backends/DirectX12RenderContext.cpp
-    )
-endif()
-
-if(ENABLE_OPENGL)
-    list(APPEND ENGINE_SOURCES
-        src/renderer/backends/OpenGLRenderContext.cpp
-    )
-endif()
-
-# Add Windows-native UI (independent of ImGui)
+# Windows-specific definitions (applied globally before subdirectories)
 if(WIN32)
-    list(APPEND ENGINE_SOURCES
-        # Core Windows components
-        src/core/Win32Window.cpp
-        src/core/GamePlayWindow.cpp
-        src/input/Win32InputManager.cpp
-        
-        # Native Win32 UI panels and controls
-        src/ui/native/Win32Panel.cpp
-        src/ui/native/Win32MenuBar.cpp
-        src/ui/native/Win32Toolbar.cpp
-        src/ui/native/Win32HUD.cpp
-        src/ui/native/Win32HUDOverlay.cpp
-        src/ui/native/Win32TreeView.cpp
-        src/ui/native/Win32ListView.cpp
-        src/ui/native/Win32ConsolePanel.cpp
-        src/ui/native/Win32InspectorPanel.cpp
-        src/ui/native/Win32SceneHierarchyPanel.cpp
-        src/ui/native/Win32ContentBrowserPanel.cpp
-        src/ui/native/Win32SettingsDialog.cpp
-        src/ui/native/Win32TerraformingPanel.cpp
-        src/ui/native/Win32ViewportPanel.cpp
-        src/ui/native/Win32StatusBar.cpp
-        src/ui/native/Win32LLMAssistantPanel.cpp
-        src/ui/NativeMainMenu.cpp
-        
-        # Windows integration features (theme detection, dialogs, taskbar, etc.)
-        src/ui/WindowsThemeManager.cpp
-        src/ui/WindowsDialogManager.cpp
-        src/ui/WindowsTaskbarManager.cpp
-        src/ui/WindowsJumpListManager.cpp
-        src/ui/WindowsToastManager.cpp
-        src/ui/WindowsDPIManager.cpp
-        
-        # Note: ImGui-based panels (WindowsCustomizationPanel, MainMenuPanel, SettingsPanel, EngineConfigPanel) 
-        # have been archived to archived/imgui-panels/ and are no longer compiled.
-        # All UI is now handled through native Win32 panels.
-    )
-    
-    # Define that we're using native Win32 UI
     add_definitions(-DFRESH_WIN32_UI)
     message(STATUS "Win32 native UI enabled")
 endif()
 
-# Always include EditorManager (uses native Win32 UI on Windows)
-list(APPEND ENGINE_SOURCES
-    src/editor/EditorManager.cpp
-    src/ui/HotbarPanel.cpp
-)
-message(STATUS "Windows Native UI enabled")
+# --- Engine core library ---
+add_subdirectory(engine)
 
-# Note: ImGui has been completely removed from the project.
-# All deprecated ImGui-based panels have been archived to archived/imgui-panels/
-# The engine uses Windows Native Win32 UI exclusively. See WINDOWS_NATIVE_ONLY_POLICY.md
-
-# Header files
-set(ENGINE_HEADERS
-    include/core/Engine.h
-    include/core/Window.h
-    include/core/Logger.h
-    include/core/MemoryManager.h
-    include/core/ResourceManager.h
-    include/core/SceneManager.h
-    include/core/Reflection.h
-    include/renderer/ShaderManager.h
-    include/voxel/Chunk.h
-    include/voxel/VoxelWorld.h
-    include/voxel/VoxelTypes.h
-    include/voxel/MeshGenerator.h
-    include/voxel/ChunkStreamer.h
-    include/generation/NoiseGenerator.h
-    include/generation/TerrainGenerator.h
-    include/generation/BiomeSystem.h
-    include/generation/HeightmapWorldGenerator.h
-    include/generation/IWorldGenerator.h
-    include/generation/WorldGenerationTask.h
-    include/physics/PhysicsSystem.h
-    include/physics/CollisionDetection.h
-    include/physics/PhysicsComponent.h
-    include/physics/PhysicsSystemEnhanced.h
-    include/interaction/RaycastSystem.h
-    include/interaction/VoxelInteraction.h
-    include/ai/AISystem.h
-    include/ai/BehaviorTree.h
-    include/audio/AudioEngine.h
-    include/scripting/EventSystem.h
-    include/editor/EditorGUI.h
-    include/editor/WorldEditor.h
-    include/editor/TerraformingSystem.h
-    include/editor/EditorManager.h
-    include/editor/SelectionManager.h
-    include/editor/SelectionRenderer.h
-    include/serialization/WorldSerializer.h
-    include/ui/MainMenu.h
-    include/ui/HotbarPanel.h
-    include/ui/NativeMainMenu.h
-    include/input/InputManager.h
-    include/gameplay/Camera.h
-    include/gameplay/Player.h
-    include/gameplay/TimeManager.h
-    include/assets/ModularAssetSystem.h
-    include/ecs/Entity.h
-    include/ecs/IComponent.h
-    include/ecs/EntityManager.h
-    include/ecs/SystemBase.h
-    include/voxelship/VoxelBlock.h
-    include/voxelship/VoxelStructureComponent.h
-    include/galaxy/GalaxySector.h
-    include/galaxy/GalaxyGenerator.h
-    include/rpg/Inventory.h
-    include/rpg/InventoryComponent.h
-    include/rpg/CraftingSystem.h
-    include/rpg/ProgressionComponent.h
-    include/rpg/FactionComponent.h
-    include/rpg/LootSystem.h
-    include/rpg/TradingSystem.h
-    include/networking/NetworkMessage.h
-    include/networking/ClientConnection.h
-    include/networking/GameServer.h
-    include/networking/SectorServer.h
-    include/devtools/DebugRenderer.h
-    include/devtools/PerformanceProfiler.h
-    include/devtools/MemoryTracker.h
-    include/devtools/DebugConsole.h
-    include/devtools/DevToolsManager.h
-    include/scripting/lua/ScriptingEngine.h
-    include/scripting/lua/LuaScriptingEngine.h
-    include/scripting/lua/LuaECSBindings.h
-    include/scripting/lua/LuaTimeBindings.h
-    include/character/VoxelCharacter.h
+# Configure engine library with dependencies and compiler settings
+# Include directories (engine headers are co-located with sources)
+# Also keep include/ for backward compatibility during transition
+target_include_directories(FreshEngine PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
-message(STATUS "Source and header files defined. Creating executable target...")
-
-# Create executable
-add_executable(${PROJECT_NAME} ${ENGINE_SOURCES} ${ENGINE_HEADERS})
-
-message(STATUS "Executable target '${PROJECT_NAME}' created successfully")
-
-# Make it a proper Windows GUI application (no console in Release)
-if(WIN32 AND CMAKE_BUILD_TYPE STREQUAL "Release")
-    set_target_properties(${PROJECT_NAME} PROPERTIES WIN32_EXECUTABLE TRUE)
-endif()
-
-# Include directories
-target_include_directories(${PROJECT_NAME} 
-    PRIVATE 
-        ${CMAKE_CURRENT_SOURCE_DIR}/include
-)
-
-# CRITICAL: Add Lua include directories immediately after target creation
-# This must come BEFORE linking Sol2 or any other library that depends on Lua headers
-# Sol2 is a header-only library that includes lua.h, so Lua headers must be in the include path
+# Add Lua include directories to engine
 if(Lua_FOUND AND DEFINED LUA_INCLUDE_DIR)
-    target_include_directories(${PROJECT_NAME} PRIVATE ${LUA_INCLUDE_DIR})
-    message(STATUS "Lua include directories added early: ${LUA_INCLUDE_DIR}")
+    target_include_directories(FreshEngine PUBLIC ${LUA_INCLUDE_DIR})
+    message(STATUS "Lua include directories added: ${LUA_INCLUDE_DIR}")
 endif()
-
-# ==============================================================================
-# Link Libraries
-# ==============================================================================
 
 # Link GLFW (windowing)
 if(glfw3_FOUND)
-    target_link_libraries(${PROJECT_NAME} PRIVATE glfw)
+    target_link_libraries(FreshEngine PUBLIC glfw)
 elseif(GLFW_FOUND)
-    target_include_directories(${PROJECT_NAME} PRIVATE ${GLFW_INCLUDE_DIRS})
-    target_link_libraries(${PROJECT_NAME} PRIVATE ${GLFW_LIBRARIES})
+    target_include_directories(FreshEngine PUBLIC ${GLFW_INCLUDE_DIRS})
+    target_link_libraries(FreshEngine PUBLIC ${GLFW_LIBRARIES})
 endif()
 
 # Link GLM (mathematics)
 if(glm_FOUND)
-    target_link_libraries(${PROJECT_NAME} PRIVATE glm::glm)
+    target_link_libraries(FreshEngine PUBLIC glm::glm)
 endif()
 
 # Link OpenAL (Audio)
 if(OpenAL_FOUND)
-    target_link_libraries(${PROJECT_NAME} PRIVATE OpenAL::OpenAL)
+    target_link_libraries(FreshEngine PUBLIC OpenAL::OpenAL)
     add_definitions(-DFRESH_OPENAL_AVAILABLE)
     message(STATUS "OpenAL enabled for audio support")
 endif()
 
 # Link libvorbis (OGG audio support)
 if(Vorbis_FOUND)
-    target_link_libraries(${PROJECT_NAME} PRIVATE Vorbis::vorbisfile Vorbis::vorbis Ogg::ogg)
+    target_link_libraries(FreshEngine PUBLIC Vorbis::vorbisfile Vorbis::vorbis Ogg::ogg)
     add_definitions(-DFRESH_VORBIS_AVAILABLE)
     message(STATUS "libvorbis enabled for OGG audio support")
 endif()
@@ -720,104 +459,82 @@ endif()
 if(Lua_FOUND)
     add_definitions(-DFRESH_LUA_AVAILABLE)
     
-    # Note: Lua include directories were already added immediately after target creation
-    # This ensures Sol2 (header-only library) can find lua.h during compilation
     if(NOT DEFINED LUA_INCLUDE_DIR)
         message(WARNING "LUA_INCLUDE_DIR not set - this may cause compilation errors with Sol2")
     endif()
     
     if(LUA_FOUND_VIA_CONFIG)
-        # Using vcpkg's Lua config - check for different possible target names
-        # vcpkg on Windows creates the 'lua' or 'luajit' target
-        # Note: Must ensure C linkage is preserved when linking
         if(TARGET luajit)
-            target_link_libraries(${PROJECT_NAME} PRIVATE luajit)
+            target_link_libraries(FreshEngine PUBLIC luajit)
             message(STATUS "LuaJIT enabled via CONFIG mode - linked target 'luajit'")
         elseif(TARGET luajit::luajit)
-            target_link_libraries(${PROJECT_NAME} PRIVATE luajit::luajit)
+            target_link_libraries(FreshEngine PUBLIC luajit::luajit)
             message(STATUS "LuaJIT enabled via CONFIG mode - linked target 'luajit::luajit'")
         elseif(TARGET lua)
-            target_link_libraries(${PROJECT_NAME} PRIVATE lua)
+            target_link_libraries(FreshEngine PUBLIC lua)
             message(STATUS "Lua enabled via CONFIG mode - linked target 'lua'")
         elseif(TARGET lua::lua)
-            target_link_libraries(${PROJECT_NAME} PRIVATE lua::lua)
+            target_link_libraries(FreshEngine PUBLIC lua::lua)
             message(STATUS "Lua enabled via CONFIG mode - linked target 'lua::lua'")
         elseif(TARGET lua::library)
-            # Some vcpkg versions use lua::library target
-            target_link_libraries(${PROJECT_NAME} PRIVATE lua::library)
+            target_link_libraries(FreshEngine PUBLIC lua::library)
             message(STATUS "Lua enabled via CONFIG mode - linked target 'lua::library'")
         else()
-            # Fallback: use variables if targets don't exist
             if(DEFINED LUA_LIBRARIES)
-                target_link_libraries(${PROJECT_NAME} PRIVATE ${LUA_LIBRARIES})
+                target_link_libraries(FreshEngine PUBLIC ${LUA_LIBRARIES})
                 message(STATUS "Lua enabled via CONFIG mode - using variables")
-                message(STATUS "  LUA_INCLUDE_DIR: ${LUA_INCLUDE_DIR}")
-                message(STATUS "  LUA_LIBRARIES: ${LUA_LIBRARIES}")
             else()
                 message(WARNING "Lua found via CONFIG but no targets or variables available")
-                message(WARNING "This may cause linking errors!")
             endif()
         endif()
     else()
-        # Using standard FindLua module variables
         if(DEFINED LUA_LIBRARIES)
-            target_link_libraries(${PROJECT_NAME} PRIVATE ${LUA_LIBRARIES})
+            target_link_libraries(FreshEngine PUBLIC ${LUA_LIBRARIES})
         endif()
         message(STATUS "Lua enabled via FindLua module")
-        message(STATUS "  LUA_INCLUDE_DIR: ${LUA_INCLUDE_DIR}")
-        message(STATUS "  LUA_LIBRARIES: ${LUA_LIBRARIES}")
-        if(DEFINED LUA_VERSION_STRING)
-            message(STATUS "  LUA_VERSION_STRING: ${LUA_VERSION_STRING}")
-        endif()
     endif()
     
     # Add Sol2 for modern C++ Lua binding
     if(SOL2_AVAILABLE)
-        # Sol2 is header-only, so we just need to link it
-        # Note: LUA_INCLUDE_DIR was already added above, ensuring Sol2 can find lua.h
-        target_link_libraries(${PROJECT_NAME} PRIVATE sol2::sol2)
+        target_link_libraries(FreshEngine PUBLIC sol2::sol2)
         add_definitions(-DFRESH_SOL2_AVAILABLE)
         message(STATUS "Sol2 enabled - using production Lua integration")
     elseif(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/external/sol2/include")
-        target_include_directories(${PROJECT_NAME} PRIVATE 
+        target_include_directories(FreshEngine PUBLIC
             ${CMAKE_CURRENT_SOURCE_DIR}/external/sol2/include)
         add_definitions(-DFRESH_SOL2_AVAILABLE)
         message(STATUS "Sol2 found (local) - using production Lua integration")
     else()
         message(STATUS "Sol2 not found - Lua scripting features will be limited")
-        message(STATUS "  To enable full Lua support: vcpkg install sol2")
     endif()
     
     message(STATUS "Lua enabled for scripting and modding")
-else()
-    # No Lua available, use stub implementation
-    set(LUA_IMPLEMENTATION_FILE src/scripting/lua/ScriptingEngine.cpp)
 endif()
 
 # Link nlohmann-json (JSON parsing for asset manifests)
 if(nlohmann_json_FOUND)
-    target_link_libraries(${PROJECT_NAME} PRIVATE nlohmann_json::nlohmann_json)
+    target_link_libraries(FreshEngine PUBLIC nlohmann_json::nlohmann_json)
     add_definitions(-DFRESH_JSON_AVAILABLE)
     message(STATUS "nlohmann-json enabled for asset manifest parsing")
 endif()
 
 # Link Native File Dialog Extended (file dialogs)
 if(nfd_FOUND)
-    target_link_libraries(${PROJECT_NAME} PRIVATE nfd::nfd)
+    target_link_libraries(FreshEngine PUBLIC nfd::nfd)
     add_definitions(-DFRESH_NFD_AVAILABLE)
     message(STATUS "Native File Dialog Extended enabled for file operations")
 endif()
 
 # Link tinyobjloader (OBJ model loading)
 if(TINYOBJLOADER_AVAILABLE)
-    target_link_libraries(${PROJECT_NAME} PRIVATE tinyobjloader::tinyobjloader)
+    target_link_libraries(FreshEngine PUBLIC tinyobjloader::tinyobjloader)
     add_definitions(-DFRESH_TINYOBJLOADER_AVAILABLE)
     message(STATUS "tinyobjloader enabled for OBJ model loading")
 endif()
 
 # Link DirectX (Windows only)
 if(WIN32 AND ENABLE_DIRECTX)
-    target_link_libraries(${PROJECT_NAME} PRIVATE 
+    target_link_libraries(FreshEngine PUBLIC
         d3d11.lib 
         d3d12.lib 
         dxgi.lib 
@@ -828,122 +545,73 @@ endif()
 
 # Link Win32 UI libraries (Windows only)
 if(WIN32)
-    target_link_libraries(${PROJECT_NAME} PRIVATE
-        comctl32.lib    # Common controls (toolbars, status bars, etc.)
-        user32.lib      # User interface functions
-        gdi32.lib       # Graphics Device Interface
-        gdiplus.lib     # GDI+ for advanced graphics
-        shell32.lib     # Shell integration (file dialogs, etc.)
-        ole32.lib       # OLE/COM support
-        dwmapi.lib      # Desktop Window Manager (Aero effects, etc.)
+    target_link_libraries(FreshEngine PUBLIC
+        comctl32.lib
+        user32.lib
+        gdi32.lib
+        gdiplus.lib
+        shell32.lib
+        ole32.lib
+        dwmapi.lib
     )
     message(STATUS "Win32 UI libraries linked")
 endif()
 
 # Link OpenGL and GLEW (cross-platform)
 if(ENABLE_OPENGL AND OpenGL_FOUND)
-    target_link_libraries(${PROJECT_NAME} PRIVATE OpenGL::GL)
+    target_link_libraries(FreshEngine PUBLIC OpenGL::GL)
     message(STATUS "OpenGL library linked")
     
-    # Link GLEW on Windows and Linux
     if(NOT APPLE AND GLEW_FOUND)
-        target_link_libraries(${PROJECT_NAME} PRIVATE GLEW::GLEW)
+        target_link_libraries(FreshEngine PUBLIC GLEW::GLEW)
         message(STATUS "GLEW library linked")
     endif()
 endif()
 
-# Windows-only: MSVC is the primary compiler
+# Compiler settings for engine library
 if(NOT MSVC)
     message(WARNING "Non-MSVC compiler detected. Fresh Voxel Engine is optimized for MSVC/Visual Studio 2022.")
     message(WARNING "Other compilers may work but are not officially supported.")
 endif()
 
 if(MSVC)
-    # Windows/MSVC specific options
-    # /W4: Warning level 4 (high)
-    # /WX: Treat warnings as errors to maintain code quality
-    target_compile_options(${PROJECT_NAME} PRIVATE /W4 /WX)
+    target_compile_options(FreshEngine PRIVATE /W4 /WX)
     
-    # Release mode optimizations for MSVC
     if(CMAKE_BUILD_TYPE STREQUAL "Release")
-        target_compile_options(${PROJECT_NAME} PRIVATE 
-            /O2          # Maximum optimization (speed)
-            /Oi          # Generate intrinsic functions
-            /Ot          # Favor fast code
-            /GL          # Whole program optimization
-            /Gy          # Enable function-level linking
-            /GS-         # Disable buffer security checks for performance
-            /fp:fast     # Fast floating-point model
-            /arch:AVX2   # Enable AVX2 instructions for modern CPUs (2013+)
+        target_compile_options(FreshEngine PRIVATE 
+            /O2 /Oi /Ot /GL /Gy /GS- /fp:fast /arch:AVX2
         )
-        target_link_options(${PROJECT_NAME} PRIVATE 
-            /LTCG        # Link-time code generation
-            /OPT:REF     # Eliminate unreferenced functions/data
-            /OPT:ICF     # Enable COMDAT folding
-        )
-        
-        # Windows subsystem optimization for GUI applications
-        target_link_options(${PROJECT_NAME} PRIVATE /SUBSYSTEM:WINDOWS)
-        
-        message(STATUS "Windows Release optimizations enabled:")
-        message(STATUS "  - AVX2 SIMD instructions")
-        message(STATUS "  - Whole program optimization")
-        message(STATUS "  - Fast floating-point model")
-        message(STATUS "  - Function-level linking")
     endif()
     
-    # Debug mode with optimized debugging experience
     if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-        target_compile_options(${PROJECT_NAME} PRIVATE 
-            /ZI          # Edit and Continue support
-            /Od          # Disable optimizations
-            /RTC1        # Runtime checks
-        )
+        target_compile_options(FreshEngine PRIVATE /ZI /Od /RTC1)
     endif()
 endif()
 
-# Copy shaders to build directory
-# Handle both single-config (Makefile, Ninja) and multi-config (Visual Studio, Xcode) generators
-file(GLOB SHADER_FILES "${CMAKE_CURRENT_SOURCE_DIR}/shaders/*.vert" 
-                       "${CMAKE_CURRENT_SOURCE_DIR}/shaders/*.frag")
+# --- Executable targets (all link against FreshEngine) ---
+add_subdirectory(editor)
+add_subdirectory(client)
+add_subdirectory(server)
+add_subdirectory(runtime)
 
-# For multi-config generators, copy shaders to each configuration directory
-# For single-config generators, copy to the binary directory
-foreach(SHADER ${SHADER_FILES})
-    get_filename_component(SHADER_NAME ${SHADER} NAME)
-    
-    # Add a custom command to copy shaders after building the target
-    # This uses generator expressions to handle multi-config generators correctly
-    add_custom_command(
-        TARGET ${PROJECT_NAME} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E make_directory
-            "$<TARGET_FILE_DIR:${PROJECT_NAME}>/shaders"
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            "${SHADER}"
-            "$<TARGET_FILE_DIR:${PROJECT_NAME}>/shaders/${SHADER_NAME}"
-        COMMENT "Copying shader ${SHADER_NAME} to build directory"
-        VERBATIM
-    )
-endforeach()
+# Compiler and linker settings are applied in each subdirectory's CMakeLists.txt
+# via inheriting from FreshEngine's PUBLIC properties and per-target options
 
-# Install target
-install(TARGETS ${PROJECT_NAME} DESTINATION bin)
+# Install targets
+install(TARGETS FreshEngine DESTINATION lib)
 install(DIRECTORY shaders/ DESTINATION bin/shaders)
 
 # ==============================================================================
 # Testing Support
 # ==============================================================================
 
-# Option to enable/disable tests
 option(BUILD_TESTS "Build unit tests" ON)
 
 if(BUILD_TESTS)
     message(STATUS "Building tests enabled")
     
-    # Enable testing
     enable_testing()
     
-    # Find Google Test
     find_package(GTest QUIET)
     
     if(NOT GTest_FOUND)
@@ -954,160 +622,154 @@ if(BUILD_TESTS)
             GIT_REPOSITORY https://github.com/google/googletest.git
             GIT_TAG release-1.12.1
         )
-        # For Windows: Prevent overriding the parent project's compiler/linker settings
         set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
         FetchContent_MakeAvailable(googletest)
     endif()
     
     # Test source files
     set(TEST_SOURCES
-        tests/test_main.cpp                 # Custom main with better error handling
+        tests/test_main.cpp
         tests/voxel/ChunkTests.cpp
         tests/voxel/VoxelWorldTests.cpp
-        tests/gameplay/TimeManagerTests.cpp       # Tests for day/night cycle system
+        tests/gameplay/TimeManagerTests.cpp
         tests/integration/WorldCreationIntegrationTest.cpp
         tests/generation/NoiseTests.cpp
         tests/generation/TerrainGeneratorTests.cpp
         tests/input/InputManagerTests.cpp
-        tests/core/EngineInitializationTests.cpp  # Tests for engine initialization sequence
-        tests/core/EngineSystemTests.cpp          # Tests for pluggable engine system registry
-        tests/core/ReflectionTests.cpp            # Tests for reflection system
-        tests/core/ResourceManagerTests.cpp       # Tests for resource loading system
-        # tests/core/MemoryManagerTests.cpp  # Disabled - tests don't match implementation
+        tests/core/EngineInitializationTests.cpp
+        tests/core/EngineSystemTests.cpp
+        tests/core/ReflectionTests.cpp
+        tests/core/ResourceManagerTests.cpp
         tests/scripting/EventSystemTests.cpp
         tests/rpg/InventoryTests.cpp
         tests/rpg/CraftingSystemTests.cpp
         tests/character/VoxelCharacterTests.cpp
         tests/character/BodyPartLibraryTests.cpp
         tests/character/AnimationClipTests.cpp
-        tests/editor/SelectionManagerTests.cpp    # Tests for voxel selection system
-        tests/editor/SelectionRendererTests.cpp   # Tests for selection visualization
-        tests/ecs/Transform2DTests.cpp            # Tests for 2D transform component
-        tests/ecs/Collider2DTests.cpp             # Tests for 2D collider component
-        tests/ecs/RigidBody2DTests.cpp            # Tests for 2D rigidbody component
-        tests/ecs/HealthComponentTests.cpp        # Tests for health component
-        tests/ecs/MovementComponentTests.cpp      # Tests for movement component
-        tests/ecs/CombatSystemTests.cpp           # Tests for combat system
-        tests/voxelship/VoxelBlockStretchTest.cpp # Tests for voxel block stretching
-        tests/renderer/test_model_loader.cpp    # Tests for model loading and primitives
-        tests/ai/BehaviorTreeTests.cpp          # Tests for AI behavior tree
-        tests/ai/LLMClientTests.cpp             # Tests for LLM client and project context
+        tests/editor/SelectionManagerTests.cpp
+        tests/editor/SelectionRendererTests.cpp
+        tests/ecs/Transform2DTests.cpp
+        tests/ecs/Collider2DTests.cpp
+        tests/ecs/RigidBody2DTests.cpp
+        tests/ecs/HealthComponentTests.cpp
+        tests/ecs/MovementComponentTests.cpp
+        tests/ecs/CombatSystemTests.cpp
+        tests/voxelship/VoxelBlockStretchTest.cpp
+        tests/renderer/test_model_loader.cpp
+        tests/ai/BehaviorTreeTests.cpp
+        tests/ai/LLMClientTests.cpp
     )
     
-    # Engine source files needed for tests (exclude main.cpp)
+    # Engine source files needed for tests (subset from engine/)
+    # Note: Tests compile specific subsystem sources rather than linking the full
+    # FreshEngine library because some engine modules require Windows-specific APIs
+    # not available on all platforms (e.g., Win32 UI, DirectX).
     set(TEST_ENGINE_SOURCES
-        src/voxel/Chunk.cpp
-        src/voxel/VoxelWorld.cpp
-        src/voxel/MeshGenerator.cpp
-        src/generation/NoiseGenerator.cpp
-        src/generation/TerrainGenerator.cpp
-        src/generation/World2DGenerator.cpp
-        src/core/MemoryManager.cpp
-        src/core/Logger.cpp
-        src/core/Reflection.cpp
-        src/core/ResourceManager.cpp
-        src/renderer/stb_image_impl.cpp
-        src/scripting/EventSystem.cpp
-        src/input/InputManager.cpp
-        src/gameplay/TimeManager.cpp
-        src/gameplay/Camera.cpp
-        src/rpg/Inventory.cpp
-        src/rpg/CraftingSystem.cpp
-        src/assets/ModularAssetSystem.cpp
-        src/character/VoxelCharacter.cpp
-        src/character/BodyPartLibrary.cpp
-        src/character/AnimationClip.cpp
-        src/character/AnimationController.cpp
-        src/editor/SelectionManager.cpp
-        src/editor/SelectionRenderer.cpp
-        src/editor/TransformGizmo.cpp
-        src/editor/TerraformingSystem.cpp
-        src/editor/FileDialogManager.cpp
-        src/devtools/DebugRenderer.cpp
-        src/ecs/EntityManager.cpp
-        src/ecs/Transform2DComponent.cpp
-        src/ecs/Sprite2DComponent.cpp
-        src/ecs/RigidBody2DComponent.cpp
-        src/ecs/Collider2DComponent.cpp
-        src/ecs/Animation2DComponent.cpp
-        src/ecs/Camera2DComponent.cpp
-        src/voxelship/VoxelBlock.cpp
-        src/renderer/ModelLoader.cpp
-        src/ai/BehaviorTree.cpp
-        src/ai/LLMClient.cpp
-        src/ai/ProjectContext.cpp
+        engine/voxel/Chunk.cpp
+        engine/voxel/VoxelWorld.cpp
+        engine/voxel/MeshGenerator.cpp
+        engine/generation/NoiseGenerator.cpp
+        engine/generation/TerrainGenerator.cpp
+        engine/generation/World2DGenerator.cpp
+        engine/core/MemoryManager.cpp
+        engine/core/Logger.cpp
+        engine/core/Reflection.cpp
+        engine/core/ResourceManager.cpp
+        engine/renderer/stb_image_impl.cpp
+        engine/scripting/EventSystem.cpp
+        engine/input/InputManager.cpp
+        engine/gameplay/TimeManager.cpp
+        engine/gameplay/Camera.cpp
+        engine/rpg/Inventory.cpp
+        engine/rpg/CraftingSystem.cpp
+        engine/assets/ModularAssetSystem.cpp
+        engine/character/VoxelCharacter.cpp
+        engine/character/BodyPartLibrary.cpp
+        engine/character/AnimationClip.cpp
+        engine/character/AnimationController.cpp
+        engine/editor/SelectionManager.cpp
+        engine/editor/SelectionRenderer.cpp
+        engine/editor/TransformGizmo.cpp
+        engine/editor/TerraformingSystem.cpp
+        engine/editor/FileDialogManager.cpp
+        engine/devtools/DebugRenderer.cpp
+        engine/ecs/EntityManager.cpp
+        engine/ecs/Transform2DComponent.cpp
+        engine/ecs/Sprite2DComponent.cpp
+        engine/ecs/RigidBody2DComponent.cpp
+        engine/ecs/Collider2DComponent.cpp
+        engine/ecs/Animation2DComponent.cpp
+        engine/ecs/Camera2DComponent.cpp
+        engine/voxelship/VoxelBlock.cpp
+        engine/renderer/ModelLoader.cpp
+        engine/ai/BehaviorTree.cpp
+        engine/ai/LLMClient.cpp
+        engine/ai/ProjectContext.cpp
     )
-    
+
     # Create test executable
-    add_executable(${PROJECT_NAME}Tests ${TEST_SOURCES} ${TEST_ENGINE_SOURCES})
+    add_executable(FreshTests ${TEST_SOURCES} ${TEST_ENGINE_SOURCES})
     
     # Include directories for tests
-    target_include_directories(${PROJECT_NAME}Tests PRIVATE
+    target_include_directories(FreshTests PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/engine
     )
     
     # Link test executable with Google Test and engine libraries
     # Note: Using GTest::gtest without gtest_main since we provide our own main
-    target_link_libraries(${PROJECT_NAME}Tests PRIVATE
+    target_link_libraries(FreshTests PRIVATE
         GTest::gtest
     )
     
     # Link GLFW if needed for tests
     if(glfw3_FOUND)
-        target_link_libraries(${PROJECT_NAME}Tests PRIVATE glfw)
+        target_link_libraries(FreshTests PRIVATE glfw)
     elseif(GLFW_FOUND)
-        target_include_directories(${PROJECT_NAME}Tests PRIVATE ${GLFW_INCLUDE_DIRS})
-        target_link_libraries(${PROJECT_NAME}Tests PRIVATE ${GLFW_LIBRARIES})
+        target_include_directories(FreshTests PRIVATE ${GLFW_INCLUDE_DIRS})
+        target_link_libraries(FreshTests PRIVATE ${GLFW_LIBRARIES})
     else()
-        # Fallback: try to link glfw directly on Linux
         if(UNIX AND NOT APPLE)
-            target_link_libraries(${PROJECT_NAME}Tests PRIVATE glfw)
+            target_link_libraries(FreshTests PRIVATE glfw)
         endif()
     endif()
     
     # Link GLM if found
     if(glm_FOUND)
-        target_link_libraries(${PROJECT_NAME}Tests PRIVATE glm::glm)
+        target_link_libraries(FreshTests PRIVATE glm::glm)
     endif()
     
     # Link Native File Dialog Extended if found (required for FileDialogManager)
     if(nfd_FOUND)
-        target_link_libraries(${PROJECT_NAME}Tests PRIVATE nfd::nfd)
+        target_link_libraries(FreshTests PRIVATE nfd::nfd)
         message(STATUS "Native File Dialog Extended linked to test executable")
     endif()
     
-    # Compiler settings for tests (Windows/MSVC)
-    target_compile_features(${PROJECT_NAME}Tests PRIVATE cxx_std_20)
+    # Compiler settings for tests
+    target_compile_features(FreshTests PRIVATE cxx_std_20)
     
     if(MSVC)
-        # /W4: Warning level 4, /WX: Treat warnings as errors
-        target_compile_options(${PROJECT_NAME}Tests PRIVATE /W4 /WX)
+        target_compile_options(FreshTests PRIVATE /W4 /WX)
     else()
         message(WARNING "Non-MSVC compiler for tests - may not be fully supported")
     endif()
     
     # Register tests with CTest
     include(GoogleTest)
-    # Use PRE_TEST discovery mode to avoid running test executable at build time
-    # This prevents failures on Windows when vcpkg DLLs aren't in PATH during build
-    gtest_discover_tests(${PROJECT_NAME}Tests
+    gtest_discover_tests(FreshTests
         DISCOVERY_MODE PRE_TEST
     )
     
-    message(STATUS "Tests configured successfully for Windows")
-    message(STATUS "Run tests with: ctest or FreshVoxelEngineTests.exe")
+    message(STATUS "Tests configured successfully")
+    message(STATUS "Run tests with: ctest or FreshTests")
 endif()
 
 # ==============================================================================
 # Example Programs
 # ==============================================================================
 
-# NOTE: All gameplay examples and demos are now integrated directly into the
-# main FreshVoxelEngine executable. Run FreshVoxelEngine.exe to access all demos.
-# See examples/README.md for a complete list of available in-engine demos.
-
-message(STATUS "Examples are integrated into main engine executable")
-message(STATUS "Run FreshVoxelEngine.exe and select from the main menu")
+message(STATUS "Examples are integrated into FreshEditor executable")
+message(STATUS "Run FreshEditor and select from the main menu")
 message(STATUS "See examples/README.md for demo documentation")
 
 message(STATUS "")
