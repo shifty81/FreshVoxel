@@ -10,13 +10,11 @@
 
 #include "core/EngineConfig.h"
 #include "core/IEngineSystem.h"
+#include "core/WorldCreationParams.h"
 #include "voxel/VoxelTypes.h"
 
 namespace fresh
 {
-
-// Forward declare WorldCreationParams
-struct WorldCreationParams;
 
 #ifdef _WIN32
 class Win32Window;

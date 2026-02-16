@@ -100,12 +100,6 @@ public:
     void setSeed(int seed);
 
     /**
-     * @brief Set the 2D game style (0=Platformer, 1=Top-down)
-     * @param style 2D game style index
-     */
-    void set2DStyle(int style);
-
-    /**
      * @brief Clear all loaded chunks from the world
      */
     void clearAllChunks();

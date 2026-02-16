@@ -404,6 +404,7 @@ static ALuint loadOGGFile(const std::string& path)
 
 #endif
 
+#ifdef FRESH_OPENAL_AVAILABLE
 // Helper function to load audio file (supports WAV and OGG)
 static ALuint loadAudioFile(const std::string& path)
 {
@@ -425,6 +426,7 @@ static ALuint loadAudioFile(const std::string& path)
     // Default to WAV
     return loadWAVFile(path);
 }
+#endif
 
 int AudioEngine::play2D(const std::string& path, float volume, bool loop)
 {

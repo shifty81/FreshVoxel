@@ -30,6 +30,7 @@
 #include "editor/SelectionManager.h"
 #include "editor/SelectionRenderer.h"
 #include "editor/TransformGizmo.h"
+#include "editor/TerraformingSystem.h"
 #include "editor/FileDialogManager.h"
 #include "editor/LayoutManager.h"
 #include "editor/EditorSettingsDialog.h"
@@ -123,12 +124,14 @@ namespace {
      * @brief Helper function to show and update a Win32 panel window
      * @param hwnd Window handle to show and update
      */
+#ifdef _WIN32
     inline void showPanelWindow(HWND hwnd) {
         if (hwnd) {
             ShowWindow(hwnd, SW_SHOW);
             UpdateWindow(hwnd);
         }
     }
+#endif
 } // anonymous namespace
 
 EditorManager::EditorManager()

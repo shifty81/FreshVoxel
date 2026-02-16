@@ -123,11 +123,6 @@ void WorldGenerationTask::generateWorld()
 
         // Set custom seed for terrain generator
         m_world->setSeed(m_params.seed);
-        
-        // Set 2D world style if applicable
-        if (!m_params.is3D) {
-            m_world->set2DStyle(m_params.gameStyle2D);
-        }
 
         reportProgress(0, 100, "Setting up world parameters...");
 

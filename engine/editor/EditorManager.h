@@ -6,14 +6,12 @@
 
 // Include stub headers OUTSIDE namespace to avoid nested namespace issues
 // These define type aliases for Windows builds: SceneHierarchyPanel, InspectorPanel, ContentBrowserPanel, ConsolePanel, EditorMenuBar
-#ifdef _WIN32
 #include "ui/SceneHierarchyPanel.h"
 #include "ui/InspectorPanel.h"
 #include "ui/ContentBrowserPanel.h"
 #include "ui/ConsolePanel.h"
 #include "ui/EditorMenuBar.h"
-#include "ui/NativeMainMenu.h"  // For WorldCreationParams
-#endif
+#include "core/WorldCreationParams.h"
 
 namespace fresh
 {
@@ -77,12 +75,7 @@ class Win32ViewportPanel;
 class Win32StatusBar;
 class Win32LLMAssistantPanel;
 #else
-// Forward declarations for non-Windows platforms
-class EditorMenuBar;
-class InspectorPanel;
-class SceneHierarchyPanel;
-class ContentBrowserPanel;
-class ConsolePanel;
+// Non-Windows platform — stubs are provided by the panel headers above
 #endif
 
 /**

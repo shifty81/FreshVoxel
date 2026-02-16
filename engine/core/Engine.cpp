@@ -1,4 +1,5 @@
 #include "core/Engine.h"
+#include "core/WorldCreationParams.h"
 
 // Suppress C4244 warning from MSVC's xutility header (line 4813)
 // The warning "conversion from 'wchar_t' to 'char', possible loss of data" occurs in system
@@ -595,11 +596,6 @@ void Engine::createNewWorld(const std::string& name, int seed, bool is3D, int ga
 
     // Set custom seed for terrain generator
     m_world->setSeed(seed);
-    
-    // Set 2D world style if applicable
-    if (!is3D) {
-        m_world->set2DStyle(gameStyle2D);
-    }
 
     // Generate initial chunks around spawn
     std::cout << "Generating initial terrain..." << std::endl;

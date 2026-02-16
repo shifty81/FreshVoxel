@@ -1,5 +1,7 @@
 #include "ui/NativeMainMenu.h"
 
+#ifdef _WIN32
+
 #include <filesystem>
 #include <sstream>
 #include <cstring>
@@ -15,8 +17,6 @@ namespace fs = std::filesystem;
 
 namespace fresh
 {
-
-#ifdef _WIN32
 // Helper function to convert wide string to narrow string safely
 static std::string toNarrowString(const std::wstring& wstr)
 {
@@ -95,7 +95,6 @@ static std::vector<BYTE> createDialogTemplate(WORD width, WORD height, const wch
     
     return buffer;
 }
-#endif
 
 
 NativeMainMenu::NativeMainMenu()
@@ -726,3 +725,5 @@ void NativeMainMenu::createWorldLoadingDialog(HWND hwnd)
 }
 
 } // namespace fresh
+
+#endif // _WIN32
