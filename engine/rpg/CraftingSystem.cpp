@@ -1,4 +1,5 @@
 #include "rpg/CraftingSystem.h"
+#include <cctype>
 
 namespace fresh
 {
@@ -86,6 +87,52 @@ bool CraftingSystem::craft(const std::string& recipeName, Inventory& inventory,
     // Create the upgrade
     outUpgrade = recipe->result;
     return true;
+}
+
+std::vector<std::string> CraftingSystem::searchRecipes(const std::string& query) const
+{
+    std::vector<std::string> results;
+    if (query.empty()) {
+        return getAllRecipeNames();
+    }
+
+    // Convert query to lowercase for case-insensitive search
+    std::string lowerQuery = query;
+    std::transform(lowerQuery.begin(), lowerQuery.end(), lowerQuery.begin(),
+                   [](unsigned char c) { return std::tolower(c); });
+
+    for (const auto& pair : recipes) {
+        std::string lowerName = pair.first;
+        std::transform(lowerName.begin(), lowerName.end(), lowerName.begin(),
+                       [](unsigned char c) { return std::tolower(c); });
+
+        if (lowerName.find(lowerQuery) != std::string::npos) {
+            results.push_back(pair.first);
+        }
+    }
+    return results;
+}
+
+std::vector<std::string> CraftingSystem::getRecipesByType(SubsystemType type) const
+{
+    std::vector<std::string> results;
+    for (const auto& pair : recipes) {
+        if (pair.second.result.getType() == type) {
+            results.push_back(pair.first);
+        }
+    }
+    return results;
+}
+
+std::vector<std::string> CraftingSystem::getCraftableRecipes(const Inventory& inventory) const
+{
+    std::vector<std::string> results;
+    for (const auto& pair : recipes) {
+        if (canCraft(pair.first, inventory)) {
+            results.push_back(pair.first);
+        }
+    }
+    return results;
 }
 
 void CraftingSystem::initializeDefaultRecipes()
