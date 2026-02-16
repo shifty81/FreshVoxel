@@ -632,6 +632,8 @@ if(BUILD_TESTS)
         tests/voxel/ChunkTests.cpp
         tests/voxel/VoxelWorldTests.cpp
         tests/gameplay/TimeManagerTests.cpp
+        tests/gameplay/WeatherManagerTests.cpp
+        tests/gameplay/SeasonManagerTests.cpp
         tests/integration/WorldCreationIntegrationTest.cpp
         tests/generation/NoiseTests.cpp
         tests/generation/TerrainGeneratorTests.cpp
@@ -688,6 +690,8 @@ if(BUILD_TESTS)
         engine/input/InputManager.cpp
         engine/gameplay/TimeManager.cpp
         engine/gameplay/Camera.cpp
+        engine/gameplay/WeatherManager.cpp
+        engine/gameplay/SeasonManager.cpp
         engine/rpg/Inventory.cpp
         engine/rpg/CraftingSystem.cpp
         engine/assets/ModularAssetSystem.cpp

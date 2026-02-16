@@ -402,7 +402,7 @@
 - [ ] Audio streaming
 - [ ] Resource caching
 - [ ] Item tooltips
-- [ ] Crafting search
+- [x] Crafting search
 - [ ] Time commands
 - [ ] Stars at night
 

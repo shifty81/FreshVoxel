@@ -1,4 +1,5 @@
 #pragma once
+#include <algorithm>
 #include <map>
 #include <string>
 #include <vector>
@@ -81,6 +82,28 @@ public:
     void addRecipe(const CraftingRecipe& recipe);
     const CraftingRecipe* getRecipe(const std::string& name) const;
     std::vector<std::string> getAllRecipeNames() const;
+
+    // Recipe search/filter
+    /**
+     * @brief Search recipes by name (case-insensitive substring match)
+     * @param query Search query string
+     * @return Vector of matching recipe names
+     */
+    std::vector<std::string> searchRecipes(const std::string& query) const;
+
+    /**
+     * @brief Filter recipes by subsystem type
+     * @param type Subsystem type to filter by
+     * @return Vector of matching recipe names
+     */
+    std::vector<std::string> getRecipesByType(SubsystemType type) const;
+
+    /**
+     * @brief Get recipes that can be crafted with current inventory
+     * @param inventory Player inventory to check against
+     * @return Vector of craftable recipe names
+     */
+    std::vector<std::string> getCraftableRecipes(const Inventory& inventory) const;
 
     // Crafting
     bool canCraft(const std::string& recipeName, const Inventory& inventory) const;

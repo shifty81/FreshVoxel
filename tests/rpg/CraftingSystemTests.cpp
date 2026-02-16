@@ -307,3 +307,103 @@ TEST_F(CraftingSystemTest, Craft_OneResourceShortBySmallAmount_Fails) {
     SubsystemUpgrade result;
     EXPECT_FALSE(crafting->craft("Basic Shield", *inventory, result));
 }
+
+// Search/Filter Tests
+TEST_F(CraftingSystemTest, SearchRecipes_EmptyQuery_ReturnsAll) {
+    auto results = crafting->searchRecipes("");
+    auto allRecipes = crafting->getAllRecipeNames();
+    EXPECT_EQ(results.size(), allRecipes.size());
+}
+
+TEST_F(CraftingSystemTest, SearchRecipes_ExactName_ReturnsMatch) {
+    auto results = crafting->searchRecipes("Basic Shield");
+    EXPECT_EQ(1u, results.size());
+    EXPECT_EQ("Basic Shield", results[0]);
+}
+
+TEST_F(CraftingSystemTest, SearchRecipes_SubstringMatch) {
+    auto results = crafting->searchRecipes("Shield");
+    EXPECT_GE(results.size(), 2u); // Basic Shield and Advanced Shield
+    
+    bool hasBasic = false, hasAdvanced = false;
+    for (const auto& name : results) {
+        if (name == "Basic Shield") hasBasic = true;
+        if (name == "Advanced Shield") hasAdvanced = true;
+    }
+    EXPECT_TRUE(hasBasic);
+    EXPECT_TRUE(hasAdvanced);
+}
+
+TEST_F(CraftingSystemTest, SearchRecipes_CaseInsensitive) {
+    auto results = crafting->searchRecipes("basic");
+    EXPECT_GE(results.size(), 2u); // Basic Shield and Basic Weapon
+    
+    auto results2 = crafting->searchRecipes("SHIELD");
+    EXPECT_GE(results2.size(), 2u);
+}
+
+TEST_F(CraftingSystemTest, SearchRecipes_NoMatch) {
+    auto results = crafting->searchRecipes("NonExistentRecipe");
+    EXPECT_TRUE(results.empty());
+}
+
+TEST_F(CraftingSystemTest, GetRecipesByType_Shield) {
+    auto results = crafting->getRecipesByType(SubsystemType::Shield);
+    EXPECT_GE(results.size(), 2u); // Basic and Advanced Shield
+    
+    for (const auto& name : results) {
+        const CraftingRecipe* recipe = crafting->getRecipe(name);
+        ASSERT_NE(nullptr, recipe);
+        EXPECT_EQ(SubsystemType::Shield, recipe->result.getType());
+    }
+}
+
+TEST_F(CraftingSystemTest, GetRecipesByType_Weapon) {
+    auto results = crafting->getRecipesByType(SubsystemType::Weapon);
+    EXPECT_GE(results.size(), 1u); // Basic Weapon
+    
+    for (const auto& name : results) {
+        const CraftingRecipe* recipe = crafting->getRecipe(name);
+        ASSERT_NE(nullptr, recipe);
+        EXPECT_EQ(SubsystemType::Weapon, recipe->result.getType());
+    }
+}
+
+TEST_F(CraftingSystemTest, GetRecipesByType_NoMatch) {
+    auto results = crafting->getRecipesByType(SubsystemType::Computer);
+    EXPECT_TRUE(results.empty());
+}
+
+TEST_F(CraftingSystemTest, GetCraftableRecipes_NoResources_ReturnsEmpty) {
+    auto results = crafting->getCraftableRecipes(*inventory);
+    EXPECT_TRUE(results.empty());
+}
+
+TEST_F(CraftingSystemTest, GetCraftableRecipes_SomeResources) {
+    // Give enough for Basic Shield and Cargo Expansion only
+    inventory->addResource(ResourceType::Iron, 100.0f);
+    inventory->addResource(ResourceType::Titanium, 20.0f);
+    
+    auto results = crafting->getCraftableRecipes(*inventory);
+    EXPECT_GE(results.size(), 2u);
+    
+    bool hasBasicShield = false, hasCargo = false;
+    for (const auto& name : results) {
+        if (name == "Basic Shield") hasBasicShield = true;
+        if (name == "Cargo Expansion") hasCargo = true;
+    }
+    EXPECT_TRUE(hasBasicShield);
+    EXPECT_TRUE(hasCargo);
+}
+
+TEST_F(CraftingSystemTest, GetCraftableRecipes_AllResources) {
+    // Use a large-capacity inventory to fit all resources needed
+    Inventory largeInventory(100000.0f);
+    largeInventory.addResource(ResourceType::Iron, 10000.0f);
+    largeInventory.addResource(ResourceType::Titanium, 10000.0f);
+    largeInventory.addResource(ResourceType::Naonite, 10000.0f);
+    
+    auto results = crafting->getCraftableRecipes(largeInventory);
+    auto allRecipes = crafting->getAllRecipeNames();
+    EXPECT_EQ(results.size(), allRecipes.size());
+}
