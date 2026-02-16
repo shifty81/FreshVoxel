@@ -640,6 +640,7 @@ if(BUILD_TESTS)
         tests/input/InputManagerTests.cpp
         tests/core/EngineInitializationTests.cpp
         tests/core/EngineSystemTests.cpp
+        tests/core/EngineConfigTests.cpp
         tests/core/ReflectionTests.cpp
         tests/core/ResourceManagerTests.cpp
         tests/scripting/EventSystemTests.cpp

@@ -35,6 +35,7 @@
 #include "editor/EditorSettingsDialog.h"
 #include "editor/CameraController.h"
 #include "serialization/WorldSerializer.h"
+#include "core/LastSessionConfig.h"
 #include "devtools/DebugRenderer.h"
 #include "renderer/RenderContext.h"
 #include "ui/ConsolePanel.h"
@@ -1304,6 +1305,8 @@ void EditorManager::saveWorld()
             // Save to current path
             if (m_worldSerializer->saveWorld(m_world, m_currentWorldPath)) {
                 LOG_INFO_C("World saved successfully to: " + m_currentWorldPath, "EditorManager");
+                // Track last saved world so client/runtime can auto-load it
+                LastSessionConfig::saveLastWorldPath(m_currentWorldPath);
                 if (m_windowsDialogManager) {
                     m_windowsDialogManager->showMessageBox(
                         "Save World",
@@ -1353,6 +1356,8 @@ void EditorManager::saveWorldAs()
             if (m_worldSerializer->saveWorld(m_world, selectedFile)) {
                 m_currentWorldPath = selectedFile;
                 LOG_INFO_C("World saved successfully to: " + selectedFile, "EditorManager");
+                // Track last saved world so client/runtime can auto-load it
+                LastSessionConfig::saveLastWorldPath(selectedFile);
                 
                 m_windowsDialogManager->showMessageBox(
                     "Save World",
@@ -1392,6 +1397,8 @@ void EditorManager::saveWorldAs()
             if (m_worldSerializer->saveWorld(m_world, selectedFile)) {
                 m_currentWorldPath = selectedFile;
                 LOG_INFO_C("World saved successfully to: " + selectedFile, "EditorManager");
+                // Track last saved world so client/runtime can auto-load it
+                LastSessionConfig::saveLastWorldPath(selectedFile);
             } else {
                 LOG_ERROR_C("Failed to save world to: " + selectedFile, "EditorManager");
             }

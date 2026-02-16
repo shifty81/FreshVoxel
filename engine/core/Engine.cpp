@@ -79,6 +79,7 @@
 #include "scripting/lua/LuaECSBindings.h"
 #include "scripting/lua/LuaTimeBindings.h"
 #include "serialization/WorldSerializer.h"
+#include "core/LastSessionConfig.h"
 #include "ui/EditorToolbar.h"
 #include "ui/HotbarPanel.h"
 #include "ui/MainMenu.h"
@@ -234,10 +235,11 @@ Engine::~Engine()
     shutdown();
 }
 
-bool Engine::initialize()
+bool Engine::initialize(const EngineConfig& config)
 {
-    std::cout << "Initializing Fresh Voxel Engine..." << std::endl;
-    LOG_INFO_C("Initializing Fresh Voxel Engine...", "Engine");
+    m_config = config;
+    std::cout << "Initializing Fresh Voxel Engine (" << getEngineModeName(m_config.mode) << " mode)..." << std::endl;
+    LOG_INFO_C("Initializing Fresh Voxel Engine (" + std::string(getEngineModeName(m_config.mode)) + " mode)...", "Engine");
 
     // Initialize project manager
     m_projectManager = std::make_unique<ProjectManager>();
@@ -249,6 +251,8 @@ bool Engine::initialize()
 
     // Create renderer using the abstraction layer first to determine API
     // Auto-select best graphics API for the platform
+    // Skip rendering subsystem in headless mode (server)
+    if (m_config.enableRendering) {
     m_renderer = RenderContextFactory::createBest();
     if (!m_renderer) {
         std::cerr << "Failed to create render context" << std::endl;
@@ -264,7 +268,7 @@ bool Engine::initialize()
     bool useOpenGL = (m_renderer->getAPI() == GraphicsAPI::OpenGL);
 
     // Create window FIRST so we can show the GUI
-    m_window = std::make_unique<WindowType>(1280, 720, "Fresh Voxel Engine");
+    m_window = std::make_unique<WindowType>(m_config.windowWidth, m_config.windowHeight, m_config.windowTitle);
     if (!m_window->initialize(useOpenGL)) {
         std::cerr << "Failed to initialize window" << std::endl;
         LOG_ERROR_C("Failed to initialize window", "Engine");
@@ -274,10 +278,12 @@ bool Engine::initialize()
     LOG_INFO_C("Window created", "Engine");
 
 #ifdef _WIN32
+    if (m_config.enableEditor) {
     // Set up native Win32 menu bar
     setupNativeMenuBar();
     // Set up native Win32 toolbar
     setupNativeToolbar();
+    }
 #endif // Initialize renderer with the window
     if (!m_renderer->initialize(m_window.get())) {
         std::cerr << "Failed to initialize renderer" << std::endl;
@@ -314,7 +320,13 @@ bool Engine::initialize()
     setupInputCallbacks();
     std::cout << "Input manager initialized" << std::endl;
     LOG_INFO_C("Input manager initialized", "Engine");
+    } else {
+        // Headless mode (server): no window, renderer, or input
+        LOG_INFO_C("Headless mode: skipping window, renderer, and input initialization", "Engine");
+        std::cout << "Running in headless mode (no window or renderer)" << std::endl;
+    }
 
+    if (m_config.isEditor()) {
     // EDITOR-FIRST DESIGN: Console main menu deprecated
     // The editor handles scene/world creation through native Win32 dialogs
     // Use File > New Scene or File > Open Scene from the menu bar
@@ -326,11 +338,16 @@ bool Engine::initialize()
     std::cout << "  - Open scenes via File > Open Scene" << std::endl;
     std::cout << "  - All tools accessible in editor" << std::endl;
     std::cout << "========================================\n" << std::endl;
+    } else {
+        std::cout << "\n========================================" << std::endl;
+        std::cout << "  Fresh Voxel Engine - " << getEngineModeName(m_config.mode) << std::endl;
+        std::cout << "========================================\n" << std::endl;
+    }
     
     // Keep main menu instance for backward compatibility (not actively used)
     m_mainMenu = std::make_unique<MainMenu>();
     // Skip main menu initialization - editor handles everything now
-    LOG_INFO_C("Editor-first mode: Using native Win32 editor for scene management", "Engine");
+    LOG_INFO_C(std::string(getEngineModeName(m_config.mode)) + " mode initialized", "Engine");
 
     // Create entity manager for ECS
     m_entityManager = std::make_unique<ecs::EntityManager>();
@@ -358,6 +375,8 @@ bool Engine::initialize()
     }
 
     // Create comprehensive editor manager (uses Windows Native Win32 UI) - show immediately
+    // Only initialize editor UI in Editor mode
+    if (m_config.enableEditor) {
     m_editorManager = std::make_unique<EditorManager>();
     
     // Set project manager reference in editor manager
@@ -492,9 +511,44 @@ bool Engine::initialize()
         }
     }
 #endif
+    } else {
+        LOG_INFO_C("Non-editor mode: skipping editor UI initialization", "Engine");
+    }
+
+    // Auto-load the last saved world when in client/runtime/server mode
+    // This ensures changes made in the editor are reflected in the client once opened
+    if (m_config.autoLoadLastWorld) {
+        std::string lastWorldPath = LastSessionConfig::loadLastWorldPath();
+        if (!lastWorldPath.empty()) {
+            LOG_INFO_C("Auto-loading last saved world: " + lastWorldPath, "Engine");
+            std::cout << "Loading last saved world: " << lastWorldPath << std::endl;
+
+            m_world = std::make_unique<VoxelWorld>();
+            if (m_world->initialize()) {
+                WorldSerializer serializer;
+                if (serializer.loadWorld(m_world.get(), lastWorldPath)) {
+                    std::cout << "World loaded successfully from: " << lastWorldPath << std::endl;
+                    LOG_INFO_C("World auto-loaded successfully", "Engine");
+                    initializeGameSystems();
+                } else {
+                    LOG_WARNING_C("Failed to auto-load world from: " + lastWorldPath, "Engine");
+                    std::cerr << "Failed to load world from: " << lastWorldPath << std::endl;
+                    m_world.reset();
+                }
+            } else {
+                LOG_WARNING_C("Failed to initialize VoxelWorld for auto-load", "Engine");
+                m_world.reset();
+            }
+        } else {
+            LOG_INFO_C("No last saved world found - starting without a world", "Engine");
+        }
+    }
 
     m_running = true;
-    m_inGame = false; // Start in menu mode
+    // In editor mode, start in editor (not in-game) mode
+    // In client/runtime mode, start directly in game mode
+    // In server mode, start in game mode (headless simulation)
+    m_inGame = !m_config.isEditor();
     return true;
 }
 
@@ -595,6 +649,8 @@ void Engine::createNewWorld(const std::string& name, int seed, bool is3D, int ga
     std::string savePath = std::string("saves/") + name + ".world";
     if (serializer.saveWorld(m_world.get(), savePath)) {
         std::cout << "World saved to: " << savePath << std::endl;
+        // Track last saved world so client/runtime can auto-load it
+        LastSessionConfig::saveLastWorldPath(savePath);
     }
 }
 
@@ -887,13 +943,13 @@ void Engine::run()
     const float MAX_DELTA_TIME = 0.1f;                 // Cap at 100ms to prevent physics issues
 
     while (m_running) {
-        // Check if window should close
+        // Check if window should close (only relevant in windowed modes)
         if (m_window && m_window->shouldClose()) {
             m_running = false;
             break;
         }
 
-        // Poll events
+        // Poll events (only in windowed modes)
         if (m_window) {
             m_window->pollEvents();
         }
@@ -913,6 +969,52 @@ void Engine::run()
             frameCount = 0;
         }
 
+        // SERVER MODE: headless simulation loop (no rendering, no input processing)
+        if (m_config.headless) {
+            if (m_world) {
+                update(deltaTime);
+            }
+            // Frame rate limiting for server tick rate
+            auto frameEndTime = std::chrono::high_resolution_clock::now();
+            float frameTime = std::chrono::duration<float>(frameEndTime - currentTime).count();
+            if (frameTime < TARGET_FRAME_TIME) {
+                std::this_thread::sleep_for(
+                    std::chrono::duration<float>(TARGET_FRAME_TIME - frameTime));
+            }
+            continue;
+        }
+
+        // CLIENT/RUNTIME MODE: game loop without editor UI
+        if (!m_config.enableEditor) {
+            // Update input
+            processInput();
+            
+            if (m_world) {
+                update(deltaTime);
+            }
+            
+            // Render the game
+            if (m_config.enableRendering) {
+                render();
+            }
+            
+            // Frame rate limiting
+            auto frameEndTime = std::chrono::high_resolution_clock::now();
+            float frameTime = std::chrono::duration<float>(frameEndTime - currentTime).count();
+            if (frameTime < TARGET_FRAME_TIME) {
+                float sleepTime = TARGET_FRAME_TIME - frameTime;
+                if (sleepTime > 0.002f) {
+                    std::this_thread::sleep_for(std::chrono::duration<float>(sleepTime - 0.001f));
+                }
+                while (std::chrono::duration<float>(std::chrono::high_resolution_clock::now() -
+                                                    currentTime)
+                           .count() < TARGET_FRAME_TIME) {
+                }
+            }
+            continue;
+        }
+
+        // EDITOR MODE: full editor workflow with viewport
         // UNREAL ENGINE WORKFLOW: Always update and render editor, regardless of world state
         // The viewport should show an empty scene with grid when no world exists
         // This allows immediate editor interaction and world creation from within the viewport
