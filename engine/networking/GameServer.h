@@ -5,7 +5,6 @@
 #include <mutex>
 #include <thread>
 
-#include "../galaxy/GalaxySector.h"
 #include "ClientConnection.h"
 #include "SectorServer.h"
 

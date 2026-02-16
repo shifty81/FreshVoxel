@@ -4,6 +4,7 @@ build_test/
 cmake-build-*/
 out/
 _codeql_build_dir/
+_codeql_detected_source_root
 
 # Engine build artifacts (Atlas-style subdirectory builds)
 engine/build/
