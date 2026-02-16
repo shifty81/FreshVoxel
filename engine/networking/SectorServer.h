@@ -4,7 +4,6 @@
 #include <vector>
 
 #include "../ecs/EntityManager.h"
-#include "../galaxy/GalaxySector.h"
 #include "ClientConnection.h"
 
 namespace fresh
@@ -43,11 +42,7 @@ public:
     // Update sector
     void update(float deltaTime);
 
-    // Get sector data
-    const galaxy::GalaxySector& getSector() const
-    {
-        return *sector;
-    }
+    // Get entity manager
     ecs::EntityManager& getEntityManager()
     {
         return entityManager;
@@ -59,7 +54,6 @@ public:
 private:
     int sectorX;
     int sectorY;
-    std::unique_ptr<galaxy::GalaxySector> sector;
     ecs::EntityManager entityManager;
 
     // Players in this sector

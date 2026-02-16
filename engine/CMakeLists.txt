@@ -23,7 +23,6 @@ add_library(FreshEngine STATIC
     generation/TerrainGenerator.cpp
     generation/BiomeSystem.cpp
     generation/HeightmapWorldGenerator.cpp
-    generation/World2DGenerator.cpp
     generation/WorldGeneratorFactory.cpp
     generation/WorldGenerationTask.cpp
     physics/PhysicsSystem.cpp
@@ -75,20 +74,8 @@ add_library(FreshEngine STATIC
     ecs/TransformComponent.cpp
     ecs/RendererComponent.cpp
     ecs/MaterialComponent.cpp
-    ecs/Transform2DComponent.cpp
-    ecs/Sprite2DComponent.cpp
-    ecs/RigidBody2DComponent.cpp
-    ecs/Collider2DComponent.cpp
-    ecs/Animation2DComponent.cpp
-    ecs/Camera2DComponent.cpp
-    ecs/Physics2DSystem.cpp
-    ecs/Collision2DSystem.cpp
-    ecs/Animation2DSystem.cpp
-    ecs/Camera2DSystem.cpp
     voxelship/VoxelBlock.cpp
     voxelship/VoxelStructureComponent.cpp
-    galaxy/GalaxySector.cpp
-    galaxy/GalaxyGenerator.cpp
     rpg/Inventory.cpp
     rpg/InventoryComponent.cpp
     rpg/CraftingSystem.cpp

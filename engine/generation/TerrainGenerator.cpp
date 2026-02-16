@@ -5,16 +5,15 @@
 #include "voxel/Chunk.h"
 #include "voxel/VoxelWorld.h"
 #include "assets/ModularAssetSystem.h"
-#include "generation/World2DGenerator.h"
 
 namespace fresh
 {
 
 TerrainGenerator::TerrainGenerator() 
-    : m_noiseGenerator(0), m_seed(0), m_2dStyle(0), m_use2DGenerator(false) {}
+    : m_noiseGenerator(0), m_seed(0) {}
 
 TerrainGenerator::TerrainGenerator(int seed) 
-    : m_noiseGenerator(seed), m_seed(seed), m_2dStyle(0), m_use2DGenerator(false) {}
+    : m_noiseGenerator(seed), m_seed(seed) {}
 
 TerrainGenerator::~TerrainGenerator() {}
 
@@ -22,33 +21,6 @@ void TerrainGenerator::setSeed(int seed)
 {
     m_seed = seed;
     m_noiseGenerator.setSeed(seed);
-    
-    // Also update 2D generator if it exists
-    if (m_2dGenerator) {
-        m_2dGenerator->setSeed(seed);
-    }
-}
-
-void TerrainGenerator::set2DStyle(int style)
-{
-    m_2dStyle = style;
-    m_use2DGenerator = true;
-    
-    // Create 2D generator with appropriate style
-    World2DGenerator::Settings settings;
-    settings.seed = m_seed;
-    
-    if (style == 0) {
-        // Platformer/Terraria style
-        settings.style = World2DGenerator::Style::PLATFORMER;
-        settings.worldDepth = 1; // Single depth layer for side-scrolling
-    } else {
-        // Top-down/Zelda style
-        settings.style = World2DGenerator::Style::TOPDOWN;
-        settings.worldDepth = 1; // Single height layer for top-down
-    }
-    
-    m_2dGenerator = std::make_unique<World2DGenerator>(settings);
 }
 
 int TerrainGenerator::getHeight(int x, int z) const
@@ -178,14 +150,6 @@ void TerrainGenerator::generateChunk(Chunk* chunk)
 
     const ChunkPos& chunkPos = chunk->getPosition();
 
-    // Use 2D generator if enabled
-    if (m_use2DGenerator && m_2dGenerator) {
-        m_2dGenerator->generateChunk(*chunk, chunkPos.x, chunkPos.z);
-        chunk->markDirty();
-        return;
-    }
-
-    // Otherwise use standard 3D generation
     // Generate terrain for each column in the chunk
     for (int localX = 0; localX < CHUNK_SIZE; ++localX) {
         for (int localZ = 0; localZ < CHUNK_SIZE; ++localZ) {

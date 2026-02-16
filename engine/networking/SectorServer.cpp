@@ -3,8 +3,6 @@
 #include <algorithm>
 #include <chrono>
 
-#include "galaxy/GalaxyGenerator.h"
-
 namespace fresh
 {
 namespace networking
@@ -65,12 +63,8 @@ void SectorServer::broadcastToPlayers(const NetworkMessage& message)
 
 void SectorServer::initializeSector()
 {
-    // Generate sector content
-    galaxy::GalaxyGenerator generator;
-    sector = generator.generateSector(sectorX, sectorY);
-
-    // Create entities for sector objects (asteroids, stations, ships)
-    // This would involve creating Entity objects with appropriate components
+    // Placeholder for sector initialization
+    // Future: Initialize voxel world chunks for this sector region
 }
 
 } // namespace networking

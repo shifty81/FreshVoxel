@@ -655,9 +655,6 @@ if(BUILD_TESTS)
         tests/character/AnimationClipTests.cpp
         tests/editor/SelectionManagerTests.cpp
         tests/editor/SelectionRendererTests.cpp
-        tests/ecs/Transform2DTests.cpp
-        tests/ecs/Collider2DTests.cpp
-        tests/ecs/RigidBody2DTests.cpp
         tests/ecs/HealthComponentTests.cpp
         tests/ecs/MovementComponentTests.cpp
         tests/ecs/CombatSystemTests.cpp
@@ -685,7 +682,6 @@ if(BUILD_TESTS)
         engine/voxel/MeshGenerator.cpp
         engine/generation/NoiseGenerator.cpp
         engine/generation/TerrainGenerator.cpp
-        engine/generation/World2DGenerator.cpp
         engine/core/MemoryManager.cpp
         engine/core/Logger.cpp
         engine/core/Reflection.cpp
@@ -711,12 +707,6 @@ if(BUILD_TESTS)
         engine/editor/FileDialogManager.cpp
         engine/devtools/DebugRenderer.cpp
         engine/ecs/EntityManager.cpp
-        engine/ecs/Transform2DComponent.cpp
-        engine/ecs/Sprite2DComponent.cpp
-        engine/ecs/RigidBody2DComponent.cpp
-        engine/ecs/Collider2DComponent.cpp
-        engine/ecs/Animation2DComponent.cpp
-        engine/ecs/Camera2DComponent.cpp
         engine/voxelship/VoxelBlock.cpp
         engine/renderer/ModelLoader.cpp
         engine/ai/BehaviorTree.cpp
