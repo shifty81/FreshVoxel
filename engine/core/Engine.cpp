@@ -2799,14 +2799,14 @@ void Engine::setupNativeMenuBar()
         LOG_INFO_C("About menu item clicked", "Engine");
 #ifdef _WIN32
         MessageBoxA(NULL,
-            "Fresh Voxel Engine v0.1.0\n\n"
+            "FreshVoxel Engine v0.1.0\n\n"
             "A professional Windows-exclusive voxel game development platform\n"
             "built with C++20, featuring DirectX 12/11 rendering and an\n"
             "Unreal Engine-like editor.\n\n"
-            "© 2024 Fresh Voxel Engine Project\n"
+            "© 2024 FreshVoxel Engine Project\n"
             "Licensed under the MIT License\n\n"
             "https://github.com/shifty81/fresh",
-            "About Fresh Voxel Engine", MB_OK | MB_ICONINFORMATION);
+            "About FreshVoxel Engine", MB_OK | MB_ICONINFORMATION);
 #endif
     });
 
@@ -3190,7 +3190,7 @@ void Engine::enterPlayMode()
         }
     }
     
-    if (!m_gamePlayWindow->create(gameWidth, gameHeight, "Fresh Voxel Engine - Game Preview")) {
+    if (!m_gamePlayWindow->create(gameWidth, gameHeight, "FreshVoxel Engine - Game Preview")) {
         LOG_ERROR_C("Failed to create game play window", "Engine");
         m_gamePlayWindow.reset();
         return;

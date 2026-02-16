@@ -141,7 +141,7 @@ WorldGeneratorMetadata HeightmapWorldGenerator::getMetadata() const
         "heightmap_world_generator",       // id
         "Generates terrain from heightmap images", // description
         "1.0.0",                           // version
-        "Fresh Engine",                    // author
+        "FreshVoxel Engine",                    // author
         false,                             // is2D
         true,                              // is3D
         {"terrain", "heightmap", "image"}  // tags

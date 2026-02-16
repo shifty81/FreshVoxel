@@ -1,5 +1,5 @@
 @echo off
-REM Fresh Voxel Engine - Visual Studio 2022 Solution Generator
+REM FreshVoxel Engine - Visual Studio 2022 Solution Generator
 REM This script generates the Visual Studio 2022 solution using CMake
 REM For detailed build instructions, see BUILD.md
 
@@ -22,7 +22,7 @@ set "LOG_FILE=%LOG_DIR%\generate_vs2022_%dt%.log"
 
 REM Helper function to log both to console and file
 call :log "================================================"
-call :log "Fresh Voxel Engine - Visual Studio 2022 Setup"
+call :log "FreshVoxel Engine - Visual Studio 2022 Setup"
 call :log "================================================"
 call :log ""
 call :log "[INFO] Setup started at %date% %time%"

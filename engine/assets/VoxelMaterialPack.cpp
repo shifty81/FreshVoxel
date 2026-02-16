@@ -239,7 +239,7 @@ bool VoxelMaterialPack::parseManifest(const std::string& manifestPath)
     
     name = std::filesystem::path(packPath).filename().string();
     version = "1.0.0";
-    author = "Fresh Engine";
+    author = "FreshVoxel Engine";
     description = "Fallback material pack";
     
     // Create basic stone material as example

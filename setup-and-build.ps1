@@ -1,14 +1,16 @@
 <#
 .SYNOPSIS
-    Automated build script for Fresh Voxel Engine
+    Automated build script for FreshVoxel Engine
     
 .DESCRIPTION
-    This script automates the entire build process for Fresh Voxel Engine:
+    This script automates the entire build process for FreshVoxel Engine:
     1. Checks prerequisites (Visual Studio 2022, CMake, Git)
     2. Sets up vcpkg if not present
     3. Generates Visual Studio 2022 solution
     4. Builds the project
     5. Opens Visual Studio solution for development
+    
+    All output is logged to logs/ directory with timestamped filenames.
     
 .PARAMETER SkipBuild
     Skip the actual build step and just generate the solution
@@ -79,7 +81,17 @@ function Write-Step {
 
 # Main script
 try {
-    Write-Header "Fresh Voxel Engine - Automated Build Script"
+    # ============================================================================
+    # Logging Setup — All output logged to logs/ directory
+    # ============================================================================
+    $LogDir = Join-Path $PSScriptRoot "logs"
+    if (-not (Test-Path $LogDir)) {
+        New-Item -ItemType Directory -Force -Path $LogDir | Out-Null
+    }
+    $LogFile = Join-Path $LogDir "setup-and-build-$(Get-Date -Format 'yyyyMMdd-HHmmss').log"
+    Start-Transcript -Path $LogFile -Append
+
+    Write-Header "FreshVoxel Engine - Automated Build Script"
     
     # Get script directory (project root)
     $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
@@ -337,7 +349,7 @@ try {
     # Step 4: Build the Project
     # ============================================================================
     if (-not $SkipBuild) {
-        Write-Header "Step 4: Building Fresh Voxel Engine ($BuildConfig)"
+        Write-Header "Step 4: Building FreshVoxel Engine ($BuildConfig)"
         
         Write-Info "This may take 2-5 minutes depending on your system"
         Write-Host ""
@@ -392,7 +404,7 @@ try {
     Write-Header "Setup Complete!"
     
     Write-Host ""
-    Write-Success "Fresh Voxel Engine setup completed successfully!"
+    Write-Success "FreshVoxel Engine setup completed successfully!"
     Write-Host ""
     
     if (-not $SkipBuild) {
@@ -449,6 +461,7 @@ try {
     Write-Host "============================================================" -ForegroundColor Green
     Write-Host ""
     
+    Stop-Transcript
 }
 catch {
     Write-Host ""
@@ -458,5 +471,6 @@ catch {
     Write-Host ""
     Write-Host "For help, see BUILD.md or open an issue at:"
     Write-Host "https://github.com/shifty81/fresh/issues"
+    try { Stop-Transcript } catch { }
     exit 1
 }

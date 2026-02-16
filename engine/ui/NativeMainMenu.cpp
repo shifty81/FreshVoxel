@@ -126,7 +126,7 @@ bool NativeMainMenu::show()
 {
     // Create in-memory dialog template for the main menu
     // Size in dialog units (approximately 1.5x pixels for width, 1.75x for height)
-    auto dialogTemplate = createDialogTemplate(400, 230, L"Fresh Voxel Engine");
+    auto dialogTemplate = createDialogTemplate(400, 230, L"FreshVoxel Engine");
     
     // Create and show modal dialog using the in-memory template
     INT_PTR result =
@@ -255,7 +255,7 @@ INT_PTR CALLBACK NativeMainMenu::mainMenuDialogProc(HWND hwnd, UINT msg, WPARAM 
         menu->applyDarkTheme(hwnd);
 
         // Set window title
-        SetWindowText(hwnd, L"Fresh Voxel Engine");
+        SetWindowText(hwnd, L"FreshVoxel Engine");
 
         // Create controls
         menu->createMainMenuDialog(hwnd);

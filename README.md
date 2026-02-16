@@ -1,4 +1,4 @@
-# Fresh Voxel Engine
+# FreshVoxel Engine
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![C++20](https://img.shields.io/badge/C++-20-blue.svg)](https://en.cppreference.com/w/cpp/20)
@@ -7,44 +7,48 @@
 [![Platform](https://img.shields.io/badge/Platform-Windows%2010%2F11-0078D4.svg)](https://github.com/shifty81/fresh)
 [![Graphics](https://img.shields.io/badge/Graphics-DirectX%2012%2F11-00B2FF.svg)](https://github.com/shifty81/fresh)
 [![Editor](https://img.shields.io/badge/Editor-Unreal--like-orange.svg)](https://github.com/shifty81/fresh)
+[![Scope](https://img.shields.io/badge/Scope-Voxel--Only-brightgreen.svg)](https://github.com/shifty81/fresh)
 
-A professional **Windows-exclusive** game editor and development platform built with **C++20**, featuring an **Unreal Engine-like editor-first workflow**, **DirectX 12/11** rendering, voxel worlds with **pluggable generation**, **.NET 9 bindings**, **Lua scripting**, and comprehensive Windows-native integration.
+A professional **Windows-exclusive voxel game engine and editor** built with **C++20**, featuring an **Unreal Engine-like editor-first workflow**, **DirectX 12/11** rendering, voxel worlds with **pluggable generation**, **.NET 9 bindings**, **Lua scripting**, and comprehensive Windows-native integration. **FreshVoxel is focused exclusively on voxel game development** — from Project Zomboid-style isometric/2.5D to Minecraft-style full 3D.
 
-> 🎨 **Editor-First Design** - Fresh is a game editor that happens to support voxel worlds, not just a voxel engine. Start with the editor, create scenes, and use world generation as a plugin.
-> 📚 **New to Fresh?** See [DOCUMENTATION.md](DOCUMENTATION.md) for complete documentation guide.
-> 🎮 **Windows Gaming Platform** - Exclusive focus on Windows 10/11 with DirectX and professional game development tools.
+> 🧱 **Voxel-Only Engine** — FreshVoxel is purpose-built for voxel games. A separate **Fresh2D** fork will handle 2D game development in the future.
+> 🎨 **Editor-First Design** — FreshVoxel is a game editor that happens to support voxel worlds, not just a voxel engine. Start with the editor, create scenes, and use world generation as a plugin.
+> 📚 **New to FreshVoxel?** See [DOCUMENTATION.md](DOCUMENTATION.md) for complete documentation guide.
+> 🎮 **Windows Gaming Platform** — Exclusive focus on Windows 10/11 with DirectX and professional game development tools.
+> 📐 **Architecture** — See [ENGINE.md](ENGINE.md) for engine rules and vision.
 
 ---
 
 ## ✨ Features
 
-### Editor-First Game Development Platform
-- **🎨 Editor-First Workflow** - Start with editor, create/open scenes, not a traditional "game with menu"
-- **🎬 Scene-Based Development** - Unreal-style scenes, not just "worlds" - edit, save, test cycle
-- **🔌 Pluggable World Generation** - World generators are plugins, not the main feature
-- **🎮 Multiple Scene Types** - 3D voxel, 2D platformer, 2D top-down, empty/manual scenes
-- **🪟 Windows-Native Editor** - Professional Win32 UI with menus, toolbars, panels, and dialogs
-- **⚡ DirectX 12/11 Rendering** - Modern graphics API with hardware acceleration
-- **🎯 Visual Studio 2022 Optimized** - Seamless integration with Microsoft's flagship IDE
-- **💻 High DPI Support** - Per-monitor DPI awareness for crisp rendering on 4K/5K displays
-- **🚀 AVX2 Optimized** - SIMD instructions for 15-30% performance improvement
+### Voxel-First Editor & Game Development Platform
+- **🎨 Editor-First Workflow** — Start with editor, create/open scenes, not a traditional "game with menu"
+- **🎬 Scene-Based Development** — Unreal-style scenes, not just "worlds" - edit, save, test cycle
+- **🔌 Pluggable World Generation** — World generators are plugins, not the main feature
+- **🧱 Voxel-Only Scope** — 3D voxel worlds from isometric/2.5D to full 3D perspective
+- **🪟 Windows-Native Editor** — Professional Win32 UI with menus, toolbars, panels, and dialogs
+- **⚡ DirectX 12/11 Rendering** — Modern graphics API with hardware acceleration
+- **🎯 Visual Studio 2022 Optimized** — Seamless integration with Microsoft's flagship IDE
+- **💻 High DPI Support** — Per-monitor DPI awareness for crisp rendering on 4K/5K displays
+- **🚀 AVX2 Optimized** — SIMD instructions for 15-30% performance improvement
 
 ### Core Engine
-- **C++20** - Modern C++ with strong type safety and performance
-- **.NET 9 Bindings** - Optional C# scripting support for rapid development
-- **Lua Scripting** - Optional scripting engine for gameplay and modding
-- **CMake Build System** - Professional build configuration with Visual Studio 2022 focus
-- **Windows SDK Integration** - Full access to Windows platform capabilities
-- **Compiler Optimizations** - Whole program optimization, link-time code generation, fast floating-point
+- **C++20** — Modern C++ with strong type safety and performance
+- **.NET 9 Bindings** — Optional C# scripting support for rapid development
+- **Lua Scripting** — Optional scripting engine for gameplay and modding
+- **CMake Build System** — Professional build configuration with Visual Studio 2022 focus
+- **Windows SDK Integration** — Full access to Windows platform capabilities
+- **Compiler Optimizations** — Whole program optimization, link-time code generation, fast floating-point
 
 ### Voxel World System (Pluggable)
-- **Plugin-Based Generation** - World generators are optional plugins, not core features
-- **Built-In Generators** - 3D Terrain, 2D Platformer, 2D Top-Down, Empty/Manual
-- **Custom Generators** - Create your own world generators via plugin interface
-- **Chunk-Based World** - Efficient 16×256×16 chunk system
-- **13+ Voxel Types** - Stone, Dirt, Grass, Sand, Water, Wood, and more
-- **Dynamic Streaming** - World loads around player as they explore
-- **Greedy Meshing** - Optimized rendering with face culling
+- **Plugin-Based Generation** — World generators are optional plugins, not core features
+- **Built-In Generators** — 3D Terrain with biomes, caves, and structures
+- **Custom Generators** — Create your own world generators via plugin interface
+- **Chunk-Based World** — Efficient 16×256×16 chunk system
+- **13+ Voxel Types** — Stone, Dirt, Grass, Sand, Water, Wood, and more
+- **Dynamic Streaming** — World loads around player as they explore
+- **Greedy Meshing** — Optimized rendering with face culling
+- **View Types** — Support for top-down 2D, isometric/2.5D, and full 3D perspective views
 
 ### Editor & Tools (Unreal Engine-Like Experience)
 - **Professional Game Editor** - Comprehensive native Windows editor for complete game development
@@ -94,7 +98,7 @@ A professional **Windows-exclusive** game editor and development platform built 
 
 ### Prerequisites
 
-**Windows 10/11 Only** - Fresh Voxel Engine is exclusively designed for Windows gaming and development.
+**Windows 10/11 Only** — FreshVoxel Engine is exclusively designed for Windows gaming and development.
 
 - **Windows 10/11** (x64) - Required
 - **Visual Studio 2022** with "Desktop development with C++" - Required
@@ -111,8 +115,8 @@ A professional **Windows-exclusive** game editor and development platform built 
 
 ```powershell
 # Clone repository
-git clone https://github.com/shifty81/fresh.git
-cd fresh
+git clone https://github.com/shifty81/fresh.git freshvoxel
+cd freshvoxel
 
 # Run automated setup script (installs dependencies, builds project)
 .\setup-and-build.ps1
@@ -126,8 +130,8 @@ This script handles everything: vcpkg setup, dependency installation, CMake gene
 
 ```batch
 # 1. Clone repository
-git clone https://github.com/shifty81/fresh.git
-cd fresh
+git clone https://github.com/shifty81/fresh.git freshvoxel
+cd freshvoxel
 
 # 2. Set up vcpkg (one-time setup)
 git clone https://github.com/microsoft/vcpkg.git
@@ -155,7 +159,7 @@ Release\FreshRuntime.exe    # Runtime launcher
 
 ## 🎨 Editor-First Workflow (Project-Based)
 
-Fresh uses an **Unreal Engine-style project-based workflow**. You start by creating a project, then add content:
+FreshVoxel uses an **Unreal Engine-style project-based workflow**. You start by creating a project, then add content:
 
 ### Creating Your First Project
 
@@ -169,20 +173,18 @@ Fresh uses an **Unreal Engine-style project-based workflow**. You start by creat
    - Click `File > New Project` (or press `Ctrl+N`)
    - Enter project name (e.g., "MyGame")
    - Choose template:
-     - **Blank** - Empty project, build from scratch
-     - **3D Voxel** - Minecraft-style game ready
-     - **2D Platformer** - Terraria-style side-scroller
-     - **2D Top-Down** - Zelda-style overhead view
+     - **Blank** — Empty project, build from scratch
+     - **3D Voxel** — Minecraft-style 3D voxel game ready
+     - **Isometric Voxel** — Project Zomboid-style isometric/2.5D view
    - Click "Create"
 
 3. **Add a Level (Optional)**
    - For Blank projects, add content manually or create a level:
    - Click `File > New Level` (or press `Ctrl+Shift+N`)
    - Choose world generator:
-     - **3D Terrain** - Procedural terrain with biomes
-     - **2D Platformer** - Side-scrolling world
-     - **2D Top-Down** - Overhead world
-     - **Empty** - Blank canvas for manual building
+     - **3D Terrain** — Procedural terrain with biomes
+     - **Isometric** — Isometric/2.5D voxel world
+     - **Empty** — Blank canvas for manual building
    - Configure seed and click "Create"
 
 4. **Edit Your Content**
@@ -271,7 +273,7 @@ Fresh uses an **Unreal Engine-style project-based workflow**. You start by creat
 
 ## 🎨 Development Languages & Tools
 
-Fresh Voxel Engine supports multiple development approaches for Windows:
+FreshVoxel Engine supports multiple development approaches for Windows:
 
 ### Primary: C++20 Core Engine
 - **Modern C++ features**: Concepts, ranges, coroutines
@@ -310,7 +312,7 @@ Fresh Voxel Engine supports multiple development approaches for Windows:
 
 ## 📁 Project Structure
 
-Atlas-style modular architecture — the engine ships as multiple executables linked against a shared core library:
+FreshVoxel modular architecture — the engine ships as multiple executables linked against a shared core library:
 
 | Binary         | Purpose                              |
 |----------------|--------------------------------------|
@@ -320,9 +322,10 @@ Atlas-style modular architecture — the engine ships as multiple executables li
 | `FreshRuntime` | Runtime launcher with CLI options    |
 
 ```
-fresh/
+freshvoxel/
 ├── CMakeLists.txt          # Root build — add_subdirectory() for each target
 ├── vcpkg.json              # Dependency manifest
+├── ENGINE.md               # Engine rules and architecture vision
 ├── generate_vs2022.bat     # Visual Studio generator
 ├── setup-and-build.ps1     # Automated setup script
 │
@@ -429,13 +432,13 @@ fresh/
 Fresh Engine uses DirectX as the primary graphics API for Windows gaming:
 
 ### DirectX Rendering (Primary)
-- **DirectX 12** - Primary renderer for Windows 10/11, cutting-edge performance
-- **DirectX 11** - Excellent compatibility fallback for wider hardware support
-- **Native Windows integration** - Optimal performance and features
+- **DirectX 12** — Primary renderer for Windows 10/11, cutting-edge performance
+- **DirectX 11** — Excellent compatibility fallback for wider hardware support
+- **Native Windows integration** — Optimal performance and features
 
 ### OpenGL (Optional)
-- **OpenGL 4.5+** - Available for compatibility and testing
-- **GLEW** - For extension loading
+- **OpenGL 4.5+** — Available for compatibility and testing
+- **GLEW** — For extension loading
 
 The engine automatically selects **DirectX 12** as the primary renderer on Windows 10/11, with automatic fallback to DirectX 11 if needed. OpenGL is available as an optional backend.
 
@@ -457,14 +460,18 @@ dotnet build -c Release
 ## ⚠️ Current Status
 
 ### Platform Support
-- **Windows 10/11 (x64)** ✅ **EXCLUSIVE PLATFORM** - Full support with DirectX 12/11
+- **Windows 10/11 (x64)** ✅ **EXCLUSIVE PLATFORM** — Full support with DirectX 12/11
 - **Linux** ❌ Not supported (archived)
 - **macOS** ❌ Not supported (archived)
 
+### Scope
+- **Voxel Games** ✅ **EXCLUSIVE FOCUS** — 3D voxel terrain, isometric/2.5D, Minecraft-style 3D
+- **2D Games** ❌ Not in scope (future Fresh2D fork)
+
 ### Graphics
-- **DirectX 12** - Production ready ✅ Full voxel rendering (Windows 10/11)
-- **DirectX 11** - Production ready ✅ Full voxel rendering (Windows compatibility)
-- **OpenGL** - Available ✅ Optional compatibility backend
+- **DirectX 12** — Production ready ✅ Full voxel rendering (Windows 10/11)
+- **DirectX 11** — Production ready ✅ Full voxel rendering (Windows compatibility)
+- **OpenGL** — Available ✅ Optional compatibility backend
 
 ### Editor & NPC Features
 - **Unreal-like Editor** - ✅ Professional native Windows editor with Win32 UI components
@@ -488,7 +495,7 @@ dotnet build -c Release
 
 ## 👥 Contributing
 
-We welcome contributions to the Windows-exclusive gaming platform! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+We welcome contributions to the Windows-exclusive voxel gaming platform! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 Ways to contribute:
 - 🐛 Report bugs via [Issues](https://github.com/shifty81/fresh/issues)
@@ -519,4 +526,4 @@ This project is licensed under the MIT License - see [LICENSE](LICENSE) file for
 
 **Ready to build your voxel game on Windows? Get started with [GETTING_STARTED.md](GETTING_STARTED.md)!**
 
-**Build games with the Unreal-like editor - No coding required for NPCs and gameplay!**
+**Build voxel games with the Unreal-like editor — No coding required for NPCs and gameplay!**

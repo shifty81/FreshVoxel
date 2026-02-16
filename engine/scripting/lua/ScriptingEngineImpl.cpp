@@ -272,7 +272,7 @@ void ScriptingEngine::registerEngineAPI()
     (*state)["error"] = [](const std::string& msg) { Logger::getInstance().error("[Lua] " + msg); };
 
     // Register engine version info
-    (*state)["Engine"] = state->create_table_with("name", "Fresh Voxel Engine", "version", "0.1.0",
+    (*state)["Engine"] = state->create_table_with("name", "FreshVoxel Engine", "version", "0.1.0",
                                                   "lua_enabled", true);
 
     Logger::getInstance().info("Registered Lua engine API");

@@ -1,12 +1,14 @@
-# Fresh Voxel Engine - Documentation Index
+# FreshVoxel Engine - Documentation Index
 
-Welcome to the Fresh Voxel Engine documentation! This guide will help you navigate all available documentation.
+Welcome to the FreshVoxel Engine documentation! This guide will help you navigate all available documentation.
+
+FreshVoxel is a **voxel-only** game engine and editor. A future **Fresh2D** fork will handle 2D game development.
 
 ---
 
 ## 📚 Quick Links
 
-### New to Fresh?
+### New to FreshVoxel?
 1. [README](README.md) - Project overview and features
 2. [Getting Started](docs/getting-started/GETTING_STARTED.md) - Setup and first steps
 3. [Build Instructions](docs/getting-started/BUILD.md) - How to build the project

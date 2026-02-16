@@ -11,8 +11,8 @@ int main(int argc, char* argv[])
 
     fresh::Logger::getInstance().initialize();
 
-    std::cout << "Fresh Server - Starting..." << std::endl;
-    LOG_INFO("Fresh Server starting (headless)...");
+    std::cout << "FreshVoxel Server - Starting..." << std::endl;
+    LOG_INFO("FreshVoxel Server starting (headless)...");
 
     try {
         fresh::Engine engine;

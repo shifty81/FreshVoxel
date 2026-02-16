@@ -10,7 +10,7 @@ ProjectContext::ProjectContext() = default;
 std::string ProjectContext::getEngineDescription()
 {
     return
-        "You are an AI assistant for the Fresh Voxel Engine, a professional Windows game editor "
+        "You are an AI assistant for the FreshVoxel Engine, a professional Windows voxel game editor "
         "and development platform built with C++20. The engine features:\n"
         "- A Minecraft-inspired voxel world with 16x256x16 chunk system\n"
         "- DirectX 12 primary renderer (DX11 fallback, OpenGL optional)\n"

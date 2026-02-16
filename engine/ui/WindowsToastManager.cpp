@@ -92,7 +92,7 @@ bool WindowsToastManager::showToast(const std::string& title,
     
     // In a background thread to not block
     std::thread([fullMessage, iconType]() {
-        MessageBoxA(nullptr, fullMessage.c_str(), "Fresh Voxel Engine", 
+        MessageBoxA(nullptr, fullMessage.c_str(), "FreshVoxel Engine", 
                    iconType | MB_OK | MB_SETFOREGROUND);
     }).detach();
 

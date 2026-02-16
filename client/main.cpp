@@ -21,8 +21,8 @@ int main(int argc, char* argv[])
 
     fresh::Logger::getInstance().initialize();
 
-    std::cout << "Fresh Client - Starting..." << std::endl;
-    LOG_INFO("Fresh Client starting...");
+    std::cout << "FreshVoxel Client - Starting..." << std::endl;
+    LOG_INFO("FreshVoxel Client starting...");
 
     try {
         fresh::Engine engine;

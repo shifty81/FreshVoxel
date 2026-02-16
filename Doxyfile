@@ -1,4 +1,4 @@
-# Doxyfile for Fresh Voxel Engine
+# Doxyfile for FreshVoxel Engine
 # Generate API documentation with: doxygen Doxyfile
 
 #---------------------------------------------------------------------------
@@ -6,9 +6,9 @@
 #---------------------------------------------------------------------------
 
 DOXYFILE_ENCODING      = UTF-8
-PROJECT_NAME           = "Fresh Voxel Engine"
+PROJECT_NAME           = "FreshVoxel Engine"
 PROJECT_NUMBER         = 0.1.0
-PROJECT_BRIEF          = "A modern cross-platform voxel-based game engine built with C++20"
+PROJECT_BRIEF          = "A voxel-only game engine and editor built with C++20 for Windows"
 PROJECT_LOGO           = 
 OUTPUT_DIRECTORY       = docs/api
 CREATE_SUBDIRS         = NO
