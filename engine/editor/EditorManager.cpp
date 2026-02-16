@@ -1343,7 +1343,7 @@ void EditorManager::saveWorldAs()
         LOG_INFO_C("Opening Save World As dialog", "EditorManager");
         
         std::vector<FileFilter> filters = {
-            {"Fresh World Files", "*.world"},
+            {"FreshVoxel World Files", "*.world"},
             {"All Files", "*.*"}
         };
         
@@ -1385,7 +1385,7 @@ void EditorManager::saveWorldAs()
         LOG_INFO_C("Opening Save World As dialog", "EditorManager");
         
         std::vector<FileDialogManager::Filter> filters = {
-            {"Fresh World Files", "world"},
+            {"FreshVoxel World Files", "world"},
             {"All Files", "*"}
         };
         
@@ -1418,7 +1418,7 @@ void EditorManager::loadWorld()
         LOG_INFO_C("Opening Load World dialog", "EditorManager");
         
         std::vector<FileFilter> filters = {
-            {"Fresh World Files", "*.world"},
+            {"FreshVoxel World Files", "*.world"},
             {"All Files", "*.*"}
         };
         
@@ -1470,7 +1470,7 @@ void EditorManager::loadWorld()
         LOG_INFO_C("Opening Load World dialog", "EditorManager");
         
         std::vector<FileDialogManager::Filter> filters = {
-            {"Fresh World Files", "world"},
+            {"FreshVoxel World Files", "world"},
             {"All Files", "*"}
         };
         
@@ -1709,7 +1709,7 @@ void EditorManager::openProject()
     
     // Define filter for .freshproj files
     std::vector<FileDialogManager::Filter> filters = {
-        { "Fresh Project Files", "freshproj" },
+        { "FreshVoxel Project Files", "freshproj" },
         { "All Files", "*" }
     };
     

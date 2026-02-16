@@ -140,7 +140,7 @@ std::string BuildAutomation::generateManifest(const std::string& directory) {
 
 // pybind11 module definition
 PYBIND11_MODULE(fresh_engine, m) {
-    m.doc() = "Fresh Engine Python Bindings";
+    m.doc() = "FreshVoxel Engine Python Bindings";
 
     // AssetProcessing bindings
     py::class_<fresh::python::AssetProcessing>(m, "AssetProcessing")

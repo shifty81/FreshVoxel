@@ -203,7 +203,7 @@ TEST_F(ProjectContextTest, GeneralPromptContainsEngineInfo)
     std::string prompt = context.generateSystemPrompt(ProjectContext::Topic::General);
     
     // Should contain core engine description
-    EXPECT_NE(prompt.find("Fresh Voxel Engine"), std::string::npos);
+    EXPECT_NE(prompt.find("FreshVoxel Engine"), std::string::npos);
     EXPECT_NE(prompt.find("C++20"), std::string::npos);
     EXPECT_NE(prompt.find("DirectX"), std::string::npos);
 }
@@ -277,7 +277,7 @@ TEST_F(ProjectContextTest, EngineDescriptionNotEmpty)
 {
     std::string desc = ProjectContext::getEngineDescription();
     EXPECT_FALSE(desc.empty());
-    EXPECT_NE(desc.find("Fresh Voxel Engine"), std::string::npos);
+    EXPECT_NE(desc.find("FreshVoxel Engine"), std::string::npos);
 }
 
 TEST_F(ProjectContextTest, GameDesignTopicContainsMultipleContexts)

@@ -228,7 +228,7 @@ bool AssetPack::parseManifest(const std::string& manifestPath)
     
     name = std::filesystem::path(packPath).filename().string();
     version = "1.0.0";
-    author = "Fresh Engine";
+    author = "FreshVoxel Engine";
 
     // Example tree asset
     AssetMetadata tree;

@@ -58,7 +58,7 @@ bool Win32LLMAssistantPanel::create(HWND parent, int x, int y, int width, int he
     m_llmClient.setSystemPrompt(systemPrompt);
 
     // Show welcome message
-    appendToRichEdit("Fresh Voxel Engine AI Assistant\r\n", UnrealStyleTheme::AccentBlue, true);
+    appendToRichEdit("FreshVoxel Engine AI Assistant\r\n", UnrealStyleTheme::AccentBlue, true);
     appendToRichEdit("================================\r\n", UnrealStyleTheme::TextSecondary);
     appendToRichEdit("Ask me anything about building your game!\r\n", UnrealStyleTheme::TextSecondary);
     appendToRichEdit("Topics: Lua scripting, voxel building, editor tools, NPC/AI, game design\r\n\r\n", 

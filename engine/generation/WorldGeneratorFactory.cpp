@@ -59,7 +59,7 @@ public:
             "terrain3d",                        // id
             "Procedural 3D terrain using Perlin noise with biomes, caves, and natural features",  // description
             "1.0.0",                            // version
-            "Fresh Engine",                     // author
+            "FreshVoxel Engine",                     // author
             false,                              // is2D
             true,                               // is3D
             {"terrain", "3d", "procedural"}    // tags
@@ -106,7 +106,7 @@ public:
             "platformer2d",                     // id
             "Side-scrolling 2D terrain (Terraria-style) with layers and caves",  // description
             "1.0.0",                            // version
-            "Fresh Engine",                     // author
+            "FreshVoxel Engine",                     // author
             true,                               // is2D
             false,                              // is3D
             {"2d", "platformer", "side-scrolling"}  // tags
@@ -153,7 +153,7 @@ public:
             "topdown2d",                        // id
             "Top-down 2D world (Zelda-style) with terrain and obstacles",  // description
             "1.0.0",                            // version
-            "Fresh Engine",                     // author
+            "FreshVoxel Engine",                     // author
             true,                               // is2D
             false,                              // is3D
             {"2d", "top-down", "overhead"}     // tags
@@ -195,7 +195,7 @@ public:
             "empty",                            // id
             "Empty world with no terrain generation (blank canvas)",  // description
             "1.0.0",                            // version
-            "Fresh Engine",                     // author
+            "FreshVoxel Engine",                     // author
             true,                               // is2D
             true,                               // is3D (works for both)
             {"empty", "blank"}                 // tags

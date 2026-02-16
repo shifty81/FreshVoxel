@@ -1,6 +1,6 @@
-# Fresh Voxel Engine - Test Suite
+# FreshVoxel Engine - Test Suite
 
-This directory contains unit tests and integration tests for the Fresh Voxel Engine.
+This directory contains unit tests and integration tests for the FreshVoxel Engine.
 
 ## Test Framework
 

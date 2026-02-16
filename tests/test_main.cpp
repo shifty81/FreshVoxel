@@ -22,7 +22,7 @@ class TestEnvironment : public ::testing::Environment {
 public:
     void SetUp() override {
         std::cout << "==========================================================\n";
-        std::cout << "Fresh Voxel Engine - Test Suite\n";
+        std::cout << "FreshVoxel Engine - Test Suite\n";
         std::cout << "==========================================================\n";
         std::cout << "Initializing test environment...\n";
         
@@ -49,7 +49,7 @@ public:
 };
 
 int main(int argc, char **argv) {
-    std::cout << "Fresh Voxel Engine Test Suite Starting...\n\n";
+    std::cout << "FreshVoxel Engine Test Suite Starting...\n\n";
     
     // Initialize Google Test
     try {

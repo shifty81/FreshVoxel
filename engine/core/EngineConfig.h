@@ -32,7 +32,7 @@ enum class EngineMode
 struct EngineConfig
 {
     EngineMode mode = EngineMode::Editor;         ///< Operating mode
-    std::string windowTitle = "Fresh Voxel Engine"; ///< Window title
+    std::string windowTitle = "FreshVoxel Engine"; ///< Window title
     int windowWidth = 1280;                        ///< Initial window width
     int windowHeight = 720;                        ///< Initial window height
     bool enableRendering = true;                   ///< Create renderer and window
@@ -57,7 +57,7 @@ struct EngineConfig
 
         switch (mode) {
         case EngineMode::Editor:
-            config.windowTitle = "Fresh Voxel Engine - Editor";
+            config.windowTitle = "FreshVoxel Engine - Editor";
             config.enableRendering = true;
             config.enableEditor = true;
             config.enableNetworking = false;
@@ -66,7 +66,7 @@ struct EngineConfig
             break;
 
         case EngineMode::Client:
-            config.windowTitle = "Fresh Voxel Engine";
+            config.windowTitle = "FreshVoxel Engine";
             config.enableRendering = true;
             config.enableEditor = false;
             config.enableNetworking = true;
@@ -75,7 +75,7 @@ struct EngineConfig
             break;
 
         case EngineMode::Server:
-            config.windowTitle = "Fresh Server";
+            config.windowTitle = "FreshVoxel Server";
             config.enableRendering = false;
             config.enableEditor = false;
             config.enableNetworking = true;
@@ -84,7 +84,7 @@ struct EngineConfig
             break;
 
         case EngineMode::Runtime:
-            config.windowTitle = "Fresh Voxel Engine";
+            config.windowTitle = "FreshVoxel Engine";
             config.enableRendering = true;
             config.enableEditor = false;
             config.enableNetworking = false;

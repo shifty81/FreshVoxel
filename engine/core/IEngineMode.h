@@ -61,7 +61,7 @@ struct EngineModeMetadata
  *             "mode3d",               // id
  *             "Full 3D voxel rendering with perspective camera",
  *             "1.0.0",                // version
- *             "Fresh Engine",         // author
+ *             "FreshVoxel Engine",    // author
  *             true,                   // supportsVoxels
  *             false,                  // supportsSprites
  *             3                       // dimensions
