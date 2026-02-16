@@ -96,7 +96,6 @@ class Platformer2DGeneratorAdapter : public IWorldGenerator
 public:
     Platformer2DGeneratorAdapter() : m_generator(std::make_unique<TerrainGenerator>())
     {
-        m_generator->set2DStyle(0); // 0 = Platformer
     }
     
     WorldGeneratorMetadata getMetadata() const override
@@ -143,7 +142,6 @@ class TopDown2DGeneratorAdapter : public IWorldGenerator
 public:
     TopDown2DGeneratorAdapter() : m_generator(std::make_unique<TerrainGenerator>())
     {
-        m_generator->set2DStyle(1); // 1 = Top-down
     }
     
     WorldGeneratorMetadata getMetadata() const override

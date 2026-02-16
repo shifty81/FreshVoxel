@@ -6,7 +6,7 @@
 #include <string>
 #include <thread>
 
-#include "ui/NativeMainMenu.h"  // For WorldCreationParams
+#include "core/WorldCreationParams.h"
 
 namespace fresh
 {
