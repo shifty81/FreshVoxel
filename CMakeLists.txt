@@ -658,6 +658,14 @@ if(BUILD_TESTS)
         tests/renderer/test_model_loader.cpp
         tests/ai/BehaviorTreeTests.cpp
         tests/ai/LLMClientTests.cpp
+        tests/sim/TickSchedulerTests.cpp
+        tests/sim/StateHasherTests.cpp
+        tests/sim/ReplayRecorderTests.cpp
+        tests/command/CommandHistoryTests.cpp
+        tests/mod/ModLoaderTests.cpp
+        tests/plugin/PluginSystemTests.cpp
+        tests/schema/SchemaValidatorTests.cpp
+        tests/module/ModuleLoaderTests.cpp
     )
     
     # Engine source files needed for tests (subset from engine/)
@@ -705,6 +713,14 @@ if(BUILD_TESTS)
         engine/ai/BehaviorTree.cpp
         engine/ai/LLMClient.cpp
         engine/ai/ProjectContext.cpp
+        engine/sim/TickScheduler.cpp
+        engine/sim/StateHasher.cpp
+        engine/sim/ReplayRecorder.cpp
+        engine/command/CommandHistory.cpp
+        engine/mod/ModLoader.cpp
+        engine/plugin/PluginSystem.cpp
+        engine/schema/SchemaValidator.cpp
+        engine/module/ModuleLoader.cpp
     )
 
     # Create test executable

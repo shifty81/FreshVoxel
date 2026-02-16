@@ -105,6 +105,14 @@ add_library(FreshEngine STATIC
     devtools/MemoryTracker.cpp
     devtools/DebugConsole.cpp
     devtools/DevToolsManager.cpp
+    sim/TickScheduler.cpp
+    sim/StateHasher.cpp
+    sim/ReplayRecorder.cpp
+    command/CommandHistory.cpp
+    mod/ModLoader.cpp
+    plugin/PluginSystem.cpp
+    schema/SchemaValidator.cpp
+    module/ModuleLoader.cpp
     scripting/lua/ScriptingEngine.cpp
     scripting/lua/LuaScriptingEngine.cpp
     scripting/lua/LuaECSBindings.cpp
