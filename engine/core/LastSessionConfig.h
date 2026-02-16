@@ -59,9 +59,17 @@ public:
         while (std::getline(file, line)) {
             if (line.empty() || line[0] == '#') continue;
 
+            // Limit line length to prevent DoS via extremely long lines
+            if (line.size() > 4096) continue;
+
             const std::string key = "LAST_WORLD_PATH=";
             if (line.rfind(key, 0) == 0) {
-                return line.substr(key.size());
+                std::string path = line.substr(key.size());
+                // Basic validation: reject empty paths and paths with null bytes
+                if (path.empty() || path.find('\0') != std::string::npos) {
+                    return "";
+                }
+                return path;
             }
         }
         return "";
