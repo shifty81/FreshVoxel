@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.20)
 project(FreshVoxelEngine VERSION 0.1.0 LANGUAGES CXX)
 
+# FreshVoxel Engine — Voxel-only game engine and editor
+# Scope: 3D voxel games (isometric/2.5D to full 3D perspective)
+# Future fork: Fresh2D for strictly 2D games
+
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -13,15 +17,15 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # Platform Detection and Graphics API Configuration
 # ==============================================================================
 
-# Fresh Voxel Engine is now Windows-only for gaming and professional editor development
+# FreshVoxel Engine is now Windows-only for voxel gaming and professional editor development
 # Temporarily allow Linux builds for CI testing purposes
 if(NOT WIN32)
-    message(WARNING "Fresh Voxel Engine is primarily designed for Windows 10/11 (x64).")
+    message(WARNING "FreshVoxel Engine is primarily designed for Windows 10/11 (x64).")
     message(WARNING "Building on Linux for testing purposes only - some features may not work.")
     set(ENABLE_DIRECTX OFF)
     set(ENABLE_OPENGL ON)
 else()
-    message(STATUS "Configuring Fresh Voxel Engine for Windows Gaming Platform")
+    message(STATUS "Configuring FreshVoxel Engine for Windows Gaming Platform")
     message(STATUS "  - Platform: Windows 10/11 (x64)")
     message(STATUS "  - Primary Renderer: DirectX 12")
     message(STATUS "  - Fallback Renderer: DirectX 11")

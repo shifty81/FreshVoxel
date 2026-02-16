@@ -21,8 +21,8 @@ int main(int argc, char* argv[])
 
     fresh::Logger::getInstance().initialize();
 
-    std::cout << "Fresh Editor - Starting..." << std::endl;
-    LOG_INFO("Fresh Editor starting...");
+    std::cout << "FreshVoxel Editor - Starting..." << std::endl;
+    LOG_INFO("FreshVoxel Editor starting...");
 
     try {
         fresh::Engine engine;

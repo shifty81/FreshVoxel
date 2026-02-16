@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to Fresh Voxel Engine will be documented in this file.
+All notable changes to FreshVoxel Engine will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **FreshVoxel Rebranding** — Project renamed from "Fresh" to "FreshVoxel" to reflect voxel-only focus
+  - All project files, build scripts, and documentation updated
+  - Scope locked to voxel games only (isometric/2.5D to full 3D)
+  - Future Fresh2D fork planned for 2D game development
+  - ENGINE.md added with engine rules and architecture vision
+  - Logging added to setup-and-build.ps1 script
 - **Win32TerraformingPanel** - Native Windows GUI for terraforming tools (v0.2.6)
   - Full tool selection UI with buttons for all 10 terraforming tools
   - Mode selection buttons (Place, Remove, Replace)

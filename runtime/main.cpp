@@ -11,7 +11,7 @@
 
 static void PrintUsage()
 {
-    std::cout << "Fresh Runtime v0.1.0" << std::endl;
+    std::cout << "FreshVoxel Runtime v0.1.0" << std::endl;
     std::cout << "Usage: FreshRuntime [options]" << std::endl;
     std::cout << std::endl;
     std::cout << "Options:" << std::endl;
@@ -36,8 +36,8 @@ int main(int argc, char* argv[])
 
     fresh::Logger::getInstance().initialize();
 
-    std::cout << "Fresh Runtime - Starting..." << std::endl;
-    LOG_INFO("Fresh Runtime starting...");
+    std::cout << "FreshVoxel Runtime - Starting..." << std::endl;
+    LOG_INFO("FreshVoxel Runtime starting...");
 
     try {
         fresh::Engine engine;

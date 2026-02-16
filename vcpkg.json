@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
-  "name": "fresh-voxel-engine",
+  "name": "freshvoxel-engine",
   "version": "0.1.0",
-  "description": "A modern voxel-based game engine built with C++20 for Windows with DirectX 11/12 support and native Windows UI",
+  "description": "FreshVoxel — A voxel-only game engine and editor built with C++20 for Windows with DirectX 11/12 support and native Windows UI",
   "homepage": "https://github.com/shifty81/fresh",
   "license": "MIT",
   "dependencies": [
