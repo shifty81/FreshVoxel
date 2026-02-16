@@ -144,6 +144,8 @@ size_t ReplayRecorder::frameCount() const {
 
 uint32_t ReplayRecorder::durationTicks() const {
     if (m_frames.empty()) return 0;
+    // Returns the tick value of the last recorded frame.
+    // For standard recordings (starting at tick 0), this equals the duration.
     return m_frames.back().tick;
 }
 
