@@ -88,7 +88,7 @@ TEST(EngineConfigTest, RuntimeMode_HasCorrectDefaults) {
     EXPECT_TRUE(config.hasWindow());
     EXPECT_FALSE(config.isEditor());
     EXPECT_FALSE(config.isClient());
-    EXPECT_FALSE(config.isRuntime() == false);  // is runtime
+    EXPECT_FALSE(config.isServer());
     EXPECT_TRUE(config.isRuntime());
 }
 
