@@ -8,6 +8,7 @@
     #include <GL/glew.h>
 #endif
 
+#include "core/EngineConfig.h"
 #include "core/IEngineSystem.h"
 #include "voxel/VoxelTypes.h"
 
@@ -74,9 +75,10 @@ public:
 
     /**
      * @brief Initialize the engine and all subsystems
+     * @param config Engine configuration specifying mode and settings
      * @return true if initialization was successful, false otherwise
      */
-    bool initialize();
+    bool initialize(const EngineConfig& config = EngineConfig::createDefault(EngineMode::Editor));
 
     /**
      * @brief Run the main engine loop
@@ -102,6 +104,18 @@ public:
      * @return Pointer to project manager
      */
     ProjectManager* getProjectManager() const { return m_projectManager.get(); }
+
+    /**
+     * @brief Get the engine configuration
+     * @return Reference to current engine config
+     */
+    const EngineConfig& getConfig() const { return m_config; }
+
+    /**
+     * @brief Get the engine operating mode
+     * @return Current engine mode (Editor, Client, Server, Runtime)
+     */
+    EngineMode getMode() const { return m_config.mode; }
 
     /**
      * @brief Get the pluggable system registry
@@ -157,6 +171,7 @@ private:
 #endif
 
 private:
+    EngineConfig m_config;
     bool m_running;
     bool m_inGame;
     std::unique_ptr<WindowType> m_window;

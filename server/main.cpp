@@ -1,4 +1,5 @@
 #include "core/Engine.h"
+#include "core/EngineConfig.h"
 #include "core/Logger.h"
 #include <cstdlib>
 #include <iostream>
@@ -15,8 +16,9 @@ int main(int argc, char* argv[])
 
     try {
         fresh::Engine engine;
+        auto config = fresh::EngineConfig::createDefault(fresh::EngineMode::Server);
 
-        if (!engine.initialize()) {
+        if (!engine.initialize(config)) {
             std::cerr << "Failed to initialize engine" << std::endl;
             LOG_ERROR("Failed to initialize engine");
             fresh::Logger::getInstance().shutdown();
