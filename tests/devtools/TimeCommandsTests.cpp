@@ -170,10 +170,10 @@ TEST_F(TimeCommandsTest, UnregisterCommands)
 {
     TimeCommands::unregisterCommands(console.get());
     
-    // Clear the log
+    // Clear the log using the default 'clear' command (registered by DebugConsole::initialize)
     console->executeCommand("clear");
     
-    // Execute "time" command - should produce "Unknown command" error
+    // Execute "time" command - should produce "Unknown command" error since it was unregistered
     console->executeCommand("time");
     
     const auto& log = console->getLog();
