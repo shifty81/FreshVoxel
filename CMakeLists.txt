@@ -670,6 +670,7 @@ if(BUILD_TESTS)
         tests/plugin/PluginSystemTests.cpp
         tests/schema/SchemaValidatorTests.cpp
         tests/module/ModuleLoaderTests.cpp
+        tests/devtools/TimeCommandsTests.cpp
     )
     
     # Engine source files needed for tests (subset from engine/)
@@ -706,6 +707,8 @@ if(BUILD_TESTS)
         engine/editor/TerraformingSystem.cpp
         engine/editor/FileDialogManager.cpp
         engine/devtools/DebugRenderer.cpp
+        engine/devtools/DebugConsole.cpp
+        engine/devtools/TimeCommands.cpp
         engine/ecs/EntityManager.cpp
         engine/voxelship/VoxelBlock.cpp
         engine/renderer/ModelLoader.cpp

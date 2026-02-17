@@ -234,6 +234,8 @@ bool VoxelMaterialPack::parseManifest(const std::string& manifestPath)
         return false;
     }
 #else
+    // Suppress unused parameter warning
+    (void)manifestPath;
     // Fallback when JSON not available
     LOG_WARNING("JSON library not available - using minimal fallback");
     

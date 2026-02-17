@@ -92,6 +92,7 @@ add_library(FreshEngine STATIC
     devtools/MemoryTracker.cpp
     devtools/DebugConsole.cpp
     devtools/DevToolsManager.cpp
+    devtools/TimeCommands.cpp
     sim/TickScheduler.cpp
     sim/StateHasher.cpp
     sim/ReplayRecorder.cpp

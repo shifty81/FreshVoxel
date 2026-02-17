@@ -56,6 +56,9 @@ std::string FileDialogManager::openFile(const std::vector<Filter>& filters,
     
     return selectedPath;
 #else
+    // Suppress unused parameter warnings
+    (void)filters;
+    (void)defaultPath;
     Logger::getInstance().warning("File dialogs not available (NFD not compiled in)", 
                                  "FileDialogManager");
     return "";
@@ -105,6 +108,10 @@ std::string FileDialogManager::saveFile(const std::vector<Filter>& filters,
     
     return selectedPath;
 #else
+    // Suppress unused parameter warnings
+    (void)filters;
+    (void)defaultPath;
+    (void)defaultName;
     Logger::getInstance().warning("File dialogs not available (NFD not compiled in)", 
                                  "FileDialogManager");
     return "";
@@ -162,6 +169,9 @@ std::vector<std::string> FileDialogManager::openMultipleFiles(const std::vector<
     
     return selectedPaths;
 #else
+    // Suppress unused parameter warnings
+    (void)filters;
+    (void)defaultPath;
     Logger::getInstance().warning("File dialogs not available (NFD not compiled in)",
                                  "FileDialogManager");
     return {};
@@ -192,6 +202,8 @@ std::string FileDialogManager::pickFolder(const std::string& defaultPath) {
     
     return selectedPath;
 #else
+    // Suppress unused parameter warning
+    (void)defaultPath;
     Logger::getInstance().warning("File dialogs not available (NFD not compiled in)",
                                  "FileDialogManager");
     return "";
