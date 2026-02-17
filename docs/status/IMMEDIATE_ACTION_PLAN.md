@@ -403,7 +403,7 @@
 - [ ] Resource caching
 - [ ] Item tooltips
 - [x] Crafting search
-- [ ] Time commands
+- [x] Time commands
 - [ ] Stars at night
 
 ---

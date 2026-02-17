@@ -382,7 +382,7 @@ void Win32LLMAssistantPanel::sendMessage(const std::string& message)
             appendToRichEdit("Current Configuration:\r\n", UnrealStyleTheme::TextSecondary);
             appendToRichEdit("  Endpoint: " + config.endpoint + "\r\n", UnrealStyleTheme::TextPrimary);
             appendToRichEdit("  Model: " + config.model + "\r\n", UnrealStyleTheme::TextPrimary);
-            appendToRichEdit("  API Key: " + (config.apiKey.empty() ? "(not set)" : "(set)") + "\r\n", 
+            appendToRichEdit(std::string("  API Key: ") + (config.apiKey.empty() ? "(not set)" : "(set)") + "\r\n", 
                              UnrealStyleTheme::TextPrimary);
             appendToRichEdit("  Topic: " + ProjectContext::topicToString(m_currentTopic) + "\r\n\r\n",
                              UnrealStyleTheme::TextPrimary);

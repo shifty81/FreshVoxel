@@ -28,6 +28,7 @@ public:
 
     void update(float deltaTime) override
     {
+        (void)deltaTime;  // Currently unused, but reserved for future combat timing
         if (!enabled)
             return;
 

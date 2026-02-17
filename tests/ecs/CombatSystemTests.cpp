@@ -133,7 +133,7 @@ TEST_F(CombatSystemTest, Update_DetectsEntityDeath)
     entityManager->addComponent(entity, new HealthComponent(100.0f));
 
     bool deathEventReceived = false;
-    EventSystem::getInstance().subscribe("entity_died", [&](const EventData& data) {
+    EventSystem::getInstance().subscribe("entity_died", [&](const EventData& /*data*/) {
         deathEventReceived = true;
     });
 
@@ -157,7 +157,7 @@ TEST_F(CombatSystemTest, Update_DetectsEntityRevive)
     combatSystem->update(0.016f); // Process death
 
     bool reviveEventReceived = false;
-    EventSystem::getInstance().subscribe("entity_revived", [&](const EventData& data) {
+    EventSystem::getInstance().subscribe("entity_revived", [&](const EventData& /*data*/) {
         reviveEventReceived = true;
     });
 
@@ -205,7 +205,7 @@ TEST_F(CombatSystemTest, MultipleEntities_EachProcessedIndependently)
     entityManager->addComponent(entity2, new HealthComponent(50.0f));
 
     int damageEventCount = 0;
-    EventSystem::getInstance().subscribe("entity_damaged", [&](const EventData& data) {
+    EventSystem::getInstance().subscribe("entity_damaged", [&](const EventData& /*data*/) {
         damageEventCount++;
     });
 
@@ -232,7 +232,7 @@ TEST_F(CombatSystemTest, ApplyDamage_ToDeadEntity_HasNoEffect)
     health->takeDamage(100.0f);
 
     int eventCount = 0;
-    EventSystem::getInstance().subscribe("entity_damaged", [&](const EventData& data) {
+    EventSystem::getInstance().subscribe("entity_damaged", [&](const EventData& /*data*/) {
         eventCount++;
     });
 
@@ -255,7 +255,7 @@ TEST_F(CombatSystemTest, Update_WhenDisabled_DoesNotProcess)
     health->takeDamage(100.0f);
 
     bool eventReceived = false;
-    EventSystem::getInstance().subscribe("entity_died", [&](const EventData& data) {
+    EventSystem::getInstance().subscribe("entity_died", [&](const EventData& /*data*/) {
         eventReceived = true;
     });
 

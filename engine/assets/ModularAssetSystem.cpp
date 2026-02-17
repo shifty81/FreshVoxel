@@ -223,6 +223,8 @@ bool AssetPack::parseManifest(const std::string& manifestPath)
         return false;
     }
 #else
+    // Suppress unused parameter warning
+    (void)manifestPath;
     // Fallback implementation when JSON library is not available
     std::cout << "JSON library not available - using fallback asset loading" << std::endl;
     
