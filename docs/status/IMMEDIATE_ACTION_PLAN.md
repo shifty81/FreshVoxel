@@ -397,14 +397,14 @@
 
 ### Nice to Have (Polish)
 
-- [ ] Selection modes (brush, wand)
+- [x] Selection modes (brush, wand)
 - [ ] Model preview in browser
-- [ ] Audio streaming
+- [x] Audio streaming
 - [ ] Resource caching
-- [ ] Item tooltips
+- [x] Item tooltips
 - [x] Crafting search
 - [x] Time commands
-- [ ] Stars at night
+- [x] Stars at night
 
 ---
 

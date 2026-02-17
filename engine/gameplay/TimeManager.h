@@ -3,9 +3,23 @@
 #include <glm/glm.hpp>
 #include <functional>
 #include <string>
+#include <vector>
 
 namespace fresh
 {
+
+/**
+ * @brief Represents a star in the night sky
+ */
+struct StarData {
+    glm::vec3 direction; ///< Normalized direction on the sky dome
+    float brightness;    ///< Star brightness (0.0-1.0)
+    float size;          ///< Relative size multiplier
+
+    StarData() : direction(0.0f, 1.0f, 0.0f), brightness(0.5f), size(1.0f) {}
+    StarData(const glm::vec3& dir, float b, float s)
+        : direction(dir), brightness(b), size(s) {}
+};
 
 /**
  * @brief Manages game time and day/night cycle
@@ -174,6 +188,27 @@ public:
      */
     glm::vec3 getMoonLightColor() const;
 
+    // Star field
+
+    /**
+     * @brief Generate a star field with deterministic positions
+     * @param count Number of stars to generate (clamped to 1-5000)
+     * @param seed Random seed for reproducible star positions
+     */
+    void generateStarField(int count = 200, unsigned int seed = 42);
+
+    /**
+     * @brief Get the generated star data
+     * @return Vector of star positions, brightness, and sizes
+     */
+    const std::vector<StarData>& getStarField() const { return m_stars; }
+
+    /**
+     * @brief Get current star visibility factor (0.0 = invisible, 1.0 = fully visible)
+     * @return Star visibility based on time of day
+     */
+    float getStarVisibility() const;
+
     // Event callbacks
     /**
      * @brief Set callback for when a new day starts
@@ -244,6 +279,9 @@ private:
     glm::vec3 m_horizonColor;
     glm::vec3 m_sunColor;
     glm::vec3 m_moonColor;
+
+    // Star field data
+    std::vector<StarData> m_stars;
 };
 
 } // namespace fresh

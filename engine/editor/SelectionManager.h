@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <unordered_set>
+#include <queue>
 #include <glm/glm.hpp>
 #include "voxel/VoxelTypes.h"
 
@@ -63,10 +64,20 @@ struct VoxelSelection {
 };
 
 /**
+ * @brief Selection mode determines how voxels are selected
+ */
+enum class SelectionMode {
+    Box,    ///< Rectangular box selection (default)
+    Brush,  ///< Paint-style selection with configurable radius
+    Wand    ///< Select connected voxels of the same type (flood fill)
+};
+
+/**
  * @brief Manages voxel selection for the editor
  * 
- * Handles box selection, manipulation, and clipboard operations for voxels.
- * This is a critical component for Cut/Copy/Paste functionality.
+ * Handles box, brush, and wand selection modes, manipulation, and clipboard
+ * operations for voxels. This is a critical component for Cut/Copy/Paste
+ * functionality.
  */
 class SelectionManager
 {
@@ -74,9 +85,46 @@ public:
     SelectionManager();
     ~SelectionManager();
 
+    // Selection mode
+    /**
+     * @brief Set the selection mode
+     * @param mode Selection mode to use
+     */
+    void setSelectionMode(SelectionMode mode) { m_selectionMode = mode; }
+
+    /**
+     * @brief Get the current selection mode
+     * @return Current selection mode
+     */
+    SelectionMode getSelectionMode() const { return m_selectionMode; }
+
+    /**
+     * @brief Set brush radius for Brush selection mode
+     * @param radius Brush radius in voxels (clamped to 1-16)
+     */
+    void setBrushRadius(int radius) { m_brushRadius = std::max(1, std::min(16, radius)); }
+
+    /**
+     * @brief Get the current brush radius
+     * @return Brush radius in voxels
+     */
+    int getBrushRadius() const { return m_brushRadius; }
+
+    /**
+     * @brief Set maximum wand flood fill limit
+     * @param limit Maximum number of voxels to select (clamped to 1-10000)
+     */
+    void setWandLimit(int limit) { m_wandLimit = std::max(1, std::min(10000, limit)); }
+
+    /**
+     * @brief Get the current wand selection limit
+     * @return Maximum number of voxels for wand select
+     */
+    int getWandLimit() const { return m_wandLimit; }
+
     // Selection operations
     /**
-     * @brief Start a new box selection
+     * @brief Start a new selection (mode-dependent)
      * @param worldPos Starting position in world space
      */
     void startSelection(const glm::vec3& worldPos);
@@ -244,6 +292,18 @@ private:
     void buildBoxSelection(VoxelWorld* world);
 
     /**
+     * @brief Build selection using brush (sphere) around a center point
+     * @param world Pointer to voxel world to query voxels
+     */
+    void buildBrushSelection(VoxelWorld* world);
+
+    /**
+     * @brief Build selection using wand (flood fill of same voxel type)
+     * @param world Pointer to voxel world to query voxels
+     */
+    void buildWandSelection(VoxelWorld* world);
+
+    /**
      * @brief Calculate bounds from current selection
      */
     void calculateBounds();
@@ -253,6 +313,11 @@ private:
     bool m_isSelecting;
     glm::vec3 m_selectionStart;
     glm::vec3 m_selectionEnd;
+    
+    // Selection mode
+    SelectionMode m_selectionMode;
+    int m_brushRadius;
+    int m_wandLimit;
     
     // Selected voxels
     VoxelSelection m_selection;

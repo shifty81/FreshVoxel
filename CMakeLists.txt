@@ -671,6 +671,7 @@ if(BUILD_TESTS)
         tests/schema/SchemaValidatorTests.cpp
         tests/module/ModuleLoaderTests.cpp
         tests/devtools/TimeCommandsTests.cpp
+        tests/ui/InventoryPanelTests.cpp
     )
     
     # Engine source files needed for tests (subset from engine/)
@@ -723,6 +724,8 @@ if(BUILD_TESTS)
         engine/plugin/PluginSystem.cpp
         engine/schema/SchemaValidator.cpp
         engine/module/ModuleLoader.cpp
+        engine/ui/InventoryPanel.cpp
+        engine/audio/AudioEngine.cpp
     )
 
     # Create test executable

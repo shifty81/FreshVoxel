@@ -618,4 +618,139 @@ TEST_F(SelectionManagerTest, EdgeCase_MultipleOperations) {
     EXPECT_EQ(VoxelType::Stone, voxel->type);
 }
 
+// ============================================================================
+// Selection Mode Tests
+// ============================================================================
+
+TEST_F(SelectionManagerTest, DefaultSelectionMode_IsBox) {
+    EXPECT_EQ(SelectionMode::Box, selectionManager->getSelectionMode());
+}
+
+TEST_F(SelectionManagerTest, SetSelectionMode_Brush) {
+    selectionManager->setSelectionMode(SelectionMode::Brush);
+    EXPECT_EQ(SelectionMode::Brush, selectionManager->getSelectionMode());
+}
+
+TEST_F(SelectionManagerTest, SetSelectionMode_Wand) {
+    selectionManager->setSelectionMode(SelectionMode::Wand);
+    EXPECT_EQ(SelectionMode::Wand, selectionManager->getSelectionMode());
+}
+
+TEST_F(SelectionManagerTest, BrushRadius_Default) {
+    EXPECT_EQ(3, selectionManager->getBrushRadius());
+}
+
+TEST_F(SelectionManagerTest, BrushRadius_SetValid) {
+    selectionManager->setBrushRadius(5);
+    EXPECT_EQ(5, selectionManager->getBrushRadius());
+}
+
+TEST_F(SelectionManagerTest, BrushRadius_ClampedMin) {
+    selectionManager->setBrushRadius(0);
+    EXPECT_EQ(1, selectionManager->getBrushRadius());
+}
+
+TEST_F(SelectionManagerTest, BrushRadius_ClampedMax) {
+    selectionManager->setBrushRadius(100);
+    EXPECT_EQ(16, selectionManager->getBrushRadius());
+}
+
+TEST_F(SelectionManagerTest, WandLimit_Default) {
+    EXPECT_EQ(1000, selectionManager->getWandLimit());
+}
+
+TEST_F(SelectionManagerTest, WandLimit_SetValid) {
+    selectionManager->setWandLimit(500);
+    EXPECT_EQ(500, selectionManager->getWandLimit());
+}
+
+TEST_F(SelectionManagerTest, WandLimit_ClampedMin) {
+    selectionManager->setWandLimit(0);
+    EXPECT_EQ(1, selectionManager->getWandLimit());
+}
+
+TEST_F(SelectionManagerTest, WandLimit_ClampedMax) {
+    selectionManager->setWandLimit(20000);
+    EXPECT_EQ(10000, selectionManager->getWandLimit());
+}
+
+TEST_F(SelectionManagerTest, BrushSelection_SelectsVoxelsInSphere) {
+    selectionManager->setSelectionMode(SelectionMode::Brush);
+    selectionManager->setBrushRadius(2);
+    
+    // Select around center of the test voxel block
+    selectionManager->startSelection(glm::vec3(5.0f, 5.0f, 5.0f));
+    selectionManager->updateSelection(glm::vec3(5.0f, 5.0f, 5.0f));
+    selectionManager->finalizeSelection(voxelWorld.get());
+    
+    // Should have selected voxels in a sphere of radius 2
+    EXPECT_GT(selectionManager->getSelectionSize(), 0u);
+    // Sphere of radius 2 in a filled volume should have ~33 voxels (4/3*pi*2^3 ≈ 33.5)
+    // But many are at fractional boundaries, so check a reasonable range
+    EXPECT_LE(selectionManager->getSelectionSize(), 100u);
+}
+
+TEST_F(SelectionManagerTest, BrushSelection_EmptyArea) {
+    selectionManager->setSelectionMode(SelectionMode::Brush);
+    selectionManager->setBrushRadius(2);
+    
+    // Select in an area with no voxels
+    selectionManager->startSelection(glm::vec3(50.0f, 50.0f, 50.0f));
+    selectionManager->updateSelection(glm::vec3(50.0f, 50.0f, 50.0f));
+    selectionManager->finalizeSelection(voxelWorld.get());
+    
+    EXPECT_EQ(0u, selectionManager->getSelectionSize());
+}
+
+TEST_F(SelectionManagerTest, WandSelection_SelectsConnectedSameType) {
+    selectionManager->setSelectionMode(SelectionMode::Wand);
+    
+    // Select starting from a stone voxel - should flood fill to all connected stone
+    selectionManager->startSelection(glm::vec3(5.0f, 5.0f, 5.0f));
+    selectionManager->finalizeSelection(voxelWorld.get());
+    
+    // All 1000 stone voxels in the 10x10x10 cube should be connected
+    // But wand limit defaults to 1000, so it will select up to 1000
+    EXPECT_GT(selectionManager->getSelectionSize(), 0u);
+    EXPECT_LE(selectionManager->getSelectionSize(), 1000u);
+}
+
+TEST_F(SelectionManagerTest, WandSelection_EmptyArea) {
+    selectionManager->setSelectionMode(SelectionMode::Wand);
+    
+    // Select in an area with no voxels (air)
+    selectionManager->startSelection(glm::vec3(50.0f, 50.0f, 50.0f));
+    selectionManager->finalizeSelection(voxelWorld.get());
+    
+    EXPECT_EQ(0u, selectionManager->getSelectionSize());
+}
+
+TEST_F(SelectionManagerTest, WandSelection_RespectsLimit) {
+    selectionManager->setSelectionMode(SelectionMode::Wand);
+    selectionManager->setWandLimit(5);
+    
+    // Select starting from a stone voxel
+    selectionManager->startSelection(glm::vec3(5.0f, 5.0f, 5.0f));
+    selectionManager->finalizeSelection(voxelWorld.get());
+    
+    // Should select at most 5 voxels
+    EXPECT_LE(selectionManager->getSelectionSize(), 5u);
+    EXPECT_GT(selectionManager->getSelectionSize(), 0u);
+}
+
+TEST_F(SelectionManagerTest, WandSelection_OnlySelectsSameType) {
+    // Place a different type voxel to create a boundary
+    voxelWorld->setVoxel(WorldPos(5, 5, 5), Voxel(VoxelType::Dirt));
+    
+    selectionManager->setSelectionMode(SelectionMode::Wand);
+    
+    // Select starting from the dirt voxel - should only get that one
+    // since it's surrounded by stone (different type)
+    selectionManager->startSelection(glm::vec3(5.0f, 5.0f, 5.0f));
+    selectionManager->finalizeSelection(voxelWorld.get());
+    
+    // The dirt voxel is surrounded by stone, so only 1 should be selected
+    EXPECT_EQ(1u, selectionManager->getSelectionSize());
+}
+
 } // namespace fresh
