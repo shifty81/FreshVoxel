@@ -8,6 +8,30 @@ namespace fresh
 {
 
 /**
+ * @brief Item tooltip information for UI display
+ */
+struct ItemTooltip {
+    std::string name;
+    std::string description;
+    std::string rarity;
+    bool visible;
+
+    ItemTooltip()
+        : name("")
+        , description("")
+        , rarity("Common")
+        , visible(false)
+    {}
+
+    ItemTooltip(const std::string& n, const std::string& d, const std::string& r = "Common")
+        : name(n)
+        , description(d)
+        , rarity(r)
+        , visible(false)
+    {}
+};
+
+/**
  * @brief Item slot information for UI display
  */
 struct InventorySlot {
@@ -159,6 +183,33 @@ public:
      */
     bool isDragDropEnabled() const { return m_dragDropEnabled; }
 
+    // Tooltip support
+
+    /**
+     * @brief Get tooltip for a specific slot
+     * @param slotIndex Slot index to get tooltip for
+     * @return ItemTooltip with name, description, and rarity
+     */
+    ItemTooltip getTooltipForSlot(int slotIndex) const;
+
+    /**
+     * @brief Handle mouse hover over a slot (for tooltip display)
+     * @param slotIndex Slot index being hovered, or -1 if none
+     */
+    void hoverSlot(int slotIndex);
+
+    /**
+     * @brief Get the currently hovered slot index
+     * @return Hovered slot index, or -1 if none
+     */
+    int getHoveredSlot() const { return m_hoveredSlot; }
+
+    /**
+     * @brief Check if a tooltip should be displayed
+     * @return True if a non-empty slot is being hovered
+     */
+    bool isTooltipVisible() const;
+
 private:
     /**
      * @brief Refresh slot data from inventory
@@ -182,10 +233,32 @@ private:
     };
     Color getResourceColor(rpg::ResourceType type) const;
 
+    /**
+     * @brief Get human-readable name for a resource type
+     * @param type Resource type
+     * @return Display name string
+     */
+    std::string getResourceName(rpg::ResourceType type) const;
+
+    /**
+     * @brief Get description for a resource type
+     * @param type Resource type
+     * @return Description string
+     */
+    std::string getResourceDescription(rpg::ResourceType type) const;
+
+    /**
+     * @brief Get rarity for a resource type
+     * @param type Resource type
+     * @return Rarity string (Common, Uncommon, Rare, Epic, Legendary)
+     */
+    std::string getResourceRarity(rpg::ResourceType type) const;
+
 private:
     rpg::Inventory* m_inventory;
     std::vector<InventorySlot> m_slots;
     int m_selectedSlot;
+    int m_hoveredSlot;
     bool m_visible;
     bool m_dragDropEnabled;
     int m_slotCount;

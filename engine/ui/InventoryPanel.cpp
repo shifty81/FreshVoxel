@@ -9,6 +9,7 @@ namespace fresh
 InventoryPanel::InventoryPanel(int slotCount)
     : m_inventory(nullptr)
     , m_selectedSlot(-1)
+    , m_hoveredSlot(-1)
     , m_visible(false)
     , m_dragDropEnabled(true)
     , m_slotCount(slotCount)
@@ -265,6 +266,115 @@ InventoryPanel::Color InventoryPanel::getResourceColor(rpg::ResourceType type) c
         return {50, 205, 50};   // Lime green
     default:
         return {128, 128, 128}; // Gray
+    }
+}
+
+ItemTooltip InventoryPanel::getTooltipForSlot(int slotIndex) const
+{
+    if (slotIndex < 0 || slotIndex >= m_slotCount) {
+        return ItemTooltip();
+    }
+
+    const auto& slot = m_slots[slotIndex];
+    if (slot.isEmpty) {
+        return ItemTooltip();
+    }
+
+    return ItemTooltip(
+        getResourceName(slot.type),
+        getResourceDescription(slot.type),
+        getResourceRarity(slot.type)
+    );
+}
+
+void InventoryPanel::hoverSlot(int slotIndex)
+{
+    if (slotIndex >= 0 && slotIndex < m_slotCount) {
+        m_hoveredSlot = slotIndex;
+    } else {
+        m_hoveredSlot = -1;
+    }
+}
+
+bool InventoryPanel::isTooltipVisible() const
+{
+    if (m_hoveredSlot < 0 || m_hoveredSlot >= m_slotCount) {
+        return false;
+    }
+    return !m_slots[m_hoveredSlot].isEmpty;
+}
+
+std::string InventoryPanel::getResourceName(rpg::ResourceType type) const
+{
+    switch (type) {
+    case rpg::ResourceType::Iron:
+        return "Iron";
+    case rpg::ResourceType::Titanium:
+        return "Titanium";
+    case rpg::ResourceType::Naonite:
+        return "Naonite";
+    case rpg::ResourceType::Trinium:
+        return "Trinium";
+    case rpg::ResourceType::Xanion:
+        return "Xanion";
+    case rpg::ResourceType::Ogonite:
+        return "Ogonite";
+    case rpg::ResourceType::Avorion:
+        return "Avorion";
+    case rpg::ResourceType::Energy:
+        return "Energy Cell";
+    case rpg::ResourceType::Credits:
+        return "Credits";
+    default:
+        return "Unknown";
+    }
+}
+
+std::string InventoryPanel::getResourceDescription(rpg::ResourceType type) const
+{
+    switch (type) {
+    case rpg::ResourceType::Iron:
+        return "A common metal used for basic construction and tools.";
+    case rpg::ResourceType::Titanium:
+        return "A lightweight, strong metal for advanced structures.";
+    case rpg::ResourceType::Naonite:
+        return "A rare crystal with energy-conducting properties.";
+    case rpg::ResourceType::Trinium:
+        return "An exotic alloy prized for its resilience.";
+    case rpg::ResourceType::Xanion:
+        return "A legendary material of immense power.";
+    case rpg::ResourceType::Ogonite:
+        return "A volcanic metal forged in extreme heat.";
+    case rpg::ResourceType::Avorion:
+        return "The rarest material in the known universe.";
+    case rpg::ResourceType::Energy:
+        return "Stored energy for powering systems and tools.";
+    case rpg::ResourceType::Credits:
+        return "Universal currency for trading and commerce.";
+    default:
+        return "An unidentified item.";
+    }
+}
+
+std::string InventoryPanel::getResourceRarity(rpg::ResourceType type) const
+{
+    switch (type) {
+    case rpg::ResourceType::Iron:
+    case rpg::ResourceType::Energy:
+    case rpg::ResourceType::Credits:
+        return "Common";
+    case rpg::ResourceType::Titanium:
+        return "Uncommon";
+    case rpg::ResourceType::Naonite:
+    case rpg::ResourceType::Trinium:
+        return "Rare";
+    case rpg::ResourceType::Xanion:
+    case rpg::ResourceType::Ogonite:
+        return "Epic";
+    case rpg::ResourceType::Avorion:
+        return "Legendary";
+    default:
+        return "Common";
     }
 }
 

@@ -343,3 +343,131 @@ TEST_F(TimeManagerTest, OnSunsetCallback)
     timeManager->update(0.1f);
     EXPECT_TRUE(sunsetTriggered);
 }
+
+// ============================================================================
+// Star Field Tests
+// ============================================================================
+
+TEST_F(TimeManagerTest, StarField_EmptyByDefault)
+{
+    EXPECT_TRUE(timeManager->getStarField().empty());
+}
+
+TEST_F(TimeManagerTest, StarField_GenerateCreatesStars)
+{
+    timeManager->generateStarField(100, 42);
+    EXPECT_EQ(100u, timeManager->getStarField().size());
+}
+
+TEST_F(TimeManagerTest, StarField_DeterministicWithSameSeed)
+{
+    timeManager->generateStarField(50, 12345);
+    auto stars1 = timeManager->getStarField();
+
+    timeManager->generateStarField(50, 12345);
+    auto stars2 = timeManager->getStarField();
+
+    ASSERT_EQ(stars1.size(), stars2.size());
+    for (size_t i = 0; i < stars1.size(); ++i) {
+        EXPECT_FLOAT_EQ(stars1[i].direction.x, stars2[i].direction.x);
+        EXPECT_FLOAT_EQ(stars1[i].direction.y, stars2[i].direction.y);
+        EXPECT_FLOAT_EQ(stars1[i].direction.z, stars2[i].direction.z);
+        EXPECT_FLOAT_EQ(stars1[i].brightness, stars2[i].brightness);
+        EXPECT_FLOAT_EQ(stars1[i].size, stars2[i].size);
+    }
+}
+
+TEST_F(TimeManagerTest, StarField_DifferentSeedsDifferentResults)
+{
+    timeManager->generateStarField(50, 42);
+    auto stars1 = timeManager->getStarField();
+
+    timeManager->generateStarField(50, 99);
+    auto stars2 = timeManager->getStarField();
+
+    // At least one star should differ
+    bool allSame = true;
+    for (size_t i = 0; i < stars1.size(); ++i) {
+        if (stars1[i].direction.x != stars2[i].direction.x) {
+            allSame = false;
+            break;
+        }
+    }
+    EXPECT_FALSE(allSame);
+}
+
+TEST_F(TimeManagerTest, StarField_CountClamped)
+{
+    timeManager->generateStarField(0, 42);
+    EXPECT_EQ(1u, timeManager->getStarField().size());
+
+    timeManager->generateStarField(10000, 42);
+    EXPECT_EQ(5000u, timeManager->getStarField().size());
+}
+
+TEST_F(TimeManagerTest, StarField_StarsInUpperHemisphere)
+{
+    timeManager->generateStarField(200, 42);
+    for (const auto& star : timeManager->getStarField()) {
+        EXPECT_GE(star.direction.y, 0.0f);
+    }
+}
+
+TEST_F(TimeManagerTest, StarField_BrightnessInRange)
+{
+    timeManager->generateStarField(200, 42);
+    for (const auto& star : timeManager->getStarField()) {
+        EXPECT_GE(star.brightness, 0.3f);
+        EXPECT_LE(star.brightness, 1.0f);
+    }
+}
+
+TEST_F(TimeManagerTest, StarField_SizeInRange)
+{
+    timeManager->generateStarField(200, 42);
+    for (const auto& star : timeManager->getStarField()) {
+        EXPECT_GE(star.size, 0.5f);
+        EXPECT_LE(star.size, 2.0f);
+    }
+}
+
+TEST_F(TimeManagerTest, StarVisibility_ZeroDuringDay)
+{
+    timeManager->setTime(12000); // Noon
+    EXPECT_FLOAT_EQ(0.0f, timeManager->getStarVisibility());
+}
+
+TEST_F(TimeManagerTest, StarVisibility_FullDuringNight)
+{
+    timeManager->setTime(0); // Midnight
+    EXPECT_FLOAT_EQ(1.0f, timeManager->getStarVisibility());
+}
+
+TEST_F(TimeManagerTest, StarVisibility_FadesAtSunrise)
+{
+    // Middle of sunrise
+    int midSunrise = (5000 + 7000) / 2;
+    timeManager->setTime(midSunrise);
+    float visibility = timeManager->getStarVisibility();
+    EXPECT_GT(visibility, 0.0f);
+    EXPECT_LT(visibility, 1.0f);
+}
+
+TEST_F(TimeManagerTest, StarVisibility_FadesAtSunset)
+{
+    // Middle of sunset
+    int midSunset = (17000 + 19000) / 2;
+    timeManager->setTime(midSunset);
+    float visibility = timeManager->getStarVisibility();
+    EXPECT_GT(visibility, 0.0f);
+    EXPECT_LT(visibility, 1.0f);
+}
+
+TEST_F(TimeManagerTest, StarField_RegenerateReplacesOld)
+{
+    timeManager->generateStarField(100, 42);
+    EXPECT_EQ(100u, timeManager->getStarField().size());
+    
+    timeManager->generateStarField(50, 99);
+    EXPECT_EQ(50u, timeManager->getStarField().size());
+}

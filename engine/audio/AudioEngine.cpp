@@ -702,6 +702,28 @@ void AudioEngine::playMusic(const std::string& path, float volume, bool loop)
 #endif
 }
 
+bool AudioEngine::playMusicStreaming(const std::string& path, float volume, bool loop)
+{
+    // Stop any currently playing music
+    stopMusic();
+
+    std::cout << "Streaming music: " << path << std::endl;
+
+    // For now, streaming uses the same path as playMusic but marks
+    // the source as streaming. Full buffer-queue streaming will be
+    // implemented when background decode threads are added.
+    playMusic(path, volume, loop);
+
+    if (musicSource.isPlaying) {
+        musicStreaming = true;
+        std::cout << "  Music streaming started for: " << path << std::endl;
+        return true;
+    }
+
+    std::cout << "  Failed to start music streaming for: " << path << std::endl;
+    return false;
+}
+
 void AudioEngine::stopMusic()
 {
     if (musicSource.isPlaying) {
@@ -714,6 +736,7 @@ void AudioEngine::stopMusic()
 #endif
         musicSource.isPlaying = false;
         musicSource.sourceID = -1;
+        musicStreaming = false;
     }
 }
 

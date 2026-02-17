@@ -12,6 +12,9 @@ SelectionManager::SelectionManager()
     : m_isSelecting(false)
     , m_selectionStart(0.0f)
     , m_selectionEnd(0.0f)
+    , m_selectionMode(SelectionMode::Box)
+    , m_brushRadius(3)
+    , m_wandLimit(1000)
     , m_terraformingSystem(nullptr)
     , m_pastePreviewActive(false)
     , m_pastePreviewPosition(0)
@@ -51,7 +54,17 @@ void SelectionManager::finalizeSelection(VoxelWorld* world)
     m_isSelecting = false;
     
     if (world != nullptr) {
-        buildBoxSelection(world);
+        switch (m_selectionMode) {
+        case SelectionMode::Box:
+            buildBoxSelection(world);
+            break;
+        case SelectionMode::Brush:
+            buildBrushSelection(world);
+            break;
+        case SelectionMode::Wand:
+            buildWandSelection(world);
+            break;
+        }
         calculateBounds();
         
         Logger::getInstance().info("Finalized selection: " + 
@@ -343,6 +356,107 @@ void SelectionManager::buildBoxSelection(VoxelWorld* world)
                     m_selection.positions.emplace_back(x, y, z);
                     m_selection.types.push_back(voxel->type);
                 }
+            }
+        }
+    }
+}
+
+void SelectionManager::buildBrushSelection(VoxelWorld* world)
+{
+    if (world == nullptr) {
+        return;
+    }
+    
+    m_selection.clear();
+    
+    // Use m_selectionEnd as the center of the brush sphere
+    int cx = static_cast<int>(std::floor(m_selectionEnd.x));
+    int cy = static_cast<int>(std::floor(m_selectionEnd.y));
+    int cz = static_cast<int>(std::floor(m_selectionEnd.z));
+    int r = m_brushRadius;
+    float rSq = static_cast<float>(r * r);
+    
+    // Iterate through all voxels within the sphere
+    for (int x = cx - r; x <= cx + r; ++x) {
+        for (int y = cy - r; y <= cy + r; ++y) {
+            for (int z = cz - r; z <= cz + r; ++z) {
+                float dx = static_cast<float>(x - cx);
+                float dy = static_cast<float>(y - cy);
+                float dz = static_cast<float>(z - cz);
+                
+                if (dx * dx + dy * dy + dz * dz <= rSq) {
+                    WorldPos pos(x, y, z);
+                    Voxel* voxel = world->getVoxel(pos);
+                    
+                    if (voxel != nullptr && voxel->isSolid()) {
+                        m_selection.positions.emplace_back(x, y, z);
+                        m_selection.types.push_back(voxel->type);
+                    }
+                }
+            }
+        }
+    }
+}
+
+void SelectionManager::buildWandSelection(VoxelWorld* world)
+{
+    if (world == nullptr) {
+        return;
+    }
+    
+    m_selection.clear();
+    
+    // Start position for flood fill
+    int sx = static_cast<int>(std::floor(m_selectionStart.x));
+    int sy = static_cast<int>(std::floor(m_selectionStart.y));
+    int sz = static_cast<int>(std::floor(m_selectionStart.z));
+    
+    WorldPos startPos(sx, sy, sz);
+    Voxel* startVoxel = world->getVoxel(startPos);
+    
+    // If start position is air or invalid, nothing to select
+    if (startVoxel == nullptr || !startVoxel->isSolid()) {
+        return;
+    }
+    
+    VoxelType targetType = startVoxel->type;
+    
+    // BFS flood fill of connected voxels of the same type
+    std::queue<VoxelPosition> frontier;
+    std::unordered_set<VoxelPosition> visited;
+    
+    VoxelPosition start(sx, sy, sz);
+    frontier.push(start);
+    visited.insert(start);
+    
+    // 6-connected neighbors (face-adjacent)
+    const int dx[] = {1, -1, 0, 0, 0, 0};
+    const int dy[] = {0, 0, 1, -1, 0, 0};
+    const int dz[] = {0, 0, 0, 0, 1, -1};
+    
+    while (!frontier.empty() && static_cast<int>(m_selection.positions.size()) < m_wandLimit) {
+        VoxelPosition current = frontier.front();
+        frontier.pop();
+        
+        // Add to selection
+        m_selection.positions.push_back(current);
+        m_selection.types.push_back(targetType);
+        
+        // Check all 6 neighbors
+        for (int i = 0; i < 6; ++i) {
+            VoxelPosition neighbor(current.x + dx[i], current.y + dy[i], current.z + dz[i]);
+            
+            if (visited.count(neighbor) > 0) {
+                continue;
+            }
+            
+            visited.insert(neighbor);
+            
+            WorldPos neighborPos(neighbor.x, neighbor.y, neighbor.z);
+            Voxel* neighborVoxel = world->getVoxel(neighborPos);
+            
+            if (neighborVoxel != nullptr && neighborVoxel->type == targetType) {
+                frontier.push(neighbor);
             }
         }
     }

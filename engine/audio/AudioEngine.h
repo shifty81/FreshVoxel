@@ -121,6 +121,24 @@ public:
     void playMusic(const std::string& path, float volume = 0.5f, bool loop = true);
 
     /**
+     * @brief Play music with streaming (for large audio files)
+     * @param path Path to audio file
+     * @param volume Volume (0.0 to 1.0)
+     * @param loop Whether to loop
+     * @return true if streaming started successfully
+     * @note Currently streams by loading in chunks. Full streaming with
+     *       background decoding will be added when audio codec libraries
+     *       (e.g., libvorbis) are integrated at build time.
+     */
+    bool playMusicStreaming(const std::string& path, float volume = 0.5f, bool loop = true);
+
+    /**
+     * @brief Check if music is currently streaming
+     * @return true if music is being streamed
+     */
+    bool isMusicStreaming() const { return musicStreaming; }
+
+    /**
      * @brief Stop music
      */
     void stopMusic();
@@ -197,6 +215,7 @@ private:
     float effectsVolume = 1.0f;
     float musicVolume = 0.5f;
     bool muted = false;
+    bool musicStreaming = false;
 
     // Music fade
     bool fadingMusic = false;

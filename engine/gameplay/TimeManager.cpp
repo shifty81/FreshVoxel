@@ -2,6 +2,7 @@
 #include <cmath>
 #include <sstream>
 #include <iomanip>
+#include <algorithm>
 
 namespace fresh
 {
@@ -264,6 +265,66 @@ void TimeManager::normalizeTime()
         m_currentTime += 24000;
         m_currentDay = std::max(0, m_currentDay - 1);
     }
+}
+
+void TimeManager::generateStarField(int count, unsigned int seed)
+{
+    count = std::max(1, std::min(5000, count));
+    m_stars.clear();
+    m_stars.reserve(count);
+
+    // Simple deterministic pseudo-random generator (xorshift32)
+    unsigned int state = seed;
+    auto nextRand = [&state]() -> float {
+        state ^= state << 13;
+        state ^= state >> 17;
+        state ^= state << 5;
+        return static_cast<float>(state % 10000) / 10000.0f;
+    };
+
+    for (int i = 0; i < count; ++i) {
+        // Generate uniform distribution on upper hemisphere
+        float theta = nextRand() * 2.0f * 3.14159265f; // azimuth 0-2π
+        float phi = nextRand() * 0.5f * 3.14159265f;   // elevation 0-π/2 (upper half)
+
+        glm::vec3 dir(
+            std::cos(theta) * std::sin(phi),
+            std::cos(phi),
+            std::sin(theta) * std::sin(phi)
+        );
+        dir = glm::normalize(dir);
+
+        float brightness = 0.3f + nextRand() * 0.7f; // 0.3-1.0
+        float size = 0.5f + nextRand() * 1.5f;       // 0.5-2.0
+
+        m_stars.emplace_back(dir, brightness, size);
+    }
+}
+
+float TimeManager::getStarVisibility() const
+{
+    // Stars are fully visible during deep night, fade during sunrise/sunset
+    // Invisible during daytime
+    if (isDaytime() && !isSunrise() && !isSunset()) {
+        return 0.0f;
+    }
+
+    if (isSunrise()) {
+        // Fade out during sunrise (1.0 at start -> 0.0 at end)
+        float progress = static_cast<float>(m_currentTime - SUNRISE_START) /
+                         static_cast<float>(SUNRISE_END - SUNRISE_START);
+        return 1.0f - progress;
+    }
+
+    if (isSunset()) {
+        // Fade in during sunset (0.0 at start -> 1.0 at end)
+        float progress = static_cast<float>(m_currentTime - SUNSET_START) /
+                         static_cast<float>(SUNSET_END - SUNSET_START);
+        return progress;
+    }
+
+    // Full night - fully visible
+    return 1.0f;
 }
 
 } // namespace fresh
