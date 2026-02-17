@@ -66,7 +66,7 @@ void InventoryPanel::setVisible(bool visible)
 
 void InventoryPanel::setSelectedSlot(int slotIndex)
 {
-    if (slotIndex >= 0 && slotIndex < m_slotCount) {
+    if (isValidSlotIndex(slotIndex)) {
         m_selectedSlot = slotIndex;
     } else {
         m_selectedSlot = -1;
@@ -271,7 +271,7 @@ InventoryPanel::Color InventoryPanel::getResourceColor(rpg::ResourceType type) c
 
 ItemTooltip InventoryPanel::getTooltipForSlot(int slotIndex) const
 {
-    if (slotIndex < 0 || slotIndex >= m_slotCount) {
+    if (!isValidSlotIndex(slotIndex)) {
         return ItemTooltip();
     }
 
@@ -289,7 +289,7 @@ ItemTooltip InventoryPanel::getTooltipForSlot(int slotIndex) const
 
 void InventoryPanel::hoverSlot(int slotIndex)
 {
-    if (slotIndex >= 0 && slotIndex < m_slotCount) {
+    if (isValidSlotIndex(slotIndex)) {
         m_hoveredSlot = slotIndex;
     } else {
         m_hoveredSlot = -1;
@@ -298,7 +298,7 @@ void InventoryPanel::hoverSlot(int slotIndex)
 
 bool InventoryPanel::isTooltipVisible() const
 {
-    if (m_hoveredSlot < 0 || m_hoveredSlot >= m_slotCount) {
+    if (!isValidSlotIndex(m_hoveredSlot)) {
         return false;
     }
     return !m_slots[m_hoveredSlot].isEmpty;

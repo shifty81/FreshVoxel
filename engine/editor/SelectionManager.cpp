@@ -430,9 +430,9 @@ void SelectionManager::buildWandSelection(VoxelWorld* world)
     visited.insert(start);
     
     // 6-connected neighbors (face-adjacent)
-    const int dx[] = {1, -1, 0, 0, 0, 0};
-    const int dy[] = {0, 0, 1, -1, 0, 0};
-    const int dz[] = {0, 0, 0, 0, 1, -1};
+    static constexpr int dx[] = {1, -1, 0, 0, 0, 0};
+    static constexpr int dy[] = {0, 0, 1, -1, 0, 0};
+    static constexpr int dz[] = {0, 0, 0, 0, 1, -1};
     
     while (!frontier.empty() && static_cast<int>(m_selection.positions.size()) < m_wandLimit) {
         VoxelPosition current = frontier.front();

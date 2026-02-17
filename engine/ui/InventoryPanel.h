@@ -234,6 +234,16 @@ private:
     Color getResourceColor(rpg::ResourceType type) const;
 
     /**
+     * @brief Check if a slot index is valid
+     * @param slotIndex Slot index to check
+     * @return True if the index is within bounds
+     */
+    bool isValidSlotIndex(int slotIndex) const
+    {
+        return slotIndex >= 0 && slotIndex < m_slotCount;
+    }
+
+    /**
      * @brief Get human-readable name for a resource type
      * @param type Resource type
      * @return Display name string

@@ -3,6 +3,7 @@
 #include <sstream>
 #include <iomanip>
 #include <algorithm>
+#include <glm/gtc/constants.hpp>
 
 namespace fresh
 {
@@ -284,8 +285,8 @@ void TimeManager::generateStarField(int count, unsigned int seed)
 
     for (int i = 0; i < count; ++i) {
         // Generate uniform distribution on upper hemisphere
-        float theta = nextRand() * 2.0f * 3.14159265f; // azimuth 0-2π
-        float phi = nextRand() * 0.5f * 3.14159265f;   // elevation 0-π/2 (upper half)
+        float theta = nextRand() * 2.0f * glm::pi<float>(); // azimuth 0-2π
+        float phi = nextRand() * 0.5f * glm::pi<float>();   // elevation 0-π/2 (upper half)
 
         glm::vec3 dir(
             std::cos(theta) * std::sin(phi),
