@@ -1,6 +1,6 @@
 # Fresh Voxel Engine - Development Roadmap
 
-> **Last Updated:** 2025-11-17  
+> **Last Updated:** 2026-02-17  
 > **Note:** This roadmap shows the historical development plan including platform evolution. For accurate current implementation status, see [PROJECT_STATUS.md](PROJECT_STATUS.md).
 > 
 > **Platform Evolution:**
@@ -8,13 +8,14 @@
 > - **Current State**: DirectX 12/11 with Win32 native windowing (Windows-exclusive)
 > - **Editor**: ImGui-based panels with native Win32 window management
 
-## Recent Updates (2025-11-15)
+## Recent Updates (2026-02-17)
 
-### 🐛 Mouse Input System - FIXED
-- **Issue**: Mouse input was stuttery, laggy, and would cut out
-- **Root Cause**: Cursor mode was being set every frame, causing frequent resets
-- **Solution**: Implemented state tracking to only change cursor mode when necessary
-- **Status**: ✅ Fixed and tested
+### 🚀 Version 0.2.6 Released
+- **FreshVoxel Rebranding**: Project renamed to reflect voxel-only focus
+- **Win32 Integration**: Complete native Windows UI with terraforming panels
+- **ImGui DirectX Backends**: Full DirectX 11/12 support for ImGui
+- **Cross-Platform Build System**: Production-ready builds on all platforms
+- **Status**: ✅ All major systems operational
 
 ## Project Vision
 A high-performance C++ voxel game engine with multiplayer support, featuring procedural terrain generation, comprehensive gameplay systems, and modular architecture for easy extensibility.
