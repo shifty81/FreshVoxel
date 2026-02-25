@@ -6,22 +6,37 @@ namespace fresh
 namespace rpg
 {
 
-SubsystemUpgrade::SubsystemUpgrade() : type(SubsystemType::Shield), level(1), name("Basic Upgrade")
+CraftedItem::CraftedItem() : category(ItemCategory::Material), tier(MaterialTier::Wood), name("Unknown Item")
 {
 }
 
-SubsystemUpgrade::SubsystemUpgrade(SubsystemType type, int level, const std::string& name)
-    : type(type), level(level), name(name)
+CraftedItem::CraftedItem(ItemCategory cat, MaterialTier t, const std::string& n)
+    : category(cat), tier(t), name(n)
 {
+    // Set default durability based on tier for tools/weapons
+    if (category == ItemCategory::Tool || category == ItemCategory::Weapon) {
+        switch (tier) {
+            case MaterialTier::Wood:    maxDurability = 60; break;
+            case MaterialTier::Stone:   maxDurability = 132; break;
+            case MaterialTier::Iron:    maxDurability = 251; break;
+            case MaterialTier::Gold:    maxDurability = 33; break;
+            case MaterialTier::Diamond: maxDurability = 1562; break;
+        }
+        maxStackSize = 1; // Tools/weapons don't stack
+    }
+    
+    if (category == ItemCategory::Armor) {
+        maxStackSize = 1; // Armor doesn't stack
+    }
 }
 
-float SubsystemUpgrade::getStatBonus(const std::string& statName) const
+float CraftedItem::getStatBonus(const std::string& statName) const
 {
     auto it = statBonuses.find(statName);
     return (it != statBonuses.end()) ? it->second : 0.0f;
 }
 
-void SubsystemUpgrade::setStatBonus(const std::string& statName, float value)
+void CraftedItem::setStatBonus(const std::string& statName, float value)
 {
     statBonuses[statName] = value;
 }
@@ -137,53 +152,253 @@ std::vector<std::string> CraftingSystem::getCraftableRecipes(const Inventory& in
 
 void CraftingSystem::initializeDefaultRecipes()
 {
-    // Basic Shield
+    // =====================
+    // BASIC MATERIALS
+    // =====================
+    
+    // Planks (from Wood)
     {
         CraftingRecipe recipe;
-        recipe.name = "Basic Shield";
-        recipe.result = SubsystemUpgrade(SubsystemType::Shield, 1, "Basic Shield");
-        recipe.result.setStatBonus("shieldCapacity", 100.0f);
-        recipe.result.setStatBonus("shieldRecharge", 10.0f);
-        recipe.requirements[ResourceType::Iron] = 50.0f;
-        recipe.requirements[ResourceType::Titanium] = 20.0f;
-        recipe.craftingTime = 30.0f;
+        recipe.name = "Planks";
+        recipe.result = CraftedItem(ItemCategory::Material, MaterialTier::Wood, "Planks");
+        recipe.result.setStatBonus("yield", 4.0f); // 1 wood = 4 planks
+        recipe.requirements[ResourceType::Wood] = 1.0f;
+        recipe.craftingTime = 0.0f; // Instant
         addRecipe(recipe);
     }
-
-    // Advanced Shield
+    
+    // Sticks (from Planks)
     {
         CraftingRecipe recipe;
-        recipe.name = "Advanced Shield";
-        recipe.result = SubsystemUpgrade(SubsystemType::Shield, 2, "Advanced Shield");
-        recipe.result.setStatBonus("shieldCapacity", 250.0f);
-        recipe.result.setStatBonus("shieldRecharge", 25.0f);
-        recipe.requirements[ResourceType::Titanium] = 100.0f;
-        recipe.requirements[ResourceType::Naonite] = 50.0f;
-        recipe.craftingTime = 60.0f;
+        recipe.name = "Sticks";
+        recipe.result = CraftedItem(ItemCategory::Material, MaterialTier::Wood, "Sticks");
+        recipe.result.setStatBonus("yield", 4.0f); // 2 planks = 4 sticks
+        recipe.requirements[ResourceType::Plank] = 2.0f;
+        recipe.craftingTime = 0.0f;
         addRecipe(recipe);
     }
-
-    // Basic Weapon
+    
+    // =====================
+    // WOODEN TOOLS
+    // =====================
+    
+    // Wooden Pickaxe
     {
         CraftingRecipe recipe;
-        recipe.name = "Basic Weapon";
-        recipe.result = SubsystemUpgrade(SubsystemType::Weapon, 1, "Basic Laser");
-        recipe.result.setStatBonus("damage", 25.0f);
-        recipe.result.setStatBonus("fireRate", 2.0f);
-        recipe.requirements[ResourceType::Iron] = 30.0f;
-        recipe.requirements[ResourceType::Titanium] = 30.0f;
-        recipe.craftingTime = 45.0f;
+        recipe.name = "Wooden Pickaxe";
+        recipe.result = CraftedItem(ItemCategory::Tool, MaterialTier::Wood, "Wooden Pickaxe");
+        recipe.result.setStatBonus("miningSpeed", 2.0f);
+        recipe.result.setStatBonus("miningLevel", 1.0f); // Can mine stone
+        recipe.requirements[ResourceType::Plank] = 3.0f;
+        recipe.requirements[ResourceType::Wood] = 2.0f; // Sticks substitute
+        recipe.craftingTime = 1.0f;
         addRecipe(recipe);
     }
-
-    // Cargo Bay Expansion
+    
+    // Wooden Axe
     {
         CraftingRecipe recipe;
-        recipe.name = "Cargo Expansion";
-        recipe.result = SubsystemUpgrade(SubsystemType::Cargo, 1, "Cargo Bay Mk1");
-        recipe.result.setStatBonus("cargoCapacity", 500.0f);
-        recipe.requirements[ResourceType::Iron] = 100.0f;
-        recipe.craftingTime = 40.0f;
+        recipe.name = "Wooden Axe";
+        recipe.result = CraftedItem(ItemCategory::Tool, MaterialTier::Wood, "Wooden Axe");
+        recipe.result.setStatBonus("choppingSpeed", 2.0f);
+        recipe.result.setStatBonus("damage", 4.0f);
+        recipe.requirements[ResourceType::Plank] = 3.0f;
+        recipe.requirements[ResourceType::Wood] = 2.0f;
+        recipe.craftingTime = 1.0f;
+        addRecipe(recipe);
+    }
+    
+    // Wooden Shovel
+    {
+        CraftingRecipe recipe;
+        recipe.name = "Wooden Shovel";
+        recipe.result = CraftedItem(ItemCategory::Tool, MaterialTier::Wood, "Wooden Shovel");
+        recipe.result.setStatBonus("diggingSpeed", 2.0f);
+        recipe.requirements[ResourceType::Plank] = 1.0f;
+        recipe.requirements[ResourceType::Wood] = 2.0f;
+        recipe.craftingTime = 1.0f;
+        addRecipe(recipe);
+    }
+    
+    // Wooden Sword
+    {
+        CraftingRecipe recipe;
+        recipe.name = "Wooden Sword";
+        recipe.result = CraftedItem(ItemCategory::Weapon, MaterialTier::Wood, "Wooden Sword");
+        recipe.result.setStatBonus("damage", 4.0f);
+        recipe.result.setStatBonus("attackSpeed", 1.6f);
+        recipe.requirements[ResourceType::Plank] = 2.0f;
+        recipe.requirements[ResourceType::Wood] = 1.0f;
+        recipe.craftingTime = 1.0f;
+        addRecipe(recipe);
+    }
+    
+    // =====================
+    // STONE TOOLS
+    // =====================
+    
+    // Stone Pickaxe
+    {
+        CraftingRecipe recipe;
+        recipe.name = "Stone Pickaxe";
+        recipe.result = CraftedItem(ItemCategory::Tool, MaterialTier::Stone, "Stone Pickaxe");
+        recipe.result.setStatBonus("miningSpeed", 4.0f);
+        recipe.result.setStatBonus("miningLevel", 2.0f); // Can mine iron
+        recipe.requirements[ResourceType::Cobblestone] = 3.0f;
+        recipe.requirements[ResourceType::Wood] = 2.0f;
+        recipe.craftingTime = 1.0f;
+        addRecipe(recipe);
+    }
+    
+    // Stone Axe
+    {
+        CraftingRecipe recipe;
+        recipe.name = "Stone Axe";
+        recipe.result = CraftedItem(ItemCategory::Tool, MaterialTier::Stone, "Stone Axe");
+        recipe.result.setStatBonus("choppingSpeed", 4.0f);
+        recipe.result.setStatBonus("damage", 5.0f);
+        recipe.requirements[ResourceType::Cobblestone] = 3.0f;
+        recipe.requirements[ResourceType::Wood] = 2.0f;
+        recipe.craftingTime = 1.0f;
+        addRecipe(recipe);
+    }
+    
+    // Stone Sword
+    {
+        CraftingRecipe recipe;
+        recipe.name = "Stone Sword";
+        recipe.result = CraftedItem(ItemCategory::Weapon, MaterialTier::Stone, "Stone Sword");
+        recipe.result.setStatBonus("damage", 5.0f);
+        recipe.result.setStatBonus("attackSpeed", 1.6f);
+        recipe.requirements[ResourceType::Cobblestone] = 2.0f;
+        recipe.requirements[ResourceType::Wood] = 1.0f;
+        recipe.craftingTime = 1.0f;
+        addRecipe(recipe);
+    }
+    
+    // =====================
+    // IRON TOOLS
+    // =====================
+    
+    // Iron Pickaxe
+    {
+        CraftingRecipe recipe;
+        recipe.name = "Iron Pickaxe";
+        recipe.result = CraftedItem(ItemCategory::Tool, MaterialTier::Iron, "Iron Pickaxe");
+        recipe.result.setStatBonus("miningSpeed", 6.0f);
+        recipe.result.setStatBonus("miningLevel", 3.0f); // Can mine diamond
+        recipe.requirements[ResourceType::IronIngot] = 3.0f;
+        recipe.requirements[ResourceType::Wood] = 2.0f;
+        recipe.craftingTime = 2.0f;
+        addRecipe(recipe);
+    }
+    
+    // Iron Sword
+    {
+        CraftingRecipe recipe;
+        recipe.name = "Iron Sword";
+        recipe.result = CraftedItem(ItemCategory::Weapon, MaterialTier::Iron, "Iron Sword");
+        recipe.result.setStatBonus("damage", 6.0f);
+        recipe.result.setStatBonus("attackSpeed", 1.6f);
+        recipe.requirements[ResourceType::IronIngot] = 2.0f;
+        recipe.requirements[ResourceType::Wood] = 1.0f;
+        recipe.craftingTime = 2.0f;
+        addRecipe(recipe);
+    }
+    
+    // =====================
+    // DIAMOND TOOLS
+    // =====================
+    
+    // Diamond Pickaxe
+    {
+        CraftingRecipe recipe;
+        recipe.name = "Diamond Pickaxe";
+        recipe.result = CraftedItem(ItemCategory::Tool, MaterialTier::Diamond, "Diamond Pickaxe");
+        recipe.result.setStatBonus("miningSpeed", 8.0f);
+        recipe.result.setStatBonus("miningLevel", 4.0f); // Can mine obsidian
+        recipe.requirements[ResourceType::Diamond] = 3.0f;
+        recipe.requirements[ResourceType::Wood] = 2.0f;
+        recipe.craftingTime = 3.0f;
+        addRecipe(recipe);
+    }
+    
+    // Diamond Sword
+    {
+        CraftingRecipe recipe;
+        recipe.name = "Diamond Sword";
+        recipe.result = CraftedItem(ItemCategory::Weapon, MaterialTier::Diamond, "Diamond Sword");
+        recipe.result.setStatBonus("damage", 7.0f);
+        recipe.result.setStatBonus("attackSpeed", 1.6f);
+        recipe.requirements[ResourceType::Diamond] = 2.0f;
+        recipe.requirements[ResourceType::Wood] = 1.0f;
+        recipe.craftingTime = 3.0f;
+        addRecipe(recipe);
+    }
+    
+    // =====================
+    // BUILDING/UTILITY
+    // =====================
+    
+    // Crafting Table
+    {
+        CraftingRecipe recipe;
+        recipe.name = "Crafting Table";
+        recipe.result = CraftedItem(ItemCategory::Building, MaterialTier::Wood, "Crafting Table");
+        recipe.result.setStatBonus("craftingSlots", 9.0f);
+        recipe.requirements[ResourceType::Plank] = 4.0f;
+        recipe.craftingTime = 1.0f;
+        addRecipe(recipe);
+    }
+    
+    // Furnace
+    {
+        CraftingRecipe recipe;
+        recipe.name = "Furnace";
+        recipe.result = CraftedItem(ItemCategory::Building, MaterialTier::Stone, "Furnace");
+        recipe.result.setStatBonus("smeltingSpeed", 1.0f);
+        recipe.requirements[ResourceType::Cobblestone] = 8.0f;
+        recipe.craftingTime = 2.0f;
+        addRecipe(recipe);
+    }
+    
+    // Chest
+    {
+        CraftingRecipe recipe;
+        recipe.name = "Chest";
+        recipe.result = CraftedItem(ItemCategory::Building, MaterialTier::Wood, "Chest");
+        recipe.result.setStatBonus("storageSlots", 27.0f);
+        recipe.requirements[ResourceType::Plank] = 8.0f;
+        recipe.craftingTime = 1.0f;
+        addRecipe(recipe);
+    }
+    
+    // Torch (yields 4)
+    {
+        CraftingRecipe recipe;
+        recipe.name = "Torch";
+        recipe.result = CraftedItem(ItemCategory::Utility, MaterialTier::Wood, "Torch");
+        recipe.result.setStatBonus("yield", 4.0f);
+        recipe.result.setStatBonus("lightLevel", 14.0f);
+        recipe.requirements[ResourceType::Coal] = 1.0f;
+        recipe.requirements[ResourceType::Wood] = 1.0f;
+        recipe.craftingTime = 0.0f;
+        addRecipe(recipe);
+    }
+    
+    // =====================
+    // FOOD
+    // =====================
+    
+    // Bread
+    {
+        CraftingRecipe recipe;
+        recipe.name = "Bread";
+        recipe.result = CraftedItem(ItemCategory::Food, MaterialTier::Wood, "Bread");
+        recipe.result.setStatBonus("hunger", 5.0f);
+        recipe.result.setStatBonus("saturation", 6.0f);
+        recipe.requirements[ResourceType::Wheat] = 3.0f;
+        recipe.craftingTime = 0.0f;
         addRecipe(recipe);
     }
 }

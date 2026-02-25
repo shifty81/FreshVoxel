@@ -11,6 +11,7 @@
 #include <climits>
 #include <cmath>
 #include <iostream>
+#include <filesystem>
 #include "core/Logger.h"
 #include "core/Project.h"
 #include "ecs/EntityManager.h"
@@ -21,7 +22,6 @@
     #include "ui/native/Win32Toolbar.h"
     #include "input/Win32InputManager.h"
     #include <windows.h>
-    #include <filesystem>
 #else
     #include "core/Window.h"
     #include "input/InputManager.h"
@@ -1335,7 +1335,45 @@ void EditorManager::saveWorld()
         }
     }
 #else
-    LOG_INFO_C("Save World not implemented on this platform", "EditorManager");
+    // Non-Windows: Console-based save
+    if (m_worldSerializer && m_world) {
+        if (!m_currentWorldPath.empty()) {
+            // Save to current path
+            if (m_worldSerializer->saveWorld(m_world, m_currentWorldPath)) {
+                LOG_INFO_C("World saved successfully to: " + m_currentWorldPath, "EditorManager");
+                LastSessionConfig::saveLastWorldPath(m_currentWorldPath);
+                std::cout << "World saved successfully to: " << m_currentWorldPath << "\n";
+            } else {
+                LOG_ERROR_C("Failed to save world to: " + m_currentWorldPath, "EditorManager");
+                std::cout << "Failed to save world!\n";
+            }
+        } else {
+            // No current path, prompt for path
+            std::cout << "\n=== Save World ===\n";
+            std::cout << "Enter save path (e.g., ./saves/myworld.world): ";
+            std::string savePath;
+            std::getline(std::cin, savePath);
+            
+            if (savePath.empty()) {
+                LOG_INFO_C("Save world cancelled", "EditorManager");
+                std::cout << "Cancelled.\n";
+                return;
+            }
+            
+            if (m_worldSerializer->saveWorld(m_world, savePath)) {
+                m_currentWorldPath = savePath;
+                LOG_INFO_C("World saved successfully to: " + savePath, "EditorManager");
+                LastSessionConfig::saveLastWorldPath(savePath);
+                std::cout << "World saved successfully to: " << savePath << "\n";
+            } else {
+                LOG_ERROR_C("Failed to save world to: " + savePath, "EditorManager");
+                std::cout << "Failed to save world!\n";
+            }
+        }
+    } else {
+        LOG_WARNING_C("No world to save", "EditorManager");
+        std::cout << "No world to save.\n";
+    }
 #endif
 }
 
@@ -1579,7 +1617,45 @@ void EditorManager::newWorld()
         }
     }
 #else
-    LOG_INFO_C("New Project not implemented on this platform", "EditorManager");
+    // Non-Windows: Console-based scene/world creation
+    LOG_INFO_C("Creating new scene (console mode)", "EditorManager");
+    std::cout << "\n=== Create New Scene ===\n";
+    std::cout << "This will clear the current world. Continue? (y/n): ";
+    std::string confirm;
+    std::getline(std::cin, confirm);
+    
+    if (confirm != "y" && confirm != "Y") {
+        LOG_INFO_C("New scene cancelled", "EditorManager");
+        std::cout << "Cancelled.\n";
+        return;
+    }
+    
+    WorldCreationParams params;
+    
+    std::cout << "Enter world name: ";
+    std::getline(std::cin, params.name);
+    if (params.name.empty()) params.name = "NewWorld";
+    
+    std::cout << "Enter seed (0 for random): ";
+    std::string seedStr;
+    std::getline(std::cin, seedStr);
+    params.seed = seedStr.empty() ? 0 : std::stoi(seedStr);
+    
+    std::cout << "World type - 3D (y/n, default y): ";
+    std::string is3D;
+    std::getline(std::cin, is3D);
+    params.is3D = (is3D != "n" && is3D != "N");
+    
+    LOG_INFO_C("Scene creation: " + params.name + " (seed=" + std::to_string(params.seed) + 
+               ", 3D=" + std::to_string(params.is3D) + ")", "EditorManager");
+    
+    if (m_worldCreationCallback) {
+        m_worldCreationCallback(params);
+        std::cout << "Scene created successfully.\n";
+    } else {
+        LOG_WARNING_C("Scene creation callback not set", "EditorManager");
+        std::cout << "Cannot create scene: callback not configured.\n";
+    }
 #endif
 }
 
@@ -1588,6 +1664,11 @@ void EditorManager::newProject()
 #ifdef _WIN32
     if (!m_windowsDialogManager || !m_projectManager) {
         LOG_ERROR_C("Cannot create project: required components not initialized", "EditorManager");
+        return;
+    }
+    
+    if (!m_windowsDialogManager->isInitialized()) {
+        LOG_ERROR_C("Windows Dialog Manager not initialized", "EditorManager");
         return;
     }
     
@@ -1606,23 +1687,11 @@ void EditorManager::newProject()
         }
     }
     
-    // Use FileDialogManager to select a folder for the new project
+    // Use native Windows folder browser dialog (no NFD dependency)
     LOG_INFO_C("Creating new project - selecting folder", "EditorManager");
     
-    // Check if file dialogs are available
-    if (!FileDialogManager::isAvailable()) {
-        LOG_ERROR_C("File dialogs not available - NFD not compiled in", "EditorManager");
-        m_windowsDialogManager->showMessageBox(
-            "Feature Not Available",
-            "File dialogs are not available. Please rebuild with Native File Dialog Extended (NFD) support.",
-            MessageBoxButtons::OK,
-            MessageBoxIcon::Error
-        );
-        return;
-    }
-    
-    // Select folder where project will be created
-    std::string selectedFolder = FileDialogManager::pickFolder("./Projects");
+    std::string selectedFolder = m_windowsDialogManager->showFolderBrowserDialog(
+        "Select or Create Project Folder");
     
     if (selectedFolder.empty()) {
         LOG_INFO_C("New project cancelled - no folder selected", "EditorManager");
@@ -1644,7 +1713,8 @@ void EditorManager::newProject()
                       std::string(e.what()), "EditorManager");
     }
     
-    // TODO: In the future, show a dialog to get project name and template type
+    // Use default template type for now
+    // Future: Show a dialog to select template type
     std::string projectPath = selectedFolder;
     std::string templateType = "Blank";
     
@@ -1668,7 +1738,41 @@ void EditorManager::newProject()
         );
     }
 #else
-    LOG_INFO_C("New Project not implemented on this platform", "EditorManager");
+    // Non-Windows: Use console-based project creation
+    LOG_INFO_C("Creating new project (console mode)", "EditorManager");
+    std::cout << "\n=== Create New Project ===\n";
+    std::cout << "Enter project name: ";
+    std::string projectName;
+    std::getline(std::cin, projectName);
+    
+    if (projectName.empty()) {
+        projectName = "UntitledProject";
+    }
+    
+    std::cout << "Enter project path (default: ./Projects/" << projectName << "): ";
+    std::string projectPath;
+    std::getline(std::cin, projectPath);
+    
+    if (projectPath.empty()) {
+        projectPath = "./Projects/" + projectName;
+    }
+    
+    std::cout << "Available templates: Blank, 3D Voxel Game, 2D Platformer, 2D Top-Down\n";
+    std::cout << "Enter template type (default: Blank): ";
+    std::string templateType;
+    std::getline(std::cin, templateType);
+    
+    if (templateType.empty()) {
+        templateType = "Blank";
+    }
+    
+    if (m_projectManager && m_projectManager->createNewProject(projectName, projectPath, templateType)) {
+        LOG_INFO_C("Project created successfully: " + projectName, "EditorManager");
+        std::cout << "Project created successfully: " << projectName << "\n";
+    } else {
+        LOG_ERROR_C("Failed to create project: " + projectName, "EditorManager");
+        std::cout << "Failed to create project. Check logs for details.\n";
+    }
 #endif
 }
 
@@ -1677,6 +1781,11 @@ void EditorManager::openProject()
 #ifdef _WIN32
     if (!m_windowsDialogManager || !m_projectManager) {
         LOG_ERROR_C("Cannot open project: required components not initialized", "EditorManager");
+        return;
+    }
+    
+    if (!m_windowsDialogManager->isInitialized()) {
+        LOG_ERROR_C("Windows Dialog Manager not initialized", "EditorManager");
         return;
     }
     
@@ -1695,35 +1804,25 @@ void EditorManager::openProject()
         }
     }
     
-    // Use FileDialogManager to select .freshproj file
+    // Use native Windows file dialog (no NFD dependency)
     LOG_INFO_C("Opening project - selecting project file", "EditorManager");
     
-    // Check if file dialogs are available
-    if (!FileDialogManager::isAvailable()) {
-        LOG_ERROR_C("File dialogs not available - NFD not compiled in", "EditorManager");
-        m_windowsDialogManager->showMessageBox(
-            "Feature Not Available",
-            "File dialogs are not available. Please rebuild with Native File Dialog Extended (NFD) support.",
-            MessageBoxButtons::OK,
-            MessageBoxIcon::Error
-        );
-        return;
-    }
-    
     // Define filter for .freshproj files
-    std::vector<FileDialogManager::Filter> filters = {
-        { "FreshVoxel Project Files", "freshproj" },
-        { "All Files", "*" }
+    std::vector<FileFilter> filters = {
+        { "FreshVoxel Project Files", "*.freshproj" },
+        { "All Files", "*.*" }
     };
     
     // Open file dialog to select project file
-    std::string projectPath = FileDialogManager::openFile(filters, "./Projects");
+    auto selectedFiles = m_windowsDialogManager->showOpenFileDialog(
+        "Open FreshVoxel Project", filters, false);
     
-    if (projectPath.empty()) {
+    if (selectedFiles.empty()) {
         LOG_INFO_C("Open project cancelled - no file selected", "EditorManager");
         return;
     }
     
+    std::string projectPath = selectedFiles[0];
     LOG_INFO_C("Opening project file: " + projectPath, "EditorManager");
     
     if (m_projectManager->openProject(projectPath)) {
@@ -1744,7 +1843,26 @@ void EditorManager::openProject()
         );
     }
 #else
-    LOG_INFO_C("Open Project not implemented on this platform", "EditorManager");
+    // Non-Windows: Use console-based project opening
+    LOG_INFO_C("Opening project (console mode)", "EditorManager");
+    std::cout << "\n=== Open Project ===\n";
+    std::cout << "Enter path to .freshproj file: ";
+    std::string projectPath;
+    std::getline(std::cin, projectPath);
+    
+    if (projectPath.empty()) {
+        LOG_INFO_C("Open project cancelled - no path entered", "EditorManager");
+        std::cout << "Cancelled.\n";
+        return;
+    }
+    
+    if (m_projectManager && m_projectManager->openProject(projectPath)) {
+        LOG_INFO_C("Project opened successfully: " + m_projectManager->getProjectName(), "EditorManager");
+        std::cout << "Project opened successfully: " << m_projectManager->getProjectName() << "\n";
+    } else {
+        LOG_ERROR_C("Failed to open project: " + projectPath, "EditorManager");
+        std::cout << "Failed to open project. File may not exist or is corrupted.\n";
+    }
 #endif
 }
 

@@ -12,37 +12,69 @@ namespace rpg
 {
 
 /**
- * @brief Types of subsystem upgrades
+ * @brief Categories of craftable items in the voxel game
  */
-enum class SubsystemType { Shield, Weapon, Engine, Cargo, Generator, Computer };
+enum class ItemCategory { 
+    Tool,           // Pickaxe, Axe, Shovel, Hoe
+    Weapon,         // Sword, Bow, Arrow
+    Armor,          // Helmet, Chestplate, Leggings, Boots
+    Building,       // Crafting table, Furnace, Chest
+    Material,       // Stick, Plank, processed materials
+    Food,           // Bread, Cooked meat
+    Utility,        // Bucket, Compass, Clock
+    Decoration      // Paintings, flower pots
+};
 
 /**
- * @brief Represents a ship/station subsystem upgrade
+ * @brief Tool/material tiers for crafting progression
  */
-class SubsystemUpgrade
+enum class MaterialTier {
+    Wood = 0,
+    Stone = 1,
+    Iron = 2,
+    Gold = 3,
+    Diamond = 4
+};
+
+/**
+ * @brief Represents a crafted item in the voxel game
+ */
+class CraftedItem
 {
 public:
-    SubsystemUpgrade();
-    SubsystemUpgrade(SubsystemType type, int level, const std::string& name);
+    CraftedItem();
+    CraftedItem(ItemCategory category, MaterialTier tier, const std::string& name);
 
-    SubsystemType getType() const
+    ItemCategory getCategory() const
     {
-        return type;
+        return category;
     }
+    
+    // Alias for backward compatibility with code expecting SubsystemType
+    ItemCategory getType() const
+    {
+        return category;
+    }
+    
+    MaterialTier getTier() const
+    {
+        return tier;
+    }
+    
     int getLevel() const
     {
-        return level;
+        return static_cast<int>(tier);
     }
     const std::string& getName() const
     {
         return name;
     }
 
-    // Stats
+    // Stats (durability, damage, speed, etc.)
     float getStatBonus(const std::string& statName) const;
     void setStatBonus(const std::string& statName, float value);
 
-    // Cost
+    // Cost (for reference, actual requirements stored in recipe)
     const std::map<ResourceType, float>& getCost() const
     {
         return cost;
@@ -51,14 +83,28 @@ public:
     {
         cost = c;
     }
+    
+    // Stack size (most items stack to 64, tools/weapons don't stack)
+    int getMaxStackSize() const { return maxStackSize; }
+    void setMaxStackSize(int size) { maxStackSize = size; }
+    
+    // Durability (0 = infinite/doesn't apply)
+    int getMaxDurability() const { return maxDurability; }
+    void setMaxDurability(int durability) { maxDurability = durability; }
 
 private:
-    SubsystemType type;
-    int level;
+    ItemCategory category;
+    MaterialTier tier;
     std::string name;
     std::map<std::string, float> statBonuses;
     std::map<ResourceType, float> cost;
+    int maxStackSize = 64;
+    int maxDurability = 0;
 };
+
+// Type alias for backward compatibility
+using SubsystemUpgrade = CraftedItem;
+using SubsystemType = ItemCategory;
 
 /**
  * @brief Recipe for crafting upgrades

@@ -9,9 +9,9 @@ InventoryManager::InventoryManager(float capacity, int hotbarSize)
     , m_inventoryPanel(40) // 40 inventory slots
     , m_hotbarPanel()
 {
-    // Initialize hotbar bindings to invalid type
+    // Initialize hotbar bindings with common starting materials
     for (auto& binding : m_hotbarBindings) {
-        binding = rpg::ResourceType::Iron; // Default to Iron
+        binding = rpg::ResourceType::Wood; // Default to Wood
     }
 }
 
@@ -151,7 +151,7 @@ bool InventoryManager::bindToHotbar(int hotbarSlot, rpg::ResourceType resourceTy
 rpg::ResourceType InventoryManager::getHotbarBinding(int hotbarSlot) const
 {
     if (hotbarSlot < 0 || hotbarSlot >= 10) {
-        return rpg::ResourceType::Iron; // Default
+        return rpg::ResourceType::Wood; // Default
     }
     return m_hotbarBindings[hotbarSlot];
 }
