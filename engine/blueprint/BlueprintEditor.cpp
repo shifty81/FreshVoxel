@@ -43,6 +43,7 @@ void BlueprintEditor::newGraph(const std::string& name)
 bool BlueprintEditor::loadGraph(const std::string& name)
 {
     (void)name;
+    // TODO: Implement graph deserialization from file
     return false;
 }
 
@@ -51,6 +52,7 @@ bool BlueprintEditor::saveGraph()
     if (!m_graph) {
         return false;
     }
+    // TODO: Implement graph serialization to file
     return false;
 }
 

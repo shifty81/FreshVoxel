@@ -20,6 +20,10 @@ enum class DialogueState
 
 /**
  * @brief Manages dialogue playback through a dialogue graph
+ *
+ * @note Condition nodes currently always follow the true branch.
+ *       Condition expression evaluation will be implemented when the
+ *       Lua scripting integration is wired into the dialogue system.
  */
 class DialogueManager
 {
