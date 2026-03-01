@@ -366,7 +366,7 @@ The following production-ready systems were merged from the AtlasForge engine:
 - ✅ **Day/Night Cycle** — TimeManager with sun/moon, dynamic sky, time controls
 
 #### Missing/Incomplete
-- ⚠️ **Resource Gathering** (~50%)
+- ⚠️ **Resource Gathering** (50%)
   - Resource nodes (partial)
   - Gathering mechanics
   - Tool requirements
