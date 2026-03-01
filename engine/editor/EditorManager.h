@@ -46,6 +46,7 @@ class LayoutManager;
 class EditorSettingsDialog;
 class CameraController;
 class ProjectManager;
+class ViewportContext;
 
 namespace ecs
 {
@@ -344,6 +345,21 @@ public:
         return m_viewportPanel.get();
     }
 #endif
+
+    /**
+     * @brief Set the viewport context for this editor
+     *
+     * Per ENGINE.md: The viewport is the atomic unit. EditorManager coordinates
+     * UI panels around the viewport but does not own the rendering pipeline.
+     * @param viewportContext The primary viewport context (non-owning)
+     */
+    void setViewportContext(ViewportContext* viewportContext) { m_viewportContext = viewportContext; }
+
+    /**
+     * @brief Get the viewport context
+     * @return The viewport context, or nullptr if not set
+     */
+    ViewportContext* getViewportContext() const { return m_viewportContext; }
 
     // ========== Editor Operations (for native menu integration) ==========
     
@@ -665,6 +681,7 @@ private:
     ecs::EntityManager* m_entityManager;
     class Player* m_player;
     class ProjectManager* m_projectManager;
+    ViewportContext* m_viewportContext = nullptr;
 
     // Panel visibility flags
     bool m_showSceneHierarchy;

@@ -672,6 +672,9 @@ if(BUILD_TESTS)
         tests/module/ModuleLoaderTests.cpp
         tests/devtools/TimeCommandsTests.cpp
         tests/ui/InventoryPanelTests.cpp
+        tests/viewport/ViewportContextTests.cpp
+        tests/viewport/InputContextTests.cpp
+        tests/viewport/ViewportRenderTargetTests.cpp
     )
     
     # Engine source files needed for tests (subset from engine/)
@@ -726,6 +729,9 @@ if(BUILD_TESTS)
         engine/module/ModuleLoader.cpp
         engine/ui/InventoryPanel.cpp
         engine/audio/AudioEngine.cpp
+        engine/viewport/ViewportContext.cpp
+        engine/viewport/ViewportRenderTarget.cpp
+        engine/viewport/InputContext.cpp
     )
 
     # Create test executable

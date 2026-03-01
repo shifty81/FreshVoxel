@@ -44,6 +44,7 @@ class SeasonManager;
 class WeatherManager;
 class Raft;
 class ProjectManager;
+class ViewportContext;
 
 namespace ecs
 {
@@ -114,6 +115,15 @@ public:
      * @return Current engine mode (Editor, Client, Server, Runtime)
      */
     EngineMode getMode() const { return m_config.mode; }
+
+    /**
+     * @brief Get the primary viewport context
+     *
+     * Per ENGINE.md: The viewport is the atomic unit of the engine.
+     * Everything routes through ViewportContext.
+     * @return Pointer to the primary viewport context, or nullptr if not initialized
+     */
+    ViewportContext* getViewportContext() const;
 
     /**
      * @brief Get the pluggable system registry
@@ -191,6 +201,7 @@ private:
     std::unique_ptr<Raft> m_raft;
     std::unique_ptr<scripting::LuaScriptingEngine> m_scriptingEngine;
     std::unique_ptr<ProjectManager> m_projectManager;
+    std::unique_ptr<ViewportContext> m_viewportContext;
     EngineSystemRegistry m_systemRegistry;
 #ifdef _WIN32
     std::unique_ptr<GamePlayWindow> m_gamePlayWindow;
