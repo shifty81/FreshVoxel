@@ -44,16 +44,8 @@
 #include "ui/EditorMenuBar.h"
 #include "ui/EditorToolbar.h"
 #include "ui/HotbarPanel.h"
-// Removed: ImGuiContext.h (ImGui has been removed from this project)
 #include "ui/InspectorPanel.h"
-// Removed ImGui-based panels (replaced with Win32 native versions):
-// #include "ui/MainMenuPanel.h"
-// #include "ui/SettingsPanel.h"
-// #include "ui/EngineConfigPanel.h"
 #include "ui/SceneHierarchyPanel.h"
-#include "ui/VoxelToolPalette.h"
-#include "voxel/VoxelWorld.h"
-
 #include "ui/VoxelToolPalette.h"
 #include "voxel/VoxelWorld.h"
 
@@ -63,7 +55,6 @@
     #include "ui/WindowsThemeManager.h"
     #include "ui/WindowsDialogManager.h"
     #include "ui/WindowsTaskbarManager.h"
-    // Removed ImGui-based panel: #include "ui/WindowsCustomizationPanel.h"
     #include "ui/native/Win32InspectorPanel.h"
     #include "ui/native/Win32SceneHierarchyPanel.h"
     #include "ui/native/Win32ContentBrowserPanel.h"
@@ -212,22 +203,6 @@ bool EditorManager::initialize(WindowType* window, IRenderContext* renderContext
         m_menuBar->setConsoleVisible(&m_showConsole);
         m_menuBar->setToolPaletteVisible(&m_showToolPalette);
 
-        // Set settings callback to open settings panel
-        // Removed: m_settingsPanel is commented out in header
-        // m_menuBar->setSettingsCallback([this]() {
-        //     if (m_settingsPanel) {
-        //         m_settingsPanel->setVisible(true);
-        //     }
-        // });
-
-        // Set engine configuration callback to open engine config panel
-        // Removed: m_engineConfigPanel is commented out in header
-        // m_menuBar->setEngineConfigCallback([this]() {
-        //     if (m_engineConfigPanel) {
-        //         m_engineConfigPanel->setVisible(true);
-        //     }
-        // });
-        
         // Set editor settings callback to open editor settings dialog
         m_menuBar->setEditorSettingsCallback([this]() {
             if (m_editorSettingsDialog) {
@@ -455,11 +430,6 @@ bool EditorManager::initialize(WindowType* window, IRenderContext* renderContext
         LOG_INFO_C("World and WorldEditor not provided, deferring initialization of world-dependent panels", "EditorManager");
     }
 
-    // Removed ImGui-based panels (replaced with Win32 native versions):
-    // - MainMenuPanel -> replaced with Win32 native main menu
-    // - SettingsPanel -> replaced with Win32SettingsDialog
-    // - EngineConfigPanel -> replaced with Win32 property panels
-
     // Initialize hotbar panel (for play mode)
     m_hotbar = std::make_unique<HotbarPanel>();
     if (!m_hotbar->initialize()) {
@@ -500,8 +470,6 @@ bool EditorManager::initialize(WindowType* window, IRenderContext* renderContext
     } else {
         LOG_WARNING_C("Failed to initialize Windows Taskbar Manager", "EditorManager");
     }
-    
-    // Removed ImGui-based WindowsCustomizationPanel (replaced with native Win32 settings dialogs)
     
 #ifdef FRESH_WIN32_UI
     // Initialize native Win32 UI panels (replaces ImGui panels)
@@ -870,21 +838,6 @@ void EditorManager::render()
         m_voxelTools->render();
     }
 
-    // Removed: m_mainMenuPanel is commented out in header
-    // if (m_mainMenuPanel) {
-    //     m_mainMenuPanel->render();
-    // }
-
-    // Removed: m_settingsPanel is commented out in header
-    // if (m_settingsPanel) {
-    //     m_settingsPanel->render();
-    // }
-
-    // Removed: m_engineConfigPanel is commented out in header
-    // if (m_engineConfigPanel) {
-    //     m_engineConfigPanel->render();
-    // }
-    
     // Render editor settings dialog if visible
     if (m_editorSettingsDialog) {
         m_editorSettingsDialog->render();
@@ -907,13 +860,6 @@ void EditorManager::render()
     if (m_debugRenderer) {
         m_debugRenderer->render();
     }
-
-#ifdef _WIN32
-    // Removed: m_windowsCustomizationPanel is commented out in header
-    // if (m_windowsCustomizationPanel) {
-    //     m_windowsCustomizationPanel->render();
-    // }
-#endif
 }
 
 void EditorManager::endFrame()
@@ -931,10 +877,6 @@ void EditorManager::shutdown()
 
     // Shutdown in reverse order
     m_hotbar.reset();
-    // Removed: m_settingsPanel is commented out in header
-    // m_settingsPanel.reset();
-    // Removed: m_mainMenuPanel is commented out in header
-    // m_mainMenuPanel.reset();
     m_voxelTools.reset();
     m_console.reset();
     m_contentBrowser.reset();
@@ -945,10 +887,6 @@ void EditorManager::shutdown()
 
 #ifdef _WIN32
     // Shutdown Windows-native features
-    // Removed: m_windowsCustomizationPanel is commented out in header
-    // if (m_windowsCustomizationPanel) {
-    //     m_windowsCustomizationPanel.reset();
-    // }
     if (m_windowsTaskbarManager) {
         m_windowsTaskbarManager->shutdown();
         m_windowsTaskbarManager.reset();
@@ -2040,11 +1978,7 @@ void EditorManager::showSettings()
 
 void EditorManager::showEngineConfig()
 {
-    // Removed: m_engineConfigPanel is commented out in header
-    // if (m_engineConfigPanel) {
-    //     m_engineConfigPanel->setVisible(true);
-    //     LOG_INFO_C("Engine configuration panel shown", "EditorManager");
-    // }
+    // Engine config panel has been replaced with native Win32 settings dialogs
 }
 
 void EditorManager::showEditorSettings()

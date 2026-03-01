@@ -106,6 +106,9 @@ add_library(FreshEngine STATIC
     scripting/lua/LuaECSBindings.cpp
     scripting/lua/LuaTimeBindings.cpp
     editor/EditorManager.cpp
+    viewport/ViewportContext.cpp
+    viewport/ViewportRenderTarget.cpp
+    viewport/InputContext.cpp
     ui/HotbarPanel.cpp
     ui/NativeMainMenu.cpp
 )

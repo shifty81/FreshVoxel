@@ -84,12 +84,12 @@
 #include "ui/EditorToolbar.h"
 #include "ui/HotbarPanel.h"
 #include "ui/MainMenu.h"
-// Removed ImGui-based panel: #include "ui/MainMenuPanel.h"
 #include "ui/SceneHierarchyPanel.h"
 #include "ui/VoxelToolPalette.h"
 #include "voxel/Chunk.h"
 #include "voxel/VoxelTypes.h"
 #include "voxel/VoxelWorld.h"
+#include "viewport/ViewportContext.h"
 
 #if defined(FRESH_OPENGL_SUPPORT) && defined(FRESH_GLEW_AVAILABLE)
     #include <GL/glew.h>
@@ -234,6 +234,11 @@ Engine::Engine() : m_running(false), m_inGame(false), m_selectedBlockType(VoxelT
 Engine::~Engine()
 {
     shutdown();
+}
+
+ViewportContext* Engine::getViewportContext() const
+{
+    return m_viewportContext.get();
 }
 
 bool Engine::initialize(const EngineConfig& config)
@@ -514,6 +519,32 @@ bool Engine::initialize(const EngineConfig& config)
 #endif
     } else {
         LOG_INFO_C("Non-editor mode: skipping editor UI initialization", "Engine");
+    }
+
+    // Create the primary ViewportContext (per ENGINE.md: the atomic rendering/input unit)
+    if (m_config.enableRendering && m_renderer) {
+        std::string viewportName = m_config.isEditor() ? "Editor Viewport" : "Game Viewport";
+        m_viewportContext = std::make_unique<ViewportContext>(viewportName, ViewportType::Perspective3D);
+
+        void* viewportWindowHandle = nullptr;
+#ifdef _WIN32
+        if (m_editorManager && m_editorManager->getViewportPanel()) {
+            viewportWindowHandle = reinterpret_cast<void*>(
+                m_editorManager->getViewportPanel()->getHandle());
+        }
+#endif
+
+        if (m_viewportContext->initialize(m_renderer.get(), viewportWindowHandle)) {
+            LOG_INFO_C("Primary ViewportContext initialized", "Engine");
+
+            // Wire viewport context to editor manager if in editor mode
+            if (m_editorManager && m_viewportContext) {
+                m_editorManager->setViewportContext(m_viewportContext.get());
+            }
+        } else {
+            LOG_WARNING_C("Primary ViewportContext initialization failed - will retry later", "Engine");
+            m_viewportContext.reset();
+        }
     }
 
     // Auto-load the last saved world when in client/runtime/server mode
@@ -1116,6 +1147,7 @@ void Engine::shutdown()
     m_editor.reset();
     m_aiSystem.reset();
     m_physics.reset();
+    m_viewportContext.reset();
     m_world.reset();
     m_renderer.reset();
     m_window.reset();
