@@ -37,6 +37,9 @@ add_library(FreshEngine STATIC
     ai/BehaviorTree.cpp
     ai/LLMClient.cpp
     ai/ProjectContext.cpp
+    blueprint/BlueprintNode.cpp
+    blueprint/BlueprintGraph.cpp
+    blueprint/BlueprintEditor.cpp
     audio/AudioEngine.cpp
     scripting/EventSystem.cpp
     character/VoxelCharacter.cpp
