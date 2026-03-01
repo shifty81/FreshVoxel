@@ -54,7 +54,7 @@ ViewportContext& ViewportContext::operator=(ViewportContext&& other) noexcept
 bool ViewportContext::initialize(IRenderContext* renderContext, void* windowHandle)
 {
     if (!renderContext) {
-        Logger::error("ViewportContext::initialize '{}' - null render context", m_name);
+        LOG_ERROR_C("ViewportContext::initialize '" + m_name + "' - null render context", "ViewportContext");
         return false;
     }
 
@@ -63,7 +63,7 @@ bool ViewportContext::initialize(IRenderContext* renderContext, void* windowHand
 
     // Initialize render target
     if (!m_renderTarget.initialize(windowHandle, renderContext)) {
-        Logger::error("ViewportContext::initialize '{}' - render target init failed", m_name);
+        LOG_ERROR_C("ViewportContext::initialize '" + m_name + "' - render target init failed", "ViewportContext");
         return false;
     }
 
@@ -73,11 +73,10 @@ bool ViewportContext::initialize(IRenderContext* renderContext, void* windowHand
     }
 
     m_initialized = true;
-    Logger::info("ViewportContext '{}' initialized ({}x{}, type={})",
-                 m_name,
-                 m_renderTarget.getWidth(),
-                 m_renderTarget.getHeight(),
-                 static_cast<int>(m_type));
+    LOG_INFO_C("ViewportContext '" + m_name + "' initialized (" +
+               std::to_string(m_renderTarget.getWidth()) + "x" +
+               std::to_string(m_renderTarget.getHeight()) + ", type=" +
+               std::to_string(static_cast<int>(m_type)) + ")", "ViewportContext");
     return true;
 }
 
@@ -91,7 +90,7 @@ void ViewportContext::shutdown()
     m_world = nullptr;
     m_initialized = false;
 
-    Logger::info("ViewportContext '{}' shut down", m_name);
+    Logger::getInstance().info("ViewportContext '" + m_name + "' shut down", "ViewportContext");
 }
 
 bool ViewportContext::beginFrame()
@@ -135,7 +134,7 @@ bool ViewportContext::resize(int width, int height)
         m_camera->setAspectRatio(m_renderTarget.getAspectRatio());
     }
 
-    Logger::info("ViewportContext '{}' resized to {}x{}", m_name, width, height);
+    Logger::getInstance().info("ViewportContext '" + m_name + "' resized to " + std::to_string(width) + "x" + std::to_string(height), "ViewportContext");
     return true;
 }
 

@@ -41,7 +41,7 @@ struct InventorySlot {
     int slotIndex;
 
     InventorySlot() 
-        : type(rpg::ResourceType::Iron)
+        : type(rpg::ResourceType::IronOre)
         , amount(0.0f)
         , isEmpty(true)
         , slotIndex(-1)

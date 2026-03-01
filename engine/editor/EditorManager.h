@@ -47,6 +47,8 @@ class EditorSettingsDialog;
 class CameraController;
 class ProjectManager;
 class ViewportContext;
+class BlueprintEditor;
+class DialogueManager;
 
 namespace ecs
 {
@@ -511,6 +513,12 @@ public:
     void launchDialogueEditor();
     
     /**
+     * @brief Launch blueprint editor
+     * Opens the blueprint editor tool for creating visual scripting graphs
+     */
+    void launchBlueprintEditor();
+    
+    /**
      * @brief Load a workspace layout
      * @param name Layout name ("Default", "Minimal", "Debugging", or custom name)
      */
@@ -552,6 +560,24 @@ public:
     CameraController* getCameraController() const
     {
         return m_cameraController.get();
+    }
+    
+    /**
+     * @brief Get the blueprint editor
+     * @return Blueprint editor pointer
+     */
+    BlueprintEditor* getBlueprintEditor() const
+    {
+        return m_blueprintEditor.get();
+    }
+
+    /**
+     * @brief Get the dialogue manager
+     * @return Dialogue manager pointer
+     */
+    DialogueManager* getDialogueManager() const
+    {
+        return m_dialogueManager.get();
     }
     
     // ========== Camera Control Operations ==========
@@ -651,6 +677,10 @@ private:
     std::unique_ptr<LayoutManager> m_layoutManager;
     std::unique_ptr<EditorSettingsDialog> m_editorSettingsDialog;
     std::unique_ptr<CameraController> m_cameraController;
+
+    // Blueprint and Dialogue editors
+    std::unique_ptr<BlueprintEditor> m_blueprintEditor;
+    std::unique_ptr<DialogueManager> m_dialogueManager;
 
 #ifdef _WIN32
     // Windows-native integration managers

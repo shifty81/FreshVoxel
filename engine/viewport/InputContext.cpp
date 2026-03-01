@@ -1,6 +1,6 @@
 #include "viewport/InputContext.h"
 
-#include <GLFW/glfw3.h>
+#include "input/KeyCodes.h"
 
 namespace fresh
 {
@@ -129,17 +129,17 @@ void InputContext::setKeyBinding(InputAction action, int key)
 
 void InputContext::initializeDefaultBindings()
 {
-    m_keyBindings[InputAction::MoveForward]   = GLFW_KEY_W;
-    m_keyBindings[InputAction::MoveBackward]  = GLFW_KEY_S;
-    m_keyBindings[InputAction::MoveLeft]      = GLFW_KEY_A;
-    m_keyBindings[InputAction::MoveRight]     = GLFW_KEY_D;
-    m_keyBindings[InputAction::Jump]          = GLFW_KEY_SPACE;
-    m_keyBindings[InputAction::Crouch]        = GLFW_KEY_LEFT_SHIFT;
-    m_keyBindings[InputAction::Sprint]        = GLFW_KEY_LEFT_CONTROL;
-    m_keyBindings[InputAction::Use]           = GLFW_KEY_E;
-    m_keyBindings[InputAction::OpenInventory] = GLFW_KEY_I;
-    m_keyBindings[InputAction::OpenMenu]      = GLFW_KEY_ESCAPE;
-    m_keyBindings[InputAction::ToggleEditor]  = GLFW_KEY_F1;
+    m_keyBindings[InputAction::MoveForward]   = key::W;
+    m_keyBindings[InputAction::MoveBackward]  = key::S;
+    m_keyBindings[InputAction::MoveLeft]      = key::A;
+    m_keyBindings[InputAction::MoveRight]     = key::D;
+    m_keyBindings[InputAction::Jump]          = key::Space;
+    m_keyBindings[InputAction::Crouch]        = key::LeftShift;
+    m_keyBindings[InputAction::Sprint]        = key::LeftControl;
+    m_keyBindings[InputAction::Use]           = key::E;
+    m_keyBindings[InputAction::OpenInventory] = key::I;
+    m_keyBindings[InputAction::OpenMenu]      = key::Escape;
+    m_keyBindings[InputAction::ToggleEditor]  = key::F1;
 }
 
 } // namespace fresh

@@ -48,6 +48,8 @@
 #include "ui/SceneHierarchyPanel.h"
 #include "ui/VoxelToolPalette.h"
 #include "voxel/VoxelWorld.h"
+#include "blueprint/BlueprintEditor.h"
+#include "dialogue/DialogueManager.h"
 
 #include <glm/glm.hpp>
 
@@ -686,6 +688,12 @@ bool EditorManager::initialize(WindowType* window, IRenderContext* renderContext
     // When a node is selected in the hierarchy, show it in the inspector
     // This would require adding a callback system, but for now we'll handle it in render()
 
+    // Initialize Blueprint editor and Dialogue manager
+    m_blueprintEditor = std::make_unique<BlueprintEditor>();
+    m_blueprintEditor->initialize();
+    m_dialogueManager = std::make_unique<DialogueManager>();
+    LOG_INFO_C("Blueprint editor and Dialogue manager initialized", "EditorManager");
+
     m_initialized = true;
     LOG_INFO_C("EditorManager initialized successfully", "EditorManager");
     LOG_INFO_C("All editor UI panels initialized", "EditorManager");
@@ -874,6 +882,13 @@ void EditorManager::shutdown()
     if (!m_initialized) {
         return;
     }
+
+    // Shutdown Blueprint editor and Dialogue manager
+    if (m_blueprintEditor) {
+        m_blueprintEditor->shutdown();
+        m_blueprintEditor.reset();
+    }
+    m_dialogueManager.reset();
 
     // Shutdown in reverse order
     m_hotbar.reset();
@@ -2055,6 +2070,16 @@ void EditorManager::launchDialogueEditor()
 #else
     LOG_WARNING_C("Dialogue editor is only available on Windows", "EditorManager");
 #endif
+}
+
+void EditorManager::launchBlueprintEditor()
+{
+    if (m_blueprintEditor) {
+        m_blueprintEditor->setVisible(true);
+        LOG_INFO_C("Blueprint editor opened", "EditorManager");
+    } else {
+        LOG_WARNING_C("Blueprint editor not initialized", "EditorManager");
+    }
 }
 
 void EditorManager::loadLayout(const std::string& name)
