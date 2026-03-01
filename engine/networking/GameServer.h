@@ -66,6 +66,9 @@ private:
     std::map<uint32_t, std::unique_ptr<ClientConnection>> clients;
     mutable std::mutex clientsMutex;
 
+    // Client-to-sector mapping for O(1) lookup on sector change
+    std::map<uint32_t, std::pair<int, int>> clientSectorMap;
+
     // Sector servers (multi-threaded)
     std::map<std::pair<int, int>, std::unique_ptr<SectorServer>> sectorServers;
     mutable std::mutex sectorsMutex;

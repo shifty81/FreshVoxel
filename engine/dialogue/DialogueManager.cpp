@@ -1,9 +1,50 @@
 #include "dialogue/DialogueManager.h"
 
 #include <algorithm>
+#include <sstream>
 
 namespace fresh
 {
+
+void DialogueManager::setVariable(const std::string& name, int value)
+{
+    m_variables[name] = value;
+}
+
+int DialogueManager::getVariable(const std::string& name) const
+{
+    auto it = m_variables.find(name);
+    if (it != m_variables.end()) {
+        return it->second;
+    }
+    return 0;
+}
+
+bool DialogueManager::evaluateCondition(const std::string& condition) const
+{
+    // Parse "variable operator value" expressions
+    // Supported operators: ==, !=, >, <, >=, <=
+    std::istringstream iss(condition);
+    std::string varName, op;
+    int value = 0;
+
+    if (!(iss >> varName >> op >> value)) {
+        // Malformed expression — default to false
+        return false;
+    }
+
+    int varValue = getVariable(varName);
+
+    if (op == "==") return varValue == value;
+    if (op == "!=") return varValue != value;
+    if (op == ">")  return varValue > value;
+    if (op == "<")  return varValue < value;
+    if (op == ">=") return varValue >= value;
+    if (op == "<=") return varValue <= value;
+
+    // Unknown operator — default to false
+    return false;
+}
 
 bool DialogueManager::startDialogue(DialogueGraph* graph)
 {
@@ -101,8 +142,11 @@ bool DialogueManager::transitionTo(int nodeId)
         return transitionTo(node->getNextNodeId());
 
     case DialogueNodeType::Condition:
-        // TODO: Implement condition expression evaluation; defaults to true branch
-        return transitionTo(node->getTrueBranchNodeId());
+        if (evaluateCondition(node->getCondition())) {
+            return transitionTo(node->getTrueBranchNodeId());
+        } else {
+            return transitionTo(node->getFalseBranchNodeId());
+        }
 
     case DialogueNodeType::Start:
         // Should not encounter Start mid-graph; advance past it

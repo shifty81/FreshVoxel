@@ -1,5 +1,8 @@
 #pragma once
 
+#include <string>
+#include <unordered_map>
+
 #include "dialogue/DialogueGraph.h"
 
 namespace fresh
@@ -21,9 +24,10 @@ enum class DialogueState
 /**
  * @brief Manages dialogue playback through a dialogue graph
  *
- * @note Condition nodes currently always follow the true branch.
- *       Condition expression evaluation will be implemented when the
- *       Lua scripting integration is wired into the dialogue system.
+ * Condition nodes evaluate simple expressions of the form
+ * "variable operator value" (e.g., "player_gold > 100").
+ * Supported operators: ==, !=, >, <, >=, <=.
+ * Variables are set via setVariable() before starting dialogue.
  */
 class DialogueManager
 {
@@ -58,6 +62,16 @@ public:
      */
     void stopDialogue();
 
+    /**
+     * @brief Set a dialogue variable for condition evaluation
+     */
+    void setVariable(const std::string& name, int value);
+
+    /**
+     * @brief Get a dialogue variable value (returns 0 if not set)
+     */
+    int getVariable(const std::string& name) const;
+
     DialogueManager(const DialogueManager&) = delete;
     DialogueManager& operator=(const DialogueManager&) = delete;
 
@@ -68,9 +82,16 @@ private:
      */
     bool transitionTo(int nodeId);
 
+    /**
+     * @brief Evaluate a condition expression (e.g., "player_gold > 100")
+     * @return true if the condition is met
+     */
+    bool evaluateCondition(const std::string& condition) const;
+
     DialogueGraph* m_currentGraph = nullptr;
     DialogueNode* m_currentNode = nullptr;
     DialogueState m_state = DialogueState::Inactive;
+    std::unordered_map<std::string, int> m_variables;
 };
 
 } // namespace fresh

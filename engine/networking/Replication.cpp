@@ -15,52 +15,41 @@ void ReplicationManager::setEntityManager(ecs::EntityManager* entityManager)
 
 void ReplicationManager::addRule(const ReplicationRule& rule)
 {
-    // Replace existing rule for same typeTag
-    for (auto& existing : m_rules) {
-        if (existing.typeTag == rule.typeTag) {
-            existing = rule;
-            return;
-        }
-    }
-    m_rules.push_back(rule);
+    m_ruleMap[rule.typeTag] = rule;
 }
 
 void ReplicationManager::removeRule(uint32_t typeTag)
 {
-    m_rules.erase(std::remove_if(m_rules.begin(), m_rules.end(),
-                                 [typeTag](const ReplicationRule& r) {
-                                     return r.typeTag == typeTag;
-                                 }),
-                  m_rules.end());
+    m_ruleMap.erase(typeTag);
     m_dirty.erase(typeTag);
 }
 
 bool ReplicationManager::hasRule(uint32_t typeTag) const
 {
-    for (const auto& r : m_rules) {
-        if (r.typeTag == typeTag)
-            return true;
-    }
-    return false;
+    return m_ruleMap.count(typeTag) > 0;
 }
 
 const ReplicationRule* ReplicationManager::getRule(uint32_t typeTag) const
 {
-    for (const auto& r : m_rules) {
-        if (r.typeTag == typeTag)
-            return &r;
-    }
+    auto it = m_ruleMap.find(typeTag);
+    if (it != m_ruleMap.end())
+        return &it->second;
     return nullptr;
 }
 
-const std::vector<ReplicationRule>& ReplicationManager::rules() const
+std::vector<ReplicationRule> ReplicationManager::rules() const
 {
-    return m_rules;
+    std::vector<ReplicationRule> result;
+    result.reserve(m_ruleMap.size());
+    for (const auto& pair : m_ruleMap) {
+        result.push_back(pair.second);
+    }
+    return result;
 }
 
 size_t ReplicationManager::ruleCount() const
 {
-    return m_rules.size();
+    return m_ruleMap.size();
 }
 
 void ReplicationManager::markDirty(uint32_t typeTag, uint32_t entityID)
@@ -128,7 +117,8 @@ std::vector<uint8_t> ReplicationManager::collectDeltaFiltered(uint32_t tick, boo
 
     // Count rules that have dirty data
     uint32_t activeRuleCount = 0;
-    for (const auto& rule : m_rules) {
+    for (const auto& pair : m_ruleMap) {
+        const auto& rule = pair.second;
         if (rule.reliable != collectReliable)
             continue;
         if (rule.frequency == ReplicateFrequency::EveryTick) {

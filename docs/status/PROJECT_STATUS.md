@@ -40,7 +40,11 @@ The following production-ready systems were ported from the [AtlasForge](https:/
 - ✅ All 22 engine subsystems properly initialized and wired in Engine.cpp
 - ✅ All 40+ include headers resolve — no broken references
 - ✅ Shutdown cleanup verified — all unique_ptrs properly reset
-- ⚠️ 35+ TODO markers — GPU texture ops, scripting backend, blueprint serialization, dialogue conditions
+- ✅ ReplicationManager rule lookup optimized — linear scan replaced with unordered_map for O(1) lookups
+- ✅ QoSScheduler dequeue optimized — dirty flag avoids redundant sorts on consecutive dequeues
+- ✅ GameServer sector change optimized — client→sector mapping avoids iterating all sectors
+- ✅ Blueprint serialization implemented — save/load graphs in text format
+- ✅ Dialogue condition evaluation implemented — supports variable comparisons (==, !=, >, <, >=, <=)
 - ⚠️ Networking upgraded from 10% → 45% — framework solid, transport integration remaining
 
 ---

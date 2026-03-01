@@ -40,6 +40,7 @@ bool QoSScheduler::enqueue(const QoSPacket& packet)
     QoSPacket p = packet;
     p.id = m_nextId++;
     m_queue.push_back(p);
+    m_sorted = false;
     return true;
 }
 
@@ -48,7 +49,10 @@ bool QoSScheduler::dequeue(QoSPacket& out)
     if (m_queue.empty())
         return false;
 
-    sortQueue();
+    if (!m_sorted) {
+        sortQueue();
+        m_sorted = true;
+    }
     out = m_queue.front();
     m_queue.erase(m_queue.begin());
     return true;
@@ -66,7 +70,10 @@ bool QoSScheduler::hasPending() const
 
 std::vector<QoSPacket> QoSScheduler::drainAll()
 {
-    sortQueue();
+    if (!m_sorted) {
+        sortQueue();
+        m_sorted = true;
+    }
     std::vector<QoSPacket> result;
     result.swap(m_queue);
     return result;
@@ -114,6 +121,7 @@ uint32_t QoSScheduler::droppedCount() const
 void QoSScheduler::reset()
 {
     m_queue.clear();
+    m_sorted = true;
     m_bytesSentThisWindow = 0;
     m_windowAccumulator = 0.0f;
     m_droppedCount = 0;
