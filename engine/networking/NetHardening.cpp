@@ -261,10 +261,10 @@ uint32_t NetHardening::getSimulatedLatencyMs() const
 
 float NetHardening::packetLossPercent() const
 {
-    uint32_t total = m_stats.packetsSent + m_stats.packetsReceived;
-    if (total == 0)
+    if (m_stats.packetsSent == 0)
         return 0.0f;
-    return static_cast<float>(m_stats.packetsDropped) / static_cast<float>(total) * 100.0f;
+    return static_cast<float>(m_stats.packetsDropped) / static_cast<float>(m_stats.packetsSent)
+           * 100.0f;
 }
 
 float NetHardening::averageBandwidthBytesPerSec() const

@@ -57,12 +57,12 @@ void SectorServer::update(float deltaTime)
 void SectorServer::broadcastToPlayers(const NetworkMessage& message)
 {
     std::lock_guard<std::mutex> lock(playersMutex);
-    // Serialize the message once for all recipients
-    std::vector<uint8_t> serialized = message.serialize();
-    (void)serialized;
     // Actual socket delivery is handled by GameServer which owns
     // the ClientConnection objects. SectorServer tracks player IDs
-    // so GameServer can look up the corresponding connections.
+    // so GameServer can look up the corresponding connections and
+    // call sendMessage() on each. This method is a coordination point
+    // that will be wired once GameServer exposes a sendToClient() API.
+    (void)message;
 }
 
 void SectorServer::initializeSector()
