@@ -29,8 +29,8 @@ bool DialogueManager::evaluateCondition(const std::string& condition) const
     int value = 0;
 
     if (!(iss >> varName >> op >> value)) {
-        // Malformed expression — default to true for backwards compatibility
-        return true;
+        // Malformed expression — default to false
+        return false;
     }
 
     int varValue = getVariable(varName);
@@ -42,8 +42,8 @@ bool DialogueManager::evaluateCondition(const std::string& condition) const
     if (op == ">=") return varValue >= value;
     if (op == "<=") return varValue <= value;
 
-    // Unknown operator — default to true for backwards compatibility
-    return true;
+    // Unknown operator — default to false
+    return false;
 }
 
 bool DialogueManager::startDialogue(DialogueGraph* graph)

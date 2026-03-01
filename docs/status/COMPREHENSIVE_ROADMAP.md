@@ -31,8 +31,12 @@ The following production-ready systems were merged from the AtlasForge engine:
 1. **22 engine subsystems properly initialized** — all wired via Engine.cpp
 2. **All 40+ include headers resolve** — no broken references
 3. **Shutdown cleanup verified** — all unique_ptrs reset properly
-4. **35+ TODO markers** — mostly in Texture GPU ops, scripting backend, blueprint serialization, dialogue conditions
-5. **Networking upgraded from 10% → 45%** — AtlasForge merge added packet layer, hardening, QoS, and replication
+4. **ReplicationManager optimized** — linear scan replaced with unordered_map for O(1) rule lookups
+5. **QoSScheduler optimized** — dirty flag avoids redundant sorts on consecutive dequeues
+6. **GameServer optimized** — client→sector mapping avoids O(n) sector iteration on SectorChange
+7. **Blueprint serialization implemented** — save/load with text-based format
+8. **Dialogue condition evaluation implemented** — variable-based expression evaluation (==, !=, >, <, >=, <=)
+9. **Networking upgraded from 10% → 45%** — AtlasForge merge added packet layer, hardening, QoS, and replication
 
 ### Major Gaps Identified
 1. **Lua Scripting System** - 40% complete (needs Sol2 integration)
@@ -861,8 +865,8 @@ Future (Post-v1.0):
 - Networking upgraded to 45% (was 10%) — AtlasForge merge added NetContext, hardening, QoS, replication
 - Lua scripting needs library integration (40%) — conditional Sol2 support exists
 - Many advanced features not started
-- Blueprint serialization not implemented
-- Dialogue condition evaluation defaults to true (needs Lua integration)
+- ✅ Blueprint serialization implemented (was stub)
+- ✅ Dialogue condition evaluation implemented (was defaulting to true)
 
 ---
 
@@ -1032,7 +1036,9 @@ The Fresh Voxel Engine is an impressive project that is **75-80% complete** in t
 - **All 40+ headers** resolve correctly
 - **No orphaned code** — all declared systems are used in update/render loops
 - **Shutdown cleanup** verified — all unique_ptrs reset
-- **35+ TODOs** identified — concentrated in GPU texture ops, scripting backend, blueprint serialization
+- **Performance optimizations applied** — ReplicationManager, QoSScheduler, GameServer sector lookup
+- **Blueprint serialization** — implemented with text-based save/load format
+- **Dialogue conditions** — variable-based expression evaluation replaces always-true stub
 
 ### Main remaining gaps:
 1. **Critical editor features** (selection, file dialogs) - 4-6 weeks

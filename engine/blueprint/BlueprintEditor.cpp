@@ -169,7 +169,12 @@ bool BlueprintEditor::saveGraph()
     if (!m_graph) {
         return false;
     }
-    return saveGraphToFile(m_graph->getName());
+    std::string path = m_graph->getName();
+    // Ensure .bp extension
+    if (path.size() < 3 || path.substr(path.size() - 3) != ".bp") {
+        path += ".bp";
+    }
+    return saveGraphToFile(path);
 }
 
 bool BlueprintEditor::saveGraphToFile(const std::string& path)
