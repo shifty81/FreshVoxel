@@ -40,6 +40,9 @@ add_library(FreshEngine STATIC
     blueprint/BlueprintNode.cpp
     blueprint/BlueprintGraph.cpp
     blueprint/BlueprintEditor.cpp
+    dialogue/DialogueNode.cpp
+    dialogue/DialogueGraph.cpp
+    dialogue/DialogueManager.cpp
     audio/AudioEngine.cpp
     scripting/EventSystem.cpp
     character/VoxelCharacter.cpp
