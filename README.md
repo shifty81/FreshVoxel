@@ -481,15 +481,17 @@ dotnet build -c Release
 - **Behavior Types** - 🚧 In development - Friendly, Trader, Hostile, Patrol, Guard, Wander
 
 ### Optional Features
-- **Lua Scripting** - Framework exists (~40% complete), needs Sol2 integration
-- **Networking** - Framework only (~10% complete), multiplayer not functional
-- **Audio** - WAV support (OGG/Vorbis planned)
+- **Lua Scripting** — Framework exists (~40% complete), needs Sol2 engine API bindings
+- **Networking** — Framework solid (~45% complete after AtlasForge merge), transport integration remaining
+  - ✅ NetContext, NetHardening, QoSScheduler, Replication merged from AtlasForge
+  - 🚧 TCP/UDP transport integration, client prediction, lobby system
+- **Audio** — WAV + OGG/Vorbis support (95% complete)
 
 ### Testing
-- **Code Coverage** - ~30% (core systems well-tested)
-- **Platform Testing** - Windows 10/11 exclusive
+- **Code Coverage** — ~30% (186 tests passing, core systems well-tested)
+- **Platform Testing** — Windows 10/11 exclusive
 
-**For current status, see [PROJECT_STATUS.md](PROJECT_STATUS.md).**
+**Current Version: v0.2.7** — For full status, see [PROJECT_STATUS.md](docs/status/PROJECT_STATUS.md).
 
 ---
 
