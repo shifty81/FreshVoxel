@@ -126,6 +126,10 @@ bool BlueprintEditor::loadGraph(const std::string& name)
             iss >> std::ws;
             std::getline(iss, nodeName, '|');
             iss >> typeName >> posX >> posY >> inputCount >> outputCount;
+            // Bounds check to prevent DoS from malformed files
+            if (inputCount < 0 || inputCount > 256 || outputCount < 0 || outputCount > 256) {
+                return false;
+            }
             auto* node = newGraph->addNode(nodeName, blueprintNodeTypeFromName(typeName));
             node->setPosition(glm::vec2(posX, posY));
 
