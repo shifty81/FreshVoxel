@@ -112,6 +112,7 @@ private:
 
     QoSConfig m_config;
     std::vector<QoSPacket> m_queue;
+    bool m_sorted = true;
     uint32_t m_nextId = 1;
     uint32_t m_bytesSentThisWindow = 0;
     float m_windowAccumulator = 0.0f;

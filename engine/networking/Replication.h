@@ -67,7 +67,7 @@ public:
     bool hasRule(uint32_t typeTag) const;
     const ReplicationRule* getRule(uint32_t typeTag) const;
 
-    const std::vector<ReplicationRule>& rules() const;
+    std::vector<ReplicationRule> rules() const;
     size_t ruleCount() const;
 
     // Collect dirty components based on rules and produce a delta payload (reliable only)
@@ -102,7 +102,7 @@ private:
     std::vector<uint8_t> collectDeltaFiltered(uint32_t tick, bool collectReliable);
 
     ecs::EntityManager* m_entityManager = nullptr;
-    std::vector<ReplicationRule> m_rules;
+    std::unordered_map<uint32_t, ReplicationRule> m_ruleMap;
     // typeTag -> set of dirty entity IDs
     std::unordered_map<uint32_t, std::vector<uint32_t>> m_dirty;
 

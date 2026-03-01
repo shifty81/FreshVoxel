@@ -218,6 +218,10 @@ void GameServer::processMessage(ClientConnection* client, std::unique_ptr<Networ
         if (sector) {
             sector->addPlayer(client->getClientId());
         }
+        {
+            std::lock_guard<std::mutex> lock(clientsMutex);
+            clientSectorMap[client->getClientId()] = {0, 0};
+        }
         break;
     }
 
@@ -240,12 +244,18 @@ void GameServer::processMessage(ClientConnection* client, std::unique_ptr<Networ
         int32_t newSectorX = message->readInt32();
         int32_t newSectorY = message->readInt32();
 
-        // Remove from all current sectors, add to the new one
+        // Remove from the current sector using client→sector mapping
         {
-            std::lock_guard<std::mutex> lock(sectorsMutex);
-            for (auto& pair : sectorServers) {
-                pair.second->removePlayer(client->getClientId());
+            std::lock_guard<std::mutex> lock(clientsMutex);
+            auto mapIt = clientSectorMap.find(client->getClientId());
+            if (mapIt != clientSectorMap.end()) {
+                std::lock_guard<std::mutex> sectorLock(sectorsMutex);
+                auto sectorIt = sectorServers.find(mapIt->second);
+                if (sectorIt != sectorServers.end()) {
+                    sectorIt->second->removePlayer(client->getClientId());
+                }
             }
+            clientSectorMap[client->getClientId()] = {newSectorX, newSectorY};
         }
 
         createSectorServer(newSectorX, newSectorY);
@@ -272,6 +282,16 @@ void GameServer::processMessage(ClientConnection* client, std::unique_ptr<Networ
 void GameServer::disconnectClient(uint32_t clientId)
 {
     std::lock_guard<std::mutex> lock(clientsMutex);
+    // Clean up sector mapping
+    auto mapIt = clientSectorMap.find(clientId);
+    if (mapIt != clientSectorMap.end()) {
+        std::lock_guard<std::mutex> sectorLock(sectorsMutex);
+        auto sectorIt = sectorServers.find(mapIt->second);
+        if (sectorIt != sectorServers.end()) {
+            sectorIt->second->removePlayer(clientId);
+        }
+        clientSectorMap.erase(mapIt);
+    }
     clients.erase(clientId);
 }
 

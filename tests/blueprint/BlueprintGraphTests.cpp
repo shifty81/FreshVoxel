@@ -4,6 +4,8 @@
  */
 
 #include <gtest/gtest.h>
+#include <fstream>
+#include <cstdio>
 #include "blueprint/BlueprintNode.h"
 #include "blueprint/BlueprintGraph.h"
 #include "blueprint/BlueprintEditor.h"
@@ -208,6 +210,67 @@ TEST_F(BlueprintEditorTest, Shutdown_CleansUp) {
     editor->initialize();
     editor->shutdown();
     EXPECT_EQ(editor->getGraph(), nullptr);
+}
+
+TEST_F(BlueprintEditorTest, SaveAndLoadGraph_RoundTrip) {
+    editor->initialize();
+    editor->newGraph("RoundTripTest");
+    auto* graph = editor->getGraph();
+
+    // Build a small graph
+    BlueprintNode* eventNode = graph->addNode("OnBeginPlay", BlueprintNodeType::Event);
+    BlueprintNode* funcNode = graph->addNode("PrintString", BlueprintNodeType::Function);
+    eventNode->setPosition(glm::vec2(100.0f, 200.0f));
+    funcNode->setPosition(glm::vec2(300.0f, 200.0f));
+    eventNode->addOutput("Exec", BlueprintPinType::Execution);
+    funcNode->addInput("Exec", BlueprintPinType::Execution);
+    funcNode->addInput("Text", BlueprintPinType::String);
+    graph->connect(eventNode->getId(), eventNode->getOutputs()[0].id,
+                   funcNode->getId(), funcNode->getInputs()[0].id);
+
+    // Save to temp file
+    std::string path = "/tmp/test_blueprint_roundtrip.bp";
+    EXPECT_TRUE(editor->saveGraphToFile(path));
+
+    // Load back
+    EXPECT_TRUE(editor->loadGraph(path));
+    auto* loaded = editor->getGraph();
+    ASSERT_NE(loaded, nullptr);
+    EXPECT_EQ(loaded->getName(), "RoundTripTest");
+    EXPECT_EQ(loaded->getNodes().size(), 2u);
+    EXPECT_EQ(loaded->getConnections().size(), 1u);
+
+    // Verify node properties
+    EXPECT_EQ(loaded->getNodes()[0]->getName(), "OnBeginPlay");
+    EXPECT_EQ(loaded->getNodes()[0]->getType(), BlueprintNodeType::Event);
+    EXPECT_FLOAT_EQ(loaded->getNodes()[0]->getPosition().x, 100.0f);
+    EXPECT_FLOAT_EQ(loaded->getNodes()[0]->getPosition().y, 200.0f);
+    EXPECT_EQ(loaded->getNodes()[1]->getName(), "PrintString");
+    EXPECT_EQ(loaded->getNodes()[1]->getType(), BlueprintNodeType::Function);
+    EXPECT_EQ(loaded->getNodes()[1]->getInputs().size(), 2u);
+
+    // Clean up temp file
+    std::remove(path.c_str());
+}
+
+TEST_F(BlueprintEditorTest, SaveGraph_NoGraph_ReturnsFalse) {
+    // Editor not initialized, no graph
+    EXPECT_FALSE(editor->saveGraph());
+}
+
+TEST_F(BlueprintEditorTest, LoadGraph_InvalidFile_ReturnsFalse) {
+    EXPECT_FALSE(editor->loadGraph("/tmp/nonexistent_file.bp"));
+}
+
+TEST_F(BlueprintEditorTest, LoadGraph_InvalidFormat_ReturnsFalse) {
+    // Write a file with invalid format
+    std::string path = "/tmp/test_blueprint_invalid.bp";
+    {
+        std::ofstream f(path);
+        f << "NOT A BLUEPRINT FILE\n";
+    }
+    EXPECT_FALSE(editor->loadGraph(path));
+    std::remove(path.c_str());
 }
 
 } // namespace fresh

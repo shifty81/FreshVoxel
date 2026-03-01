@@ -323,4 +323,99 @@ TEST_F(DialogueManagerTest, StopDialogue_ResetsState) {
     EXPECT_EQ(manager->getCurrentNode(), nullptr);
 }
 
+// ============================================================================
+// Condition Evaluation Tests
+// ============================================================================
+
+TEST_F(DialogueManagerTest, ConditionNode_TrueBranch) {
+    // Build: Start -> Condition(gold > 50) -> [true: Dialogue("Rich")] [false: Dialogue("Poor")] -> End
+    DialogueNode* start = graph->addNode(DialogueNodeType::Start);
+    DialogueNode* cond = graph->addNode(DialogueNodeType::Condition);
+    DialogueNode* richNode = graph->addNode(DialogueNodeType::Dialogue);
+    DialogueNode* poorNode = graph->addNode(DialogueNodeType::Dialogue);
+    DialogueNode* end = graph->addNode(DialogueNodeType::End);
+
+    cond->setCondition("gold > 50");
+    cond->setTrueBranchNodeId(richNode->getId());
+    cond->setFalseBranchNodeId(poorNode->getId());
+    richNode->setText("You are rich!");
+    richNode->setNextNodeId(end->getId());
+    poorNode->setText("You are poor!");
+    poorNode->setNextNodeId(end->getId());
+    start->setNextNodeId(cond->getId());
+    graph->setStartNode(start->getId());
+
+    // Set variable so condition is true
+    manager->setVariable("gold", 100);
+    EXPECT_TRUE(manager->startDialogue(graph.get()));
+    EXPECT_EQ(manager->getCurrentNode()->getText(), "You are rich!");
+}
+
+TEST_F(DialogueManagerTest, ConditionNode_FalseBranch) {
+    DialogueNode* start = graph->addNode(DialogueNodeType::Start);
+    DialogueNode* cond = graph->addNode(DialogueNodeType::Condition);
+    DialogueNode* richNode = graph->addNode(DialogueNodeType::Dialogue);
+    DialogueNode* poorNode = graph->addNode(DialogueNodeType::Dialogue);
+    DialogueNode* end = graph->addNode(DialogueNodeType::End);
+
+    cond->setCondition("gold > 50");
+    cond->setTrueBranchNodeId(richNode->getId());
+    cond->setFalseBranchNodeId(poorNode->getId());
+    richNode->setText("You are rich!");
+    richNode->setNextNodeId(end->getId());
+    poorNode->setText("You are poor!");
+    poorNode->setNextNodeId(end->getId());
+    start->setNextNodeId(cond->getId());
+    graph->setStartNode(start->getId());
+
+    // Set variable so condition is false
+    manager->setVariable("gold", 10);
+    EXPECT_TRUE(manager->startDialogue(graph.get()));
+    EXPECT_EQ(manager->getCurrentNode()->getText(), "You are poor!");
+}
+
+TEST_F(DialogueManagerTest, ConditionNode_EqualityOperator) {
+    DialogueNode* start = graph->addNode(DialogueNodeType::Start);
+    DialogueNode* cond = graph->addNode(DialogueNodeType::Condition);
+    DialogueNode* yesNode = graph->addNode(DialogueNodeType::Dialogue);
+    DialogueNode* noNode = graph->addNode(DialogueNodeType::Dialogue);
+
+    cond->setCondition("quest_complete == 1");
+    cond->setTrueBranchNodeId(yesNode->getId());
+    cond->setFalseBranchNodeId(noNode->getId());
+    yesNode->setText("Quest done!");
+    noNode->setText("Not yet.");
+    start->setNextNodeId(cond->getId());
+    graph->setStartNode(start->getId());
+
+    manager->setVariable("quest_complete", 1);
+    EXPECT_TRUE(manager->startDialogue(graph.get()));
+    EXPECT_EQ(manager->getCurrentNode()->getText(), "Quest done!");
+}
+
+TEST_F(DialogueManagerTest, ConditionNode_UndefinedVariable_IsZero) {
+    DialogueNode* start = graph->addNode(DialogueNodeType::Start);
+    DialogueNode* cond = graph->addNode(DialogueNodeType::Condition);
+    DialogueNode* yesNode = graph->addNode(DialogueNodeType::Dialogue);
+    DialogueNode* noNode = graph->addNode(DialogueNodeType::Dialogue);
+
+    cond->setCondition("undefined_var == 0");
+    cond->setTrueBranchNodeId(yesNode->getId());
+    cond->setFalseBranchNodeId(noNode->getId());
+    yesNode->setText("Zero");
+    noNode->setText("Not zero");
+    start->setNextNodeId(cond->getId());
+    graph->setStartNode(start->getId());
+
+    // Don't set undefined_var — should default to 0
+    EXPECT_TRUE(manager->startDialogue(graph.get()));
+    EXPECT_EQ(manager->getCurrentNode()->getText(), "Zero");
+}
+
+TEST_F(DialogueManagerTest, SetAndGetVariable) {
+    manager->setVariable("test_var", 42);
+    EXPECT_EQ(manager->getVariable("test_var"), 42);
+    EXPECT_EQ(manager->getVariable("nonexistent"), 0);
+}
+
 } // namespace fresh

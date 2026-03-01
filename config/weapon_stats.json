@@ -1,0 +1,119 @@
+{
+  "name": "Weapon Stats Configuration",
+  "version": "1.0.0",
+  "description": "Data-driven weapon properties for easy balancing without recompilation",
+  
+  "weapons": [
+    {
+      "id": "sword_iron",
+      "name": "Iron Sword",
+      "damage": 10.0,
+      "attackSpeed": 1.2,
+      "range": 2.0,
+      "durability": 100,
+      "weight": 3.0,
+      "special_effects": []
+    },
+    {
+      "id": "sword_steel",
+      "name": "Steel Sword",
+      "damage": 15.0,
+      "attackSpeed": 1.0,
+      "range": 2.5,
+      "durability": 200,
+      "weight": 4.0,
+      "special_effects": []
+    },
+    {
+      "id": "bow_wooden",
+      "name": "Wooden Bow",
+      "damage": 8.0,
+      "attackSpeed": 0.8,
+      "range": 15.0,
+      "durability": 80,
+      "weight": 1.5,
+      "special_effects": []
+    },
+    {
+      "id": "bow_composite",
+      "name": "Composite Bow",
+      "damage": 12.0,
+      "attackSpeed": 1.0,
+      "range": 20.0,
+      "durability": 150,
+      "weight": 2.0,
+      "special_effects": ["piercing"]
+    },
+    {
+      "id": "axe_battle",
+      "name": "Battle Axe",
+      "damage": 20.0,
+      "attackSpeed": 0.7,
+      "range": 2.0,
+      "durability": 120,
+      "weight": 6.0,
+      "special_effects": ["armor_break"]
+    },
+    {
+      "id": "dagger",
+      "name": "Dagger",
+      "damage": 6.0,
+      "attackSpeed": 2.0,
+      "range": 1.5,
+      "durability": 60,
+      "weight": 0.5,
+      "special_effects": ["backstab"]
+    },
+    {
+      "id": "staff_fire",
+      "name": "Fire Staff",
+      "damage": 18.0,
+      "attackSpeed": 0.6,
+      "range": 10.0,
+      "durability": 100,
+      "weight": 2.0,
+      "special_effects": ["fire_damage", "area_of_effect"]
+    },
+    {
+      "id": "hammer_war",
+      "name": "War Hammer",
+      "damage": 25.0,
+      "attackSpeed": 0.5,
+      "range": 2.0,
+      "durability": 180,
+      "weight": 8.0,
+      "special_effects": ["stun"]
+    }
+  ],
+  
+  "special_effects": {
+    "fire_damage": {
+      "description": "Deals additional fire damage over time",
+      "dotDamage": 2.0,
+      "dotDuration": 5.0
+    },
+    "piercing": {
+      "description": "Ignores a portion of enemy armor",
+      "armorPenetration": 0.5
+    },
+    "armor_break": {
+      "description": "Reduces enemy armor on hit",
+      "armorReduction": 2.0,
+      "duration": 10.0
+    },
+    "backstab": {
+      "description": "Deals extra damage from behind",
+      "backstabMultiplier": 2.5
+    },
+    "area_of_effect": {
+      "description": "Damages nearby enemies",
+      "radius": 3.0,
+      "damageMultiplier": 0.5
+    },
+    "stun": {
+      "description": "Chance to stun enemy",
+      "stunChance": 0.3,
+      "stunDuration": 2.0
+    }
+  }
+}

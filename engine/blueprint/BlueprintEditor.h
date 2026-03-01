@@ -52,6 +52,11 @@ public:
      */
     bool saveGraph();
 
+    /**
+     * @brief Save the current graph to a specific file path
+     */
+    bool saveGraphToFile(const std::string& path);
+
     [[nodiscard]] BlueprintGraph* getGraph() const;
 
     void setVisible(bool visible);
