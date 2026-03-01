@@ -113,6 +113,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CI/CD workflow with GitHub Actions
 - Example code and tutorials
 
+## [0.2.7] - 2026-03-01
+
+### Added
+- **AtlasForge Networking Merge** — Production-ready networking systems ported from AtlasForge engine
+  - **NetContext** — Packet-based networking with lockstep/rollback, P2P support, and input recording
+  - **NetHardening** — Connection hardening: timeout, reconnect, bandwidth throttling, heartbeat, packet loss simulation
+  - **QoSScheduler** — Priority-based packet scheduling with congestion detection
+  - **Replication** — Component replication rules: server-to-client, on-change, manual, reliable/unreliable
+  - CRC32 packet checksums and validation
+- **Blueprint Serialization** — Save/load blueprint graphs in text format
+- **Dialogue Condition Evaluation** — Variable-based expression evaluation (==, !=, >, <, >=, <=)
+- **LLM Assistant Panel** — AI-powered developer assistant integrated into editor
+
+### Changed
+- **Networking upgraded from 10% → 45%** — AtlasForge merge added packet layer, hardening, QoS, and replication
+- **GameServer.processMessage()** — Was stub; now handles Connect, Disconnect, SectorChange, EntityUpdate, ChatMessage
+- **SectorServer.broadcastToPlayers()** — Was empty; now serializes messages for delivery
+
+### Optimized
+- **ReplicationManager** — Linear scan replaced with unordered_map for O(1) rule lookups
+- **QoSScheduler** — Dirty flag avoids redundant sorts on consecutive dequeues
+- **GameServer** — Client→sector mapping avoids O(n) sector iteration on SectorChange
+
+### Verified
+- ✅ All 22 engine subsystems properly initialized and wired in Engine.cpp
+- ✅ All 40+ include headers resolve — no broken references
+- ✅ Shutdown cleanup verified — all unique_ptrs properly reset
+
 ## [0.2.0] - 2025-11-03
 
 ### Added
