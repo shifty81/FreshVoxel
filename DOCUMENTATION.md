@@ -318,6 +318,6 @@ Essential files kept in root for visibility:
 
 ---
 
-**Last Updated**: 2026-02-17  
-**Documentation Version**: 3.1  
-**Engine Version**: v0.2.6
+**Last Updated**: 2026-03-01  
+**Documentation Version**: 3.2  
+**Engine Version**: v0.2.7

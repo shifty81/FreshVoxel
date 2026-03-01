@@ -1,7 +1,7 @@
 # Fresh Voxel Engine - Project Roadmap & Status Assessment
 
-**Last Updated**: February 2026  
-**Engine Version**: 0.1.0 (Alpha)
+**Last Updated**: March 2026  
+**Engine Version**: 0.2.7 (Alpha)
 
 This document provides an honest assessment of what is implemented, what is partially working, and what needs to be completed for the engine to be fully functional — particularly around viewport rendering, play mode, and editor UI integration.
 
@@ -253,13 +253,19 @@ This document provides an honest assessment of what is implemented, what is part
 - [ ] Music streaming
 - [ ] Audio effects processing
 
-### Networking ⚠️ 10% Complete
+### Networking ⚠️ 45% Complete
 - [x] Socket infrastructure
 - [x] Server accept connections
-- [ ] **Message protocol implementation**
-- [ ] Player synchronization
+- [x] NetworkMessage binary protocol (10 message types)
+- [x] **NetContext** — Packet-based networking with lockstep/rollback, P2P (from AtlasForge)
+- [x] **NetHardening** — Connection hardening: timeout, reconnect, bandwidth, heartbeat (from AtlasForge)
+- [x] **QoSScheduler** — Priority-based packet scheduling with congestion detection (from AtlasForge)
+- [x] **Replication** — Component replication rules (from AtlasForge)
+- [x] GameServer.processMessage() — Connect, Disconnect, SectorChange, EntityUpdate, ChatMessage
+- [ ] TCP/UDP transport integration with NetContext
+- [ ] Player synchronization and client prediction
 - [ ] Chunk streaming over network
-- [ ] Client prediction and interpolation
+- [ ] Chat system UI and lobby system
 
 ### RPG Systems ✅ 75% Complete
 - [x] Inventory system
