@@ -129,29 +129,38 @@ API References:      In Progress
 - Enhanced physics
 - Complete documentation
 
-### 🎯 Version 0.3.0 - Gameplay (Target: Dec 2025)
-- [ ] Inventory system
-- [ ] Resource gathering
-- [ ] Crafting system
-- [ ] Day/night cycle
-- [ ] Weather system
-- [x] Native Win32 UI (completed in v0.2.5)
+### ✅ Version 0.2.7 - AtlasForge Merge & Audit (Released: Mar 2026)
+- [x] AtlasForge networking merge (NetContext, NetHardening, QoS, Replication)
+- [x] Full code audit — 22 subsystems verified, all headers resolve
+- [x] Optimizations (ReplicationManager, QoSScheduler, GameServer)
+- [x] Blueprint serialization
+- [x] Dialogue condition evaluation
 
-### 📅 Version 0.4.0 - Multiplayer (Target: Jan 2026)
-- [ ] Networking foundation
-- [ ] Client-server architecture
-- [ ] Player synchronization
-- [ ] Chat system
+### 🎯 Version 0.3.0 - Gameplay & Polish (Target: Q2 2026)
+- [x] Inventory system (InventoryManager + InventoryPanel)
+- [x] Crafting system (rpg::CraftingSystem + CraftingPanel)
+- [x] Day/night cycle (TimeManager)
+- [x] Native Win32 UI (completed in v0.2.5)
+- [ ] Resource gathering completion
+- [ ] Weather system
+- [ ] Lua scripting Sol2 integration
+
+### 📅 Version 0.4.0 - Networking Integration (Target: Q3 2026)
+- [x] Networking framework (AtlasForge merge — 45% complete)
+- [ ] TCP/UDP transport integration with NetContext
+- [ ] ECS serialization for rollback snapshots
+- [ ] Client prediction and interpolation
+- [ ] Chat system UI
 - [ ] Lobby system
 
-### 📅 Version 0.5.0 - RPG Systems (Target: Feb 2026)
-- [ ] Profession system (12 professions)
+### 📅 Version 0.5.0 - AI & RPG Systems (Target: Q4 2026)
+- [ ] Pathfinding (A* on voxel grid)
+- [ ] Advanced NPC behaviors
 - [ ] Quest system
-- [ ] Trading system
-- [ ] Faction system
-- [ ] Loot system
+- [ ] Profession system (12 professions)
+- [ ] Complete trading system
 
-### 📅 Version 1.0.0 - Full Release (Target: Mid 2026)
+### 📅 Version 1.0.0 - Full Release (Target: Q1 2027)
 - [ ] All core features complete
 - [ ] Full multiplayer support
 - [ ] Complete audio system
@@ -162,34 +171,27 @@ API References:      In Progress
 
 ---
 
-## 🚀 Current Sprint (Week of Nov 3, 2025)
+## 🚀 Current Focus (March 2026)
+
+### Recently Completed
+- ✅ AtlasForge networking merge (NetContext, NetHardening, QoS, Replication)
+- ✅ Full code audit — 22 subsystems, 40+ headers verified
+- ✅ Optimization pass (ReplicationManager, QoSScheduler, GameServer)
+- ✅ Blueprint serialization (save/load text format)
+- ✅ Dialogue condition evaluation
+- ✅ Documentation alignment and new roadmap
 
 ### In Progress
-- 📝 Comprehensive documentation
-- 🎨 Example code and tutorials
-- 🔧 CI/CD pipeline setup
-- 📖 API reference structure
+- 🔧 Networking transport integration (TCP/UDP with NetContext)
+- 🎮 Gameplay polish — resource gathering, weather system
+- 📝 Lua scripting Sol2 engine API bindings
 
-### Completed This Week
-- ✅ CONTRIBUTING.md guide
-- ✅ CODE_OF_CONDUCT.md
-- ✅ ARCHITECTURE.md with diagrams
-- ✅ MIT LICENSE
-- ✅ CHANGELOG.md
-- ✅ GitHub issue templates
-- ✅ Pull request template
-- ✅ CI/CD workflow
-- ✅ Example code structure
-- ✅ Tutorial content
-- ✅ SECURITY.md policy
-- ✅ Developer setup guide
-
-### Next Week
-- [ ] Complete API reference docs
-- [ ] Add more code examples
-- [ ] Create video tutorials
-- [ ] Set up continuous integration
-- [ ] Begin inventory system
+### Next Steps
+- [ ] Wire NetContext to GameServer TCP sockets
+- [ ] Implement UDP transport for unreliable fast updates
+- [ ] Complete Lua Sol2 bindings to engine APIs
+- [ ] Weather system foundation
+- [ ] Advanced terrain features (3D density, biome transitions)
 
 ---
 
@@ -257,28 +259,24 @@ See [Issues](https://github.com/shifty81/fresh/issues) for full list.
 
 ## 🎯 Roadmap Highlights
 
-### Short Term (Next 3 Months)
-
-#### Q4 2025
-- ✅ Complete core documentation
-- 🎯 Inventory & resource systems
-- 🎯 Day/night cycle
+### Short Term (Q2 2026)
+- ✅ AtlasForge networking merge
+- ✅ Code audit and optimizations
+- 🎯 Networking transport integration (wire NetContext to sockets)
+- 🎯 Lua Sol2 engine API bindings
 - 🎯 Weather system
+- 🎯 Resource gathering completion
 
-### Medium Term (6 Months)
+### Medium Term (Q3-Q4 2026)
+- 🎯 Full multiplayer with client prediction
+- 🎯 Advanced AI (pathfinding, NPC behaviors)
+- 🎯 Quest and profession systems
+- 🎯 Advanced terrain (3D density, biomes, rivers)
 
-#### Q1 2026
-- 🎯 Multiplayer networking
-- 🎯 Profession system
-- 🎯 Advanced AI
-- 🎯 Audio integration
-
-### Long Term (1 Year)
-
-#### Mid 2026
+### Long Term (2027)
 - 🎯 Version 1.0 release
 - 🎯 Steam release preparation
-- 🎯 Modding support
+- 🎯 Modding support (Lua + mod loader)
 - 🎯 Community marketplace
 
 See [ROADMAP.md](ROADMAP.md) for complete roadmap.
@@ -342,17 +340,29 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) to get started!
 
 ## 📝 Recent Updates
 
-### November 2025
-- ✅ Major documentation overhaul
-- ✅ CI/CD pipeline setup
-- ✅ Example code added
-- ✅ Tutorial content created
+### March 2026
+- ✅ AtlasForge networking merge (NetContext, NetHardening, QoS, Replication)
+- ✅ Full code audit — all 22 subsystems verified
+- ✅ Optimizations (ReplicationManager, QoSScheduler, GameServer)
+- ✅ Blueprint serialization and dialogue condition evaluation
+- ✅ Documentation alignment and new roadmap
 
-### October 2025
-- ✅ Modular asset system
-- ✅ Player controller
-- ✅ Chunk streaming
-- ✅ All core systems
+### February 2026
+- ✅ FreshVoxel rebranding (voxel-only scope)
+- ✅ ENGINE.md added with architecture vision
+- ✅ Voxel-only scope alignment (2D systems, galaxy, dialogue archived)
+
+### January 2026
+- ✅ Inventory system (InventoryManager, InventoryPanel, HotbarPanel)
+- ✅ Crafting system (rpg::CraftingSystem, CraftingPanel)
+- ✅ Day/night cycle (TimeManager, sun/moon, dynamic sky)
+- ✅ Editor enhancements (LLM Assistant, construction hammer)
+
+### November-December 2025
+- ✅ Major documentation overhaul and reorganization
+- ✅ Win32 native UI migration
+- ✅ Selection system, file dialogs, clipboard operations
+- ✅ Resource loading (stb_image, tinyobjloader, OGG/Vorbis)
 
 ---
 
