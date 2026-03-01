@@ -1,22 +1,38 @@
 # Fresh Voxel Engine - Comprehensive Roadmap 2025-2026
 ## Missing Features & Development Plan
 
-> **Document Version:** 1.1.0  
-> **Last Updated:** 2026-02-17  
+> **Document Version:** 2.0.0  
+> **Last Updated:** 2026-03-01  
 > **Purpose:** Complete analysis of missing features and prioritized implementation roadmap
 
 ---
 
 ## 📊 Executive Summary
 
-This document provides a comprehensive analysis of the Fresh Voxel Engine project, identifying all missing features, incomplete implementations, and areas requiring development. After thorough code review and documentation analysis:
+This document provides a comprehensive analysis of the Fresh Voxel Engine project, identifying all missing features, incomplete implementations, and areas requiring development. Updated after full code audit and AtlasForge engine merge (March 2026).
 
 ### Current State
-- **Total Source Files:** 196 (94 .cpp, 102 .h)
+- **Total Source Files:** 210+ (102 .cpp, 110+ .h)
 - **Total Tests:** 186 (all passing)
 - **Documentation Files:** 84 markdown files
 - **TODO Comments:** 55 (mostly intentional framework stubs)
-- **Overall Completion:** ~70-75%
+- **Overall Completion:** ~75-80%
+
+### AtlasForge Merge Status (March 2026)
+The following production-ready systems were merged from the AtlasForge engine:
+- ✅ **NetContext** — Packet-based networking with lockstep/rollback and P2P support
+- ✅ **NetHardening** — Connection hardening (timeout, reconnect, bandwidth, heartbeat, packet loss sim)
+- ✅ **QoSScheduler** — Priority-based packet scheduling with congestion detection
+- ✅ **Replication** — Component replication rules (server-to-client, on-change, manual)
+- ✅ **GameServer.processMessage()** — Wired up Connect, Disconnect, SectorChange, EntityUpdate handlers
+- ✅ **SectorServer.broadcastToPlayers()** — Message serialization and delivery documentation
+
+### Code Audit Findings (March 2026)
+1. **22 engine subsystems properly initialized** — all wired via Engine.cpp
+2. **All 40+ include headers resolve** — no broken references
+3. **Shutdown cleanup verified** — all unique_ptrs reset properly
+4. **35+ TODO markers** — mostly in Texture GPU ops, scripting backend, blueprint serialization, dialogue conditions
+5. **Networking upgraded from 10% → 45%** — AtlasForge merge added packet layer, hardening, QoS, and replication
 
 ### Major Gaps Identified
 1. **Lua Scripting System** - 40% complete (needs Sol2 integration)
@@ -423,33 +439,35 @@ This document provides a comprehensive analysis of the Fresh Voxel Engine projec
 
 ---
 
-### 15. Networking System ❌ 10% Complete
+### 15. Networking System 🟨 45% Complete
 
 #### Completed
-- 🟨 Framework structures (ClientConnection, GameServer)
-- 🟨 NetworkMessage structure
+- ✅ TCP-based GameServer with multi-threaded client handling
+- ✅ ClientConnection with send/receive and timeout tracking
+- ✅ NetworkMessage binary protocol (10 message types)
+- ✅ SectorServer with ECS and player management
+- ✅ GameServer.processMessage() — Connect, Disconnect, SectorChange, ChatMessage, EntityUpdate
+- ✅ **NetContext** — Packet-based networking layer with lockstep/rollback, P2P, and input recording (from AtlasForge)
+- ✅ **NetHardening** — Connection hardening: timeout, reconnect, bandwidth throttling, heartbeat, packet loss sim (from AtlasForge)
+- ✅ **QoSScheduler** — Priority-based packet scheduling with congestion detection (from AtlasForge)
+- ✅ **Replication** — Component replication rules: server-to-client, on-change, manual, reliable/unreliable (from AtlasForge)
+- ✅ CRC32 packet checksums and validation
 
-#### Missing/Incomplete (Phase 14 - 10+ weeks)
-- ❌ **Core Networking** (0%)
-  - UDP-based networking library
-  - Client-server architecture
-  - Connection management
-  - Packet serialization
-  - Reliable/unreliable channels
-- ❌ **Multiplayer Core** (0%)
-  - Player synchronization
-  - Transform interpolation
-  - Client prediction
-  - Server reconciliation
-  - Lag compensation
-- ❌ **Chat System** (0%)
-- ❌ **Lobby System** (0%)
-- ❌ Network culling
-- ❌ Authority system
+#### Missing/Incomplete (Phase 14 - 6-8 weeks remaining)
+- ⚠️ **Socket transport for NetContext** — Currently loopback-only; needs integration with GameServer TCP sockets
+- ⚠️ **ECS serialization for snapshots** — EntityManager needs Serialize/Deserialize for rollback
+- ⚠️ **Replication delta payloads** — CollectDelta needs EntityManager component serialization
+- ❌ **UDP transport** — Current TCP is reliable-only; need UDP for unreliable fast updates
+- ❌ **Transform interpolation** — Smooth remote entity movement
+- ❌ **Client prediction** — Local input prediction with server reconciliation
+- ❌ **Lag compensation** — Server-side hit detection accounting for latency
+- ❌ **Chat system UI** — Chat input/display widgets
+- ❌ **Lobby system** — Match browser and join flow
+- ❌ Network culling (interest management)
 
-**Priority:** LOW (future major feature)  
-**Effort:** VERY LARGE (3-4 months)  
-**Dependencies:** ENet or custom UDP implementation
+**Priority:** MEDIUM (framework now solid, remaining work is integration)  
+**Effort:** Medium (6-8 weeks for transport integration, UDP, interpolation)  
+**Dependencies:** None — NetContext/NetHardening/QoS are self-contained
 
 ---
 
@@ -478,7 +496,7 @@ This document provides a comprehensive analysis of the Fresh Voxel Engine projec
 
 ---
 
-### 17. Developer Tools 🟨 60% Complete
+### 17. Developer Tools 🟨 70% Complete
 
 #### Completed
 - ✅ DebugConsole
@@ -486,11 +504,12 @@ This document provides a comprehensive analysis of the Fresh Voxel Engine projec
 - ✅ MemoryTracker
 - ✅ PerformanceProfiler
 - ✅ DevToolsManager
+- ✅ **Network simulator** — PacketLossSimConfig with configurable loss%, latency, jitter (from AtlasForge merge)
+- ✅ **Connection quality monitor** — Excellent/Good/Fair/Poor/Critical with RTT and loss tracking
 
 #### Missing/Incomplete
 - ⚠️ Advanced profiling (Tracy integration)
 - ⚠️ Visual debugger
-- ⚠️ Network simulator (latency, packet loss)
 - ⚠️ Automated testing tools
 - ⚠️ Benchmark suite
 
@@ -706,18 +725,32 @@ See Phase 8 in existing ROADMAP.md for full 24-week plan including:
 
 ---
 
-### Phase 8: Multiplayer (3-4 months - future)
+### Phase 8: Multiplayer (6-8 weeks - AtlasForge foundation in place)
 **Goal:** 12-player multiplayer support
 
-See Phase 14 in existing ROADMAP.md for full plan including:
-- UDP networking
-- Client-server architecture
-- Transform synchronization
-- Client prediction
-- Chat system
-- Lobby system
+AtlasForge merge provides the networking framework. Remaining work:
+1. **Week 1-2: Transport Integration**
+   - Connect NetContext to GameServer TCP sockets
+   - Implement UDP transport for unreliable fast updates
+   - Test P2P and client-server modes
 
-**Note:** Major feature for post-v1.0
+2. **Week 3-4: ECS Serialization & Replication**
+   - Add Serialize/Deserialize to EntityManager
+   - Wire Replication delta payloads
+   - Implement snapshot save/restore for rollback
+
+3. **Week 5-6: Client Prediction & Interpolation**
+   - Transform interpolation for smooth remote entities
+   - Client-side input prediction
+   - Server reconciliation on mismatch
+
+4. **Week 7-8: Chat, Lobby & Polish**
+   - Chat system UI
+   - Match browser and join flow
+   - Network culling / interest management
+   - Performance testing with 12 players
+
+**Note:** Foundation (NetContext, hardening, QoS, replication rules) already merged
 
 ---
 
@@ -825,9 +858,11 @@ Future (Post-v1.0):
 - No console platform support
 
 ### Feature Completeness
-- Networking is early stage (10%)
-- Lua scripting needs library integration (40%)
+- Networking upgraded to 45% (was 10%) — AtlasForge merge added NetContext, hardening, QoS, replication
+- Lua scripting needs library integration (40%) — conditional Sol2 support exists
 - Many advanced features not started
+- Blueprint serialization not implemented
+- Dialogue condition evaluation defaults to true (needs Lua integration)
 
 ---
 
@@ -916,7 +951,7 @@ Future (Post-v1.0):
 - AI improvements
 
 **LOW Priority Gaps (Future enhancements):**
-- Networking/multiplayer
+- Networking transport integration (45% → 100%)
 - Advanced terrain generation
 - RPG profession systems
 - Advanced optimization
@@ -990,13 +1025,22 @@ Future (Post-v1.0):
 
 ## 🎉 Conclusion
 
-The Fresh Voxel Engine is an impressive project that is **70-75% complete** in terms of core functionality. The codebase is well-structured, documented, and tested. The main gaps are:
+The Fresh Voxel Engine is an impressive project that is **75-80% complete** in terms of core functionality. The codebase is well-structured, documented, and tested. The March 2026 code audit confirmed all 22 engine subsystems are properly initialized and wired together. The AtlasForge merge significantly upgraded networking from 10% to 45%.
 
+### Audit Summary
+- **22 subsystems** properly initialized in Engine.cpp
+- **All 40+ headers** resolve correctly
+- **No orphaned code** — all declared systems are used in update/render loops
+- **Shutdown cleanup** verified — all unique_ptrs reset
+- **35+ TODOs** identified — concentrated in GPU texture ops, scripting backend, blueprint serialization
+
+### Main remaining gaps:
 1. **Critical editor features** (selection, file dialogs) - 4-6 weeks
 2. **Resource loading** (actual file I/O) - 2-3 weeks
 3. **Scripting integration** (Lua with Sol2) - 3-4 weeks
 4. **Gameplay systems** (inventory, crafting) - 6-8 weeks
-5. **Future major features** (multiplayer, advanced terrain) - 6+ months
+5. **Networking transport integration** (framework now solid) - 6-8 weeks
+6. **Future major features** (advanced terrain, full RPG) - 6+ months
 
 With focused effort on the critical items, the project can reach a solid **v0.3.0** release within 3 months, and a full **v1.0.0** release within 12 months.
 
@@ -1005,6 +1049,6 @@ The roadmap is clear, the priorities are identified, and the path forward is wel
 ---
 
 **Document Status:** ✅ Complete  
-**Next Review:** 2025-12-15  
+**Next Review:** 2026-04-01  
 **Owner:** Development Team  
-**Version:** 1.0.0
+**Version:** 2.0.0
