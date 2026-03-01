@@ -49,7 +49,7 @@ ViewportRenderTarget& ViewportRenderTarget::operator=(ViewportRenderTarget&& oth
 bool ViewportRenderTarget::initialize(void* windowHandle, IRenderContext* renderContext)
 {
     if (!renderContext) {
-        Logger::error("ViewportRenderTarget::initialize - null render context");
+        LOG_ERROR_C("ViewportRenderTarget::initialize - null render context", "ViewportRenderTarget");
         m_state = RenderTargetState::Invalid;
         return false;
     }
@@ -61,8 +61,8 @@ bool ViewportRenderTarget::initialize(void* windowHandle, IRenderContext* render
     // so the swap chain targets this specific window
     if (m_windowHandle) {
         if (!m_renderContext->setViewportWindow(m_windowHandle)) {
-            Logger::warn("ViewportRenderTarget::initialize - setViewportWindow failed, "
-                         "rendering to default target");
+            LOG_WARNING_C("ViewportRenderTarget::initialize - setViewportWindow failed, "
+                         "rendering to default target", "ViewportRenderTarget");
         }
     }
 
@@ -70,7 +70,8 @@ bool ViewportRenderTarget::initialize(void* windowHandle, IRenderContext* render
     m_height = m_renderContext->getSwapchainHeight();
     m_state = RenderTargetState::Ready;
 
-    Logger::info("ViewportRenderTarget initialized ({}x{})", m_width, m_height);
+    LOG_INFO_C("ViewportRenderTarget initialized (" +
+               std::to_string(m_width) + "x" + std::to_string(m_height) + ")", "ViewportRenderTarget");
     return true;
 }
 
