@@ -148,6 +148,12 @@ private:
     // Viewport validation helper
     bool validateViewportState();
 
+    // Viewport swap chain helpers to reduce duplicated initialization logic
+#ifdef _WIN32
+    bool tryCreateViewportSwapChain(void* viewportHwnd, int width, int height);
+    void updateCameraAspectRatio(int width, int height);
+#endif
+
     // Rendering helpers (private implementation details)
     void initializeRendering();
     void shutdownRendering();

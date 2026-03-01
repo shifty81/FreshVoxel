@@ -84,7 +84,6 @@
 #include "ui/EditorToolbar.h"
 #include "ui/HotbarPanel.h"
 #include "ui/MainMenu.h"
-// Removed ImGui-based panel: #include "ui/MainMenuPanel.h"
 #include "ui/SceneHierarchyPanel.h"
 #include "ui/VoxelToolPalette.h"
 #include "voxel/Chunk.h"
