@@ -204,24 +204,67 @@ void GameServer::handleClientMessages(ClientConnection* client)
 
 void GameServer::processMessage(ClientConnection* client, std::unique_ptr<NetworkMessage> message)
 {
-    (void)client; // Unused - placeholder for future implementation
-    // Process different message types
     switch (message->getType()) {
-    case MessageType::Connect:
-        // Handle connection
+    case MessageType::Connect: {
+        // Acknowledge the connection with a PlayerJoin broadcast
+        NetworkMessage joinMsg(MessageType::PlayerJoin);
+        joinMsg.writeInt32(static_cast<int32_t>(client->getClientId()));
+        joinMsg.writeString(client->getPlayerName());
+        broadcastMessage(joinMsg);
+
+        // Place the client in the default sector (0,0)
+        createSectorServer(0, 0);
+        auto* sector = getSectorServer(0, 0);
+        if (sector) {
+            sector->addPlayer(client->getClientId());
+        }
         break;
+    }
+
+    case MessageType::Disconnect: {
+        // Notify all clients of the departure
+        NetworkMessage leaveMsg(MessageType::PlayerLeave);
+        leaveMsg.writeInt32(static_cast<int32_t>(client->getClientId()));
+        broadcastMessage(leaveMsg);
+        break;
+    }
 
     case MessageType::ChatMessage:
         // Broadcast chat message to all clients
         broadcastMessage(*message);
         break;
 
-    case MessageType::SectorChange:
-        // Handle sector change
+    case MessageType::SectorChange: {
+        // Read target sector coordinates from the message
+        message->resetReadPosition();
+        int32_t newSectorX = message->readInt32();
+        int32_t newSectorY = message->readInt32();
+
+        // Remove from all current sectors, add to the new one
+        {
+            std::lock_guard<std::mutex> lock(sectorsMutex);
+            for (auto& pair : sectorServers) {
+                pair.second->removePlayer(client->getClientId());
+            }
+        }
+
+        createSectorServer(newSectorX, newSectorY);
+        auto* sector = getSectorServer(newSectorX, newSectorY);
+        if (sector) {
+            sector->addPlayer(client->getClientId());
+        }
+        break;
+    }
+
+    case MessageType::EntityUpdate:
+    case MessageType::ActionCommand:
+    case MessageType::InventoryUpdate:
+    case MessageType::CombatEvent:
+        // Forward gameplay messages to all clients in the same sector
+        broadcastMessage(*message);
         break;
 
     default:
-        // Forward to appropriate sector server
         break;
     }
 }

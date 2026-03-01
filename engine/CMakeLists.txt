@@ -93,6 +93,10 @@ add_library(FreshEngine STATIC
     networking/ClientConnection.cpp
     networking/GameServer.cpp
     networking/SectorServer.cpp
+    networking/NetContext.cpp
+    networking/NetHardening.cpp
+    networking/QoSScheduler.cpp
+    networking/Replication.cpp
     devtools/DebugRenderer.cpp
     devtools/PerformanceProfiler.cpp
     devtools/MemoryTracker.cpp

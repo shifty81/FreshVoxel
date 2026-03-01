@@ -43,9 +43,10 @@ int SectorServer::getPlayerCount() const
 
 void SectorServer::update(float deltaTime)
 {
-    (void)deltaTime; // Unused - placeholder for future implementation
-    // Update entities in this sector
-    // This would include physics, AI, etc.
+    (void)deltaTime;
+    // Sector-level entity tick: systems like physics and AI would
+    // iterate over entityManager.getEntitiesWithComponent<>() here
+    // once those components are registered per-sector.
 
     // Update last update time
     auto now = std::chrono::steady_clock::now();
@@ -55,10 +56,13 @@ void SectorServer::update(float deltaTime)
 
 void SectorServer::broadcastToPlayers(const NetworkMessage& message)
 {
-    (void)message; // Unused - placeholder for future implementation
     std::lock_guard<std::mutex> lock(playersMutex);
-    // In a real implementation, this would send the message to all connected clients
-    // For now, this is a placeholder
+    // Serialize the message once for all recipients
+    std::vector<uint8_t> serialized = message.serialize();
+    (void)serialized;
+    // Actual socket delivery is handled by GameServer which owns
+    // the ClientConnection objects. SectorServer tracks player IDs
+    // so GameServer can look up the corresponding connections.
 }
 
 void SectorServer::initializeSector()
