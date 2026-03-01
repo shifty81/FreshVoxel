@@ -8,7 +8,7 @@
 
 #include <gtest/gtest.h>
 #include "viewport/InputContext.h"
-#include <GLFW/glfw3.h>
+#include "input/KeyCodes.h"
 
 namespace fresh {
 
@@ -65,38 +65,38 @@ TEST_F(InputContextTest, SetFocused_False) {
 
 TEST_F(InputContextTest, KeyPress_WhenFocused_Registered) {
     inputContext->setFocused(true);
-    inputContext->processKeyEvent(GLFW_KEY_W, true);
-    EXPECT_TRUE(inputContext->isKeyPressed(GLFW_KEY_W));
+    inputContext->processKeyEvent(key::W, true);
+    EXPECT_TRUE(inputContext->isKeyPressed(key::W));
 }
 
 TEST_F(InputContextTest, KeyPress_WhenNotFocused_Ignored) {
     inputContext->setFocused(false);
-    inputContext->processKeyEvent(GLFW_KEY_W, true);
-    EXPECT_FALSE(inputContext->isKeyPressed(GLFW_KEY_W));
+    inputContext->processKeyEvent(key::W, true);
+    EXPECT_FALSE(inputContext->isKeyPressed(key::W));
 }
 
 TEST_F(InputContextTest, KeyRelease_ClearsState) {
     inputContext->setFocused(true);
-    inputContext->processKeyEvent(GLFW_KEY_W, true);
-    inputContext->processKeyEvent(GLFW_KEY_W, false);
-    EXPECT_FALSE(inputContext->isKeyPressed(GLFW_KEY_W));
+    inputContext->processKeyEvent(key::W, true);
+    inputContext->processKeyEvent(key::W, false);
+    EXPECT_FALSE(inputContext->isKeyPressed(key::W));
 }
 
 TEST_F(InputContextTest, KeyJustPressed_TrueOnFirstFrame) {
     inputContext->setFocused(true);
-    inputContext->processKeyEvent(GLFW_KEY_W, true);
-    EXPECT_TRUE(inputContext->isKeyJustPressed(GLFW_KEY_W));
+    inputContext->processKeyEvent(key::W, true);
+    EXPECT_TRUE(inputContext->isKeyJustPressed(key::W));
 }
 
 TEST_F(InputContextTest, KeyJustPressed_ClearedAfterUpdate) {
     inputContext->setFocused(true);
-    inputContext->processKeyEvent(GLFW_KEY_W, true);
-    EXPECT_TRUE(inputContext->isKeyJustPressed(GLFW_KEY_W));
+    inputContext->processKeyEvent(key::W, true);
+    EXPECT_TRUE(inputContext->isKeyJustPressed(key::W));
 
     inputContext->update();
-    EXPECT_FALSE(inputContext->isKeyJustPressed(GLFW_KEY_W));
+    EXPECT_FALSE(inputContext->isKeyJustPressed(key::W));
     // Key should still be held
-    EXPECT_TRUE(inputContext->isKeyPressed(GLFW_KEY_W));
+    EXPECT_TRUE(inputContext->isKeyPressed(key::W));
 }
 
 // ============================================================================
@@ -166,26 +166,26 @@ TEST_F(InputContextTest, MouseButtonJustPressed_ClearedAfterUpdate) {
 
 TEST_F(InputContextTest, DefaultBindings_MoveForward) {
     inputContext->setFocused(true);
-    inputContext->processKeyEvent(GLFW_KEY_W, true);
+    inputContext->processKeyEvent(key::W, true);
     EXPECT_TRUE(inputContext->isActionActive(InputAction::MoveForward));
 }
 
 TEST_F(InputContextTest, DefaultBindings_Jump) {
     inputContext->setFocused(true);
-    inputContext->processKeyEvent(GLFW_KEY_SPACE, true);
+    inputContext->processKeyEvent(key::Space, true);
     EXPECT_TRUE(inputContext->isActionActive(InputAction::Jump));
 }
 
 TEST_F(InputContextTest, CustomBinding_OverridesDefault) {
     inputContext->setFocused(true);
-    inputContext->setKeyBinding(InputAction::MoveForward, GLFW_KEY_UP);
-    inputContext->processKeyEvent(GLFW_KEY_UP, true);
+    inputContext->setKeyBinding(InputAction::MoveForward, key::Up);
+    inputContext->processKeyEvent(key::Up, true);
     EXPECT_TRUE(inputContext->isActionActive(InputAction::MoveForward));
 }
 
 TEST_F(InputContextTest, ActionJustPressed_WorksWithBindings) {
     inputContext->setFocused(true);
-    inputContext->processKeyEvent(GLFW_KEY_W, true);
+    inputContext->processKeyEvent(key::W, true);
     EXPECT_TRUE(inputContext->isActionJustPressed(InputAction::MoveForward));
 
     inputContext->update();
