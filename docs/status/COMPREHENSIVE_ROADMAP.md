@@ -39,14 +39,20 @@ The following production-ready systems were merged from the AtlasForge engine:
 9. **Networking upgraded from 10% → 45%** — AtlasForge merge added packet layer, hardening, QoS, and replication
 
 ### Major Gaps Identified
-1. **Lua Scripting System** - 40% complete (needs Sol2 integration)
-2. **Networking System** - 10% complete (framework only)
-3. **Editor Selection System** - 0% complete (critical missing feature)
-4. **Resource Loading** - Requires external libraries (stb_image, tinyobjloader)
-5. **Advanced Terrain Features** - Many Phase 8 features not started
-6. **Multiplayer Systems** - Phase 14 almost entirely unimplemented
-7. **Advanced Voxel Features** - Water physics, transparent blocks, etc.
-8. **AI/NPC System** - Framework exists but needs implementation
+1. **Lua Scripting System** — 40% complete (needs Sol2 engine API bindings)
+2. **Networking Transport** — 45% complete (AtlasForge framework merged, TCP/UDP transport integration remaining)
+3. **Advanced Terrain Features** — Many Phase 8 features not started (3D density, biomes, rivers)
+4. **Advanced Voxel Features** — Water physics, transparent blocks, LOD system
+5. **AI/NPC System** — Framework exists (60%), needs pathfinding and advanced behaviors
+6. **Multiplayer Integration** — NetContext/QoS/Replication merged but not wired to game transport
+
+### Recently Resolved
+- ✅ **Editor Selection System** — Implemented (box, brush, wand modes)
+- ✅ **Resource Loading** — stb_image, tinyobjloader, OGG/Vorbis integrated
+- ✅ **Inventory & Crafting** — InventoryManager, CraftingSystem, panels implemented
+- ✅ **Day/Night Cycle** — TimeManager, sun/moon, dynamic lighting complete
+- ✅ **File Dialog Integration** — FileDialogManager with native Windows dialogs
+- ✅ **Cut/Copy/Paste** — Full clipboard operations with undo/redo integration
 
 ---
 
@@ -186,41 +192,31 @@ The following production-ready systems were merged from the AtlasForge engine:
 
 ---
 
-### 5. Editor System 🟨 45% Complete
+### 5. Editor System ✅ 85% Complete
 
 #### Completed
 - ✅ ImGui integration (all platforms)
-- ✅ Scene hierarchy panel
-- ✅ Inspector panel
-- ✅ Content browser panel
-- ✅ Console panel
-- ✅ Voxel tool palette
-- ✅ Menu system structure
+- ✅ Native Win32 UI panels (scene hierarchy, inspector, content browser, console)
+- ✅ Voxel tool palette and terraforming panel
+- ✅ Menu system (native Win32 menu bar)
+- ✅ Toolbar (native Win32 toolbar)
 - ✅ Terraforming system (10+ tools)
 - ✅ Undo/Redo (100 operations)
+- ✅ **Voxel Selection System** — Box, brush, wand modes
+- ✅ **File Dialog Integration** — FileDialogManager with native Windows dialogs
+- ✅ **Cut/Copy/Paste** — Full clipboard with undo/redo integration
+- ✅ **Transform Gizmo** — Move, rotate, scale
+- ✅ **Layout Management** — Save/load workspace layouts
+- ✅ **Editor Settings Dialog** — Win32SettingsDialog
+- ✅ **Construction Hammer** — 7 blueprint types
+- ✅ **LLM Assistant Panel** — AI developer assistant
 
-#### Missing/Incomplete (CRITICAL)
-- ❌ **Voxel Selection System** (HIGH PRIORITY)
-  - Box selection with mouse drag
-  - Selection visualization
-  - Selection buffer/storage
-  - Selection manipulation (move, rotate, scale)
-- ❌ **File Dialog Integration** (HIGH PRIORITY)
-  - Open file dialog
-  - Save file dialog
-  - Import assets dialog
-- ⚠️ Cut/Copy/Paste (depends on selection)
-- ⚠️ Visual gizmos (move, rotate, scale)
-- ⚠️ Toolbar tool implementations
-- ⚠️ Camera controls (orthographic, focus)
-- ⚠️ Layout management (save/load)
+#### Missing/Incomplete
+- ⚠️ Multi-select in 3D viewport
+- ⚠️ Prefab system (save/load prefabs)
+- ⚠️ Asset drag-and-drop placement
 - ⚠️ Asset preview system
-- ⚠️ Editor settings dialog
 - ⚠️ Build pipeline integration
-
-**Priority:** CRITICAL (selection), HIGH (file dialogs)  
-**Effort:** Medium (4-6 weeks for critical items)  
-**Dependencies:** NFD library for file dialogs
 
 ---
 
@@ -359,29 +355,24 @@ The following production-ready systems were merged from the AtlasForge engine:
 
 ---
 
-### 12. Gameplay Systems 🟨 50% Complete
+### 12. Gameplay Systems ✅ 80% Complete
 
 #### Completed
 - ✅ Player controller (100%)
 - ✅ First-person camera (100%)
 - ✅ Block interaction (95%)
+- ✅ **Inventory System** — InventoryManager with 40-slot InventoryPanel and 10-slot HotbarPanel
+- ✅ **Crafting System** — rpg::CraftingSystem with CraftingPanel and 4+ default recipes
+- ✅ **Day/Night Cycle** — TimeManager with sun/moon, dynamic sky, time controls
 
 #### Missing/Incomplete
-- ❌ **Inventory System** (0%)
-  - Item data structures
-  - Item stacking
-  - Inventory UI
-  - Drag and drop
-  - Quick slots/hotbar
-- ❌ **Crafting System** (0%)
-  - Recipe system
-  - Crafting stations
-  - Crafting UI
-- ❌ **Resource Gathering** (0%)
-  - Resource nodes
+- ⚠️ **Resource Gathering** (~50%)
+  - Resource nodes (partial)
   - Gathering mechanics
   - Tool requirements
   - Respawn system
+- ⚠️ **Quest System** — Not started
+- ⚠️ **NPC Interaction** — Trading/dialogue UI needs play-mode integration
 
 **Priority:** HIGH (for gameplay loop)  
 **Effort:** Large (6-8 weeks)  
@@ -418,14 +409,13 @@ The following production-ready systems were merged from the AtlasForge engine:
 
 ---
 
-### 14. Environmental Systems ❌ 0% Complete
+### 14. Environmental Systems 🟨 40% Complete
 
-#### Not Yet Started
-- ❌ **Day/Night Cycle**
-  - Time progression
-  - Sun/moon positioning
-  - Sky color transitions
-  - Dynamic lighting
+#### Completed
+- ✅ **Day/Night Cycle** — TimeManager with time tracking, sun/moon movement, dynamic sky colors, time controls
+- ✅ **Basic Lighting** — Ambient light intensity tied to time of day, sun direction
+
+#### Missing/Incomplete
 - ❌ **Weather System**
   - Rain, snow, fog
   - Thunder/lightning
