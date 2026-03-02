@@ -276,6 +276,9 @@ private:
     // Drag and drop state
     bool m_dragging;
     int m_dragSourceSlot;
+
+    // Render state (populated by render() for UI framework consumption)
+    int m_renderedSlotCount;
     
     // Callbacks
     std::function<void(rpg::ResourceType, float)> m_onItemUsed;
