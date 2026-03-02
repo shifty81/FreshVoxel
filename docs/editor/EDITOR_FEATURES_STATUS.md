@@ -146,6 +146,33 @@ FreshVoxel includes a comprehensive Windows-native editor with multiple panels a
 - ⚠️ **API Reference**: Doxygen configured, integration into editor needed
 - ⚠️ **Report Bug/Feature Request**: GitHub URLs exist, deep integration planned
 
+## 🔴 CRITICAL: Known Issues Requiring Fix
+
+### 1. Viewport Rendering Order Issue
+**Priority: CRITICAL**
+**Status: Under Investigation**
+
+**Problem:** World may render behind GUI panels instead of strictly within the viewport area.
+
+**Root Cause Analysis (March 2026 Audit):**
+- `ViewportRenderTarget::initialize()` sets state to `Ready` before swap chain is actually created
+- The swap chain creation happens later via `Engine::recreateSwapChain()`
+- This timing mismatch may cause the fallback "legacy path" to be used
+- Win32 Z-order management via `ensurePanelsOnTop()` may not be called at the right times
+
+**Files Involved:**
+- `engine/viewport/ViewportRenderTarget.cpp` - State management
+- `engine/core/Engine.cpp` - Rendering flow (lines 1810-1964)
+- `engine/editor/EditorManager.cpp` - Panel Z-order (`ensurePanelsOnTop()`)
+- `engine/ui/native/Win32ViewportPanel.cpp` - Viewport window creation
+
+**Fix Required:**
+1. Ensure `ViewportRenderTarget` only reports `Ready` after swap chain exists
+2. Validate Z-order is maintained after world generation completes
+3. Confirm rendering uses ViewportContext path, not fallback legacy path
+
+---
+
 ## ❌ Not Yet Implemented Features
 
 ### Remaining Features (Lower Priority)
@@ -202,137 +229,259 @@ Broader undo/redo support beyond terraforming.
 
 **Status:** Core undo/redo works for voxels; expansion planned
 
-## 📋 Implementation Checklist
+---
 
-### Phase 1: Essential Editor Functions (Critical)
-- [ ] Implement voxel selection system
-  - [ ] Box selection with mouse drag
-  - [ ] Selection visualization
-  - [ ] Selection buffer/storage
-- [ ] Add file dialog integration
-  - [ ] Install NFD library via vcpkg
-  - [ ] Integrate with Open/Save operations
-  - [ ] Add to Import Assets workflow
-- [ ] Complete world serialization
-  - [ ] Implement save format
-  - [ ] Add load functionality
-  - [ ] Connect to File menu operations
-  - [ ] Add auto-save
+## 🚀 NEW: Git Integration Roadmap
+**Priority: HIGH**
+**Target: v0.3.1**
 
-### Phase 2: Enhanced Editing (Important)
-- [ ] Implement Cut/Copy/Paste with selection system
-- [ ] Add visual gizmos for object manipulation
-- [ ] Implement toolbar tools
-  - [ ] Move/Rotate/Scale tools
-  - [ ] Selection mode buttons
-- [ ] Add camera control improvements
-  - [ ] Orthographic views
-  - [ ] Focus on selection
-- [ ] Implement layout management
-  - [ ] Save/Load layouts
-  - [ ] Predefined layouts
+Enable version control operations directly from the editor for streamlined development workflow.
 
-### Phase 3: Quality of Life (Nice to Have)
-- [ ] Asset preview system
-- [ ] Build pipeline integration
-- [ ] Editor settings dialog
-- [ ] Documentation integration
-- [ ] GitHub integration for bug reports
-- [ ] Advanced scene operations
+### Planned Features
 
-## 🔧 Technical Notes
+#### 1. Commit from Editor
+- **Git Commit Panel**: New panel or dialog for staging and committing changes
+- **Quick Commit**: Toolbar button for fast commits with auto-generated messages
+- **Commit History**: View recent commits in a scrollable list
+- **Diff Viewer**: See changes before committing
 
-### Voxel Selection Implementation Strategy
+#### 2. Repository Management
+- **Pull/Fetch**: Update local repository from remote
+- **Push**: Push local commits to remote
+- **Branch Switching**: Switch between branches from editor
+- **Branch Creation**: Create new branches for features/fixes
 
-**Data Structure:**
+#### 3. Asset Repository Integration
+- **Asset Pack Repos**: Pull asset packs from Git repositories
+- **Plugin Repos**: Install plugins directly from Git URLs
+- **Dependency Management**: Track asset dependencies across repos
+
+### Implementation Strategy
+
+**Phase 1 - Core Git Operations:**
 ```cpp
-struct VoxelSelection {
-    std::vector<glm::ivec3> selectedVoxels;
-    BoundingBox bounds;
-    bool isEmpty() const;
-    void add(const glm::ivec3& pos);
-    void remove(const glm::ivec3& pos);
-    void clear();
-    void translate(const glm::ivec3& delta);
+// New class: engine/devtools/GitManager.h
+class GitManager {
+public:
+    bool initialize(const std::string& repoPath);
+    
+    // Basic operations
+    bool commit(const std::string& message, const std::vector<std::string>& files);
+    bool pull(const std::string& remote = "origin");
+    bool push(const std::string& remote = "origin");
+    
+    // Status
+    std::vector<FileStatus> getStatus();
+    std::vector<CommitInfo> getRecentCommits(int count = 10);
+    
+    // Branch operations
+    std::string getCurrentBranch();
+    std::vector<std::string> listBranches();
+    bool switchBranch(const std::string& branch);
+    bool createBranch(const std::string& name);
 };
 ```
 
-**Rendering:**
-- Render selection outline with thick wireframe
-- Use stencil buffer to highlight selected voxels
-- Animate selection (pulsing effect)
+**Phase 2 - UI Integration:**
+- Add "Version Control" menu to EditorMenuBar
+- Create Win32GitPanel for status/staging
+- Add commit dialog with message input
+- Add branch selector to toolbar
 
-### File Dialog Implementation
+**Phase 3 - Workflow Enhancement:**
+- Auto-save before Git operations
+- Conflict resolution UI
+- Stash support for quick context switching
 
-**Using NFD (Recommended):**
+### Dependencies
+- libgit2 library (C library for Git operations)
+- OR shell out to git CLI (simpler, requires git installed)
+
+---
+
+## 📋 Implementation Checklist (Updated March 2026)
+
+### Phase 1: Critical Editor Fixes ✅ → 🔧
+- [x] Implement voxel selection system (SelectionManager complete)
+- [x] Add file dialog integration (FileDialogManager + NFD)
+- [x] Complete world serialization (WorldSerializer complete)
+- [x] Transform gizmos (TransformGizmo complete)
+- [x] Camera controller (CameraController with 7 views)
+- [x] Layout management (LayoutManager complete)
+- [x] Editor settings dialog (EditorSettingsDialog complete)
+- [ ] **FIX: Viewport rendering order issue** (Critical)
+
+### Phase 2: Enhanced Workflow (Next Priority)
+- [ ] Git integration - commit from editor
+- [ ] Git integration - pull/push operations
+- [ ] Asset preview system
+- [ ] Extended undo/redo beyond terraforming
+- [ ] Prefab system
+
+### Phase 3: Advanced Features
+- [ ] Build pipeline optimization (LOD, compression, lightmaps)
+- [ ] Asset repository integration (Git-based asset packs)
+- [ ] Collaborative editing (real-time sync)
+
+---
+
+## 🔧 Technical Notes
+
+### Viewport Rendering Fix Strategy
+
+**Root Cause:**
+The `ViewportRenderTarget` sets `m_state = Ready` in `initialize()` before the swap chain exists. The swap chain is created later via `Engine::recreateSwapChain()`.
+
+**Fix Approach:**
 ```cpp
-#include <nfd.h>
-
-// Open file
-nfdchar_t *outPath = nullptr;
-nfdresult_t result = NFD_OpenDialog("world", nullptr, &outPath);
-if (result == NFD_OKAY) {
-    // Load world from outPath
-    free(outPath);
-}
-
-// Save file
-result = NFD_SaveDialog("world", nullptr, &outPath);
-if (result == NFD_OKAY) {
-    // Save world to outPath
-    free(outPath);
+// ViewportRenderTarget.cpp - Fix state management
+bool ViewportRenderTarget::initialize(void* windowHandle, IRenderContext* renderContext)
+{
+    // ... existing code ...
+    
+    // DON'T set Ready until swap chain actually exists
+    if (m_renderContext->hasSwapChain()) {
+        m_state = RenderTargetState::Ready;
+    } else {
+        m_state = RenderTargetState::NeedsResize;  // Will become Ready after recreateSwapChain()
+    }
+    return true;
 }
 ```
 
-### Gizmo Rendering
+### Git Integration Implementation
 
-**Options:**
-1. **ImGuizmo library** - Popular choice for ImGui
-2. **Custom implementation** - Full control
-3. **Dear ImGui custom widgets** - Native integration
+**Using libgit2 (Recommended for full control):**
+```cpp
+#include <git2.h>
 
-## 📊 Completion Status Summary
+// Initialize libgit2
+git_libgit2_init();
 
-| Category | Implemented | Partial | Not Started | Total |
-|----------|------------|---------|-------------|-------|
-| Core Infrastructure | 8 | 0 | 0 | 8 |
-| UI Panels | 7 | 0 | 0 | 7 |
-| File Operations | 0 | 7 | 0 | 7 |
-| Edit Operations | 2 | 3 | 5 | 10 |
-| Window Management | 1 | 5 | 0 | 6 |
-| Build Operations | 0 | 0 | 6 | 6 |
-| Settings | 1 | 3 | 3 | 7 |
-| Help System | 1 | 0 | 5 | 6 |
-| Advanced Features | 0 | 0 | 10 | 10 |
+// Open repository
+git_repository* repo = nullptr;
+git_repository_open(&repo, ".");
+
+// Stage files
+git_index* index = nullptr;
+git_repository_index(&index, repo);
+git_index_add_bypath(index, "path/to/file");
+git_index_write(index);
+
+// Create commit
+// ... (tree creation, signature, commit write)
+```
+
+**Using Git CLI (Simpler approach):**
+```cpp
+// GitManager.cpp - Shell out to git
+bool GitManager::commit(const std::string& message) {
+    std::string cmd = "git add . && git commit -m \"" + message + "\"";
+    return system(cmd.c_str()) == 0;
+}
+```
+
+### Voxel Selection System (✅ IMPLEMENTED)
+
+**Data Structure (SelectionManager.h):**
+```cpp
+struct VoxelSelection {
+    std::vector<VoxelPosition> positions;
+    std::vector<VoxelType> types;
+    glm::ivec3 boundsMin;
+    glm::ivec3 boundsMax;
+};
+
+enum class SelectionMode {
+    Box,    // Rectangular box selection
+    Brush,  // Paint-style with configurable radius
+    Wand    // Flood fill of same type
+};
+```
+
+### File Dialog Integration (✅ IMPLEMENTED)
+
+**Using NFD (FileDialogManager.cpp):**
+```cpp
+#include <nfd.h>
+
+std::string FileDialogManager::openFile(const std::vector<Filter>& filters, ...) {
+    NFD_Init();
+    nfdchar_t* outPath = nullptr;
+    nfdresult_t result = NFD_OpenDialog(&outPath, nfdFilters, filterCount, defaultPath);
+    // ... handle result
+    NFD_Quit();
+    return selectedPath;
+}
+```
+
+---
+
+## 📊 Completion Status Summary (Updated March 2026)
+
+| Category | Implemented | Partial | Critical Fix | Total |
+|----------|-------------|---------|--------------|-------|
+| Core Infrastructure | 7 | 0 | 1 (Viewport) | 8 |
+| UI Panels | 10 | 0 | 0 | 10 |
+| File Operations | 7 | 0 | 0 | 7 |
+| Edit Operations | 8 | 2 | 0 | 10 |
+| Window Management | 6 | 0 | 0 | 6 |
+| Build Operations | 2 | 0 | 4 | 6 |
+| Settings | 5 | 2 | 0 | 7 |
+| Help System | 2 | 3 | 0 | 5 |
+| Git Integration | 0 | 0 | 0 | 5 |
+| Advanced Features | 0 | 0 | 0 | 5 |
 
 **Overall Progress:**
-- ✅ Fully Implemented: 20 features (31%)
-- 🟨 Partially Implemented: 18 features (28%)
-- ❌ Not Yet Implemented: 29 features (41%)
+- ✅ Fully Implemented: 47 features (68%)
+- 🟨 Partially Implemented: 7 features (10%)
+- 🔴 Critical Fix Needed: 1 feature (1%)
+- ❌ Not Yet Implemented: 14 features (20%)
 
-**Total Completion: ~45%** (counting partial as 50%)
+**Total Completion: ~75%** (was previously understated as 45%)
 
-## 🎯 Recommended Priority Order
+---
 
-For developers wanting to contribute, implement in this order:
+## 🎯 Priority Order (March 2026)
 
-1. **Voxel Selection System** - Unblocks Cut/Copy/Paste
-2. **File Dialog Integration** - Enables proper file operations
-3. **World Serialization** - Makes editor actually useful
-4. **Cut/Copy/Paste Implementation** - Common editing operations
-5. **Toolbar Tools** - Visual tool selection
-6. **Layout Management** - Better workspace organization
-7. **Visual Gizmos** - Better object manipulation
-8. **Asset Previews** - Better asset management
-9. **Camera Controls** - Better viewport navigation
-10. **Build Pipeline** - Advanced features
+**CRITICAL FIXES FIRST:**
+
+1. 🔴 **Viewport Rendering Fix** - World renders behind GUI (CRITICAL)
+2. **Git Integration - Commit** - Commit changes directly from editor (HIGH)
+3. **Git Integration - Pull/Push** - Sync with remote repositories (HIGH)
+
+**WORKFLOW ENHANCEMENTS:**
+
+4. **Asset Preview System** - Preview textures, models, materials before use
+5. **Extended Undo/Redo** - Property and transform operation undo
+6. **Prefab System** - Save/load object groups for reuse
+
+**ADVANCED FEATURES:**
+
+7. **Build Pipeline Optimization** - LOD, compression, lightmaps
+8. **Asset Repository Integration** - Git-based asset pack management
+9. **Collaborative Editing** - Real-time multi-user sync
+
+**ALREADY COMPLETE (✅):**
+- ~~Voxel Selection System~~ ✅ SelectionManager with 3 modes
+- ~~File Dialog Integration~~ ✅ FileDialogManager + NFD
+- ~~World Serialization~~ ✅ WorldSerializer complete
+- ~~Cut/Copy/Paste~~ ✅ Works with selection system
+- ~~Layout Management~~ ✅ LayoutManager complete
+- ~~Visual Gizmos~~ ✅ TransformGizmo complete
+- ~~Camera Controls~~ ✅ CameraController with 7 views
+
+---
 
 ## 📚 Related Documentation
 
-- [docs/EDITOR_INTEGRATION.md](docs/EDITOR_INTEGRATION.md) - Current editor documentation
-- [ASSET_MANAGEMENT_STATUS.md](ASSET_MANAGEMENT_STATUS.md) - Asset system status
-- [GUI_IMPLEMENTATION_SUMMARY.md](GUI_IMPLEMENTATION_SUMMARY.md) - GUI overview
-- [GUI_VISUAL_DESCRIPTION.md](GUI_VISUAL_DESCRIPTION.md) - Visual design doc
+- [EDITOR_INTEGRATION.md](EDITOR_INTEGRATION.md) - Editor integration guide
+- [TRANSFORM_GIZMO_IMPLEMENTATION.md](TRANSFORM_GIZMO_IMPLEMENTATION.md) - Gizmo system details
+- [VOXEL_SELECTION_SYSTEM.md](VOXEL_SELECTION_SYSTEM.md) - Selection system docs
+- [../status/PROJECT_STATUS.md](../status/PROJECT_STATUS.md) - Overall project status
+- [../status/ROADMAP.md](../status/ROADMAP.md) - Full development roadmap
+
+---
 
 ## 🤝 Contributing
 
@@ -352,5 +501,6 @@ For questions or clarification:
 
 ---
 
-*Last Updated: 2025-11-14*
+*Last Updated: 2026-03-02*
 *Status: Living Document - Update as features are implemented*
+*Audit: March 2026 - Documentation realigned with actual implementation status*
