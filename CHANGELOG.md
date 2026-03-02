@@ -8,6 +8,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Dynamic Weapon/Tool Handling System** — Complete weapon attachment and procedural swing animations
+  - `WeaponAttachment`: Attach weapons/tools to character bone attachment points (RightHand, LeftHand, BothHands, Back, Hip)
+  - `WeaponDefinition`: Data-driven weapon definitions with grip type, weight, length, and voxel geometry
+  - Grip types: OneHanded, TwoHanded, DualWield, Shield, Tool with slot compatibility validation
+  - `calculateGripPosition()`: World-space grip calculation from bone transforms + weapon offsets
+  - `generateSwing()`: Procedural swing animation generation (Slash, Overhead, Thrust, Chop, Sweep, Block)
+  - Weight-based swing speed — heavier weapons produce slower, more powerful swings
+  - Two-handed weapons automatically occupy both hand slots; detaching either releases both
+  - `getTransformedWeaponVoxels()`: Weapon voxels follow bone animations in world space
+  - Left-hand mirroring for off-hand swing animations
+  - 45 new tests for attachment, compatibility, swing generation, voxel transforms, and edge cases
+
 - **Atlas-style Editor Workflow** — Build, package, and live-test games from the editor
   - `GamePackager`: Packages game projects (world saves, assets, shaders, sounds, textures, config, Lua scripts) into distributable directories with a `package.json` manifest. Users can zip and share for play-testing.
   - `ClientLauncher`: Launches FreshClient/FreshServer/FreshRuntime from the editor as separate processes for live testing. Auto-saves the world before launch. Cross-platform (CreateProcess on Windows, fork+exec on Linux/macOS).

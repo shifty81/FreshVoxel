@@ -654,6 +654,7 @@ if(BUILD_TESTS)
         tests/character/VoxelCharacterTests.cpp
         tests/character/BodyPartLibraryTests.cpp
         tests/character/AnimationClipTests.cpp
+        tests/character/WeaponAttachmentTests.cpp
         tests/editor/SelectionManagerTests.cpp
         tests/editor/SelectionRendererTests.cpp
         tests/editor/GamePackagerTests.cpp
@@ -711,6 +712,7 @@ if(BUILD_TESTS)
         engine/character/BodyPartLibrary.cpp
         engine/character/AnimationClip.cpp
         engine/character/AnimationController.cpp
+        engine/character/WeaponAttachment.cpp
         engine/editor/SelectionManager.cpp
         engine/editor/SelectionRenderer.cpp
         engine/editor/TransformGizmo.cpp

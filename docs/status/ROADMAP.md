@@ -8,9 +8,24 @@
 > - **Current State**: DirectX 12/11 with Win32 native windowing (Windows-exclusive)
 > - **Editor**: ImGui-based panels with native Win32 window management
 
-## Recent Updates (2026-03-01)
+## Recent Updates (2026-03-02)
 
-### 🚀 Atlas-style Editor Workflow (Latest)
+### 🚀 Dynamic Weapon/Tool Handling System (Latest)
+- **WeaponAttachment**: Complete weapon/tool attachment system for character bones
+  - Weapon types: OneHanded, TwoHanded, DualWield, Shield, Tool
+  - Attachment slots: RightHand, LeftHand, BothHands, Back, Hip
+  - Grip point calculation with bone-relative positioning
+  - Weapon voxel transforms follow bone animations
+  - Compatibility validation (e.g., shields only in left hand)
+- **Procedural Swing Generation**: 6 swing animation types generated from weapon properties
+  - Slash, Overhead, Thrust, Chop, Sweep, Block animations
+  - Weight-based swing speed (heavier weapons swing slower)
+  - Left-hand mirroring for off-hand attacks
+  - Keyframe-based animation output for integration with AnimationController
+- **Two-Handed Weapon Support**: Attaching a two-handed weapon occupies both hand slots
+- **45 new tests** for weapon attachment, compatibility, swing generation, and edge cases
+
+### 🚀 Atlas-style Editor Workflow (2026-03-01)
 - **GamePackager**: Build distributable packages from editor (world saves, assets, shaders, sounds, textures, config, scripts)
 - **ClientLauncher**: Launch FreshClient/FreshServer from editor for live testing with auto-save
 - **ViewportContext Rendering**: Voxel world renders only through ViewportContext (per ENGINE.md)
@@ -134,50 +149,50 @@ A high-performance C++ voxel game engine with multiplayer support, featuring pro
 ### Phase 7: Procedural Voxel Character System (14 weeks)
 
 #### Character Generation System (Weeks 1-4)
-- [ ] VoxelCharacter class with voxel-based model
-- [ ] Humanoid skeleton definition (15 bones)
-- [ ] Algorithmic character generation (procedural shapes)
-- [ ] Modular body part system
-  - [ ] Head variations (5+)
-  - [ ] Torso types (5+)
-  - [ ] Limb variations (5+)
-- [ ] Body part template library
-- [ ] Character customization parameters (height, proportions, colors)
-- [ ] Character color palette system
-- [ ] Voxel-to-bone binding
-- [ ] Character mesh renderer
+- [x] VoxelCharacter class with voxel-based model
+- [x] Humanoid skeleton definition (15 bones)
+- [x] Algorithmic character generation (procedural shapes)
+- [x] Modular body part system
+  - [x] Head variations (5+)
+  - [x] Torso types (5+)
+  - [x] Limb variations (5+)
+- [x] Body part template library
+- [x] Character customization parameters (height, proportions, colors)
+- [x] Character color palette system
+- [x] Voxel-to-bone binding
+- [x] Character mesh renderer
 
 #### Animation System (Weeks 5-7)
-- [ ] Animation clip format (keyframes)
-- [ ] Animation controller
-- [ ] Basic animations:
-  - [ ] Idle pose
-  - [ ] Walk cycle
-  - [ ] Run cycle
-  - [ ] Jump animation
-  - [ ] Crouch animation
-- [ ] Animation blending (smooth transitions)
-- [ ] Animation state machine
-- [ ] Integration with player movement
+- [x] Animation clip format (keyframes)
+- [x] Animation controller
+- [x] Basic animations:
+  - [x] Idle pose
+  - [x] Walk cycle
+  - [x] Run cycle
+  - [x] Jump animation
+  - [x] Crouch animation
+- [x] Animation blending (smooth transitions)
+- [x] Animation state machine
+- [x] Integration with player movement
 
 #### Procedural Animation - IK System (Weeks 8-10)
-- [ ] Two-Bone IK solver implementation
-- [ ] Foot IK for terrain adaptation
-  - [ ] Foot placement on uneven terrain
-  - [ ] Dynamic leg length adjustment
-- [ ] Hand IK for item holding
-- [ ] Look-at IK (head/eye tracking)
-- [ ] IK constraint system
-- [ ] Real-time IK updates
+- [x] Two-Bone IK solver implementation
+- [x] Foot IK for terrain adaptation
+  - [x] Foot placement on uneven terrain
+  - [x] Dynamic leg length adjustment
+- [x] Hand IK for item holding
+- [x] Look-at IK (head/eye tracking)
+- [x] IK constraint system
+- [x] Real-time IK updates
 
 #### Dynamic Weapon/Tool Handling (Weeks 11-12)
-- [ ] Weapon attachment system
-- [ ] Grip point calculation
-- [ ] Dynamic swing animations
-- [ ] Two-handed weapon support
-- [ ] Shield holding system
-- [ ] Tool-specific animations
-- [ ] Procedural swing generation
+- [x] Weapon attachment system
+- [x] Grip point calculation
+- [x] Dynamic swing animations
+- [x] Two-handed weapon support
+- [x] Shield holding system
+- [x] Tool-specific animations
+- [x] Procedural swing generation
 
 #### Physics Integration (Weeks 13-14)
 - [ ] Cloth physics for capes/clothing

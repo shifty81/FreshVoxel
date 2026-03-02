@@ -1,0 +1,94 @@
+{
+  "name": "Character Stats Configuration",
+  "version": "1.0.0",
+  "description": "Data-driven character stats for rapid iteration and balancing",
+  
+  "character_types": [
+    {
+      "id": "player",
+      "name": "Player Character",
+      "health": 100.0,
+      "maxSpeed": 5.0,
+      "acceleration": 10.0,
+      "jumpHeight": 2.0,
+      "armor": 0.0
+    },
+    {
+      "id": "warrior",
+      "name": "Warrior",
+      "health": 150.0,
+      "maxSpeed": 4.5,
+      "acceleration": 8.0,
+      "jumpHeight": 1.8,
+      "armor": 5.0
+    },
+    {
+      "id": "rogue",
+      "name": "Rogue",
+      "health": 80.0,
+      "maxSpeed": 7.0,
+      "acceleration": 15.0,
+      "jumpHeight": 2.5,
+      "armor": 2.0
+    },
+    {
+      "id": "mage",
+      "name": "Mage",
+      "health": 60.0,
+      "maxSpeed": 4.0,
+      "acceleration": 12.0,
+      "jumpHeight": 1.5,
+      "armor": 0.0
+    },
+    {
+      "id": "enemy_zombie",
+      "name": "Zombie",
+      "health": 40.0,
+      "maxSpeed": 2.0,
+      "acceleration": 3.0,
+      "jumpHeight": 0.0,
+      "armor": 0.0
+    },
+    {
+      "id": "enemy_skeleton",
+      "name": "Skeleton",
+      "health": 30.0,
+      "maxSpeed": 3.5,
+      "acceleration": 8.0,
+      "jumpHeight": 1.5,
+      "armor": 1.0
+    },
+    {
+      "id": "boss_dragon",
+      "name": "Dragon Boss",
+      "health": 500.0,
+      "maxSpeed": 6.0,
+      "acceleration": 5.0,
+      "jumpHeight": 3.0,
+      "armor": 10.0
+    }
+  ],
+  
+  "difficulty_modifiers": {
+    "easy": {
+      "playerHealthMultiplier": 1.5,
+      "enemyHealthMultiplier": 0.75,
+      "enemyDamageMultiplier": 0.5
+    },
+    "normal": {
+      "playerHealthMultiplier": 1.0,
+      "enemyHealthMultiplier": 1.0,
+      "enemyDamageMultiplier": 1.0
+    },
+    "hard": {
+      "playerHealthMultiplier": 0.75,
+      "enemyHealthMultiplier": 1.5,
+      "enemyDamageMultiplier": 1.5
+    },
+    "extreme": {
+      "playerHealthMultiplier": 0.5,
+      "enemyHealthMultiplier": 2.0,
+      "enemyDamageMultiplier": 2.0
+    }
+  }
+}
