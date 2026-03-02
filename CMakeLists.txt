@@ -676,6 +676,7 @@ if(BUILD_TESTS)
         tests/schema/SchemaValidatorTests.cpp
         tests/module/ModuleLoaderTests.cpp
         tests/devtools/TimeCommandsTests.cpp
+        tests/devtools/GitManagerTests.cpp
         tests/ui/InventoryPanelTests.cpp
         tests/ui/InventoryPanelTransferTests.cpp
         tests/ui/CraftingPanelTests.cpp
@@ -727,6 +728,7 @@ if(BUILD_TESTS)
         engine/devtools/DebugRenderer.cpp
         engine/devtools/DebugConsole.cpp
         engine/devtools/TimeCommands.cpp
+        engine/devtools/GitManager.cpp
         engine/ecs/EntityManager.cpp
         engine/voxelship/VoxelBlock.cpp
         engine/renderer/ModelLoader.cpp

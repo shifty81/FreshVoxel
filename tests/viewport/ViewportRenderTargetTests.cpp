@@ -109,4 +109,26 @@ TEST_F(ViewportRenderTargetTest, MoveAssignment_TransfersState) {
     EXPECT_EQ(target.getState(), RenderTargetState::Uninitialized);
 }
 
+// ============================================================================
+// notifySwapChainCreated Tests
+// ============================================================================
+
+TEST_F(ViewportRenderTargetTest, NotifySwapChainCreated_WithoutContext_NoOp) {
+    // Without a render context, notifySwapChainCreated should not change state
+    renderTarget->notifySwapChainCreated(800, 600);
+    EXPECT_EQ(renderTarget->getState(), RenderTargetState::Uninitialized);
+    EXPECT_FALSE(renderTarget->isReady());
+}
+
+TEST_F(ViewportRenderTargetTest, NotifySwapChainCreated_InvalidDimensions_NoOp) {
+    renderTarget->notifySwapChainCreated(0, 600);
+    EXPECT_EQ(renderTarget->getState(), RenderTargetState::Uninitialized);
+
+    renderTarget->notifySwapChainCreated(800, 0);
+    EXPECT_EQ(renderTarget->getState(), RenderTargetState::Uninitialized);
+
+    renderTarget->notifySwapChainCreated(-1, 600);
+    EXPECT_EQ(renderTarget->getState(), RenderTargetState::Uninitialized);
+}
+
 } // namespace fresh

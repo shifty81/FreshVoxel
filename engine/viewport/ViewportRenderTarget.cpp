@@ -59,16 +59,26 @@ bool ViewportRenderTarget::initialize(void* windowHandle, IRenderContext* render
 
     // If a window handle is provided, set it on the render context
     // so the swap chain targets this specific window
+    bool viewportWindowSet = true;
     if (m_windowHandle) {
         if (!m_renderContext->setViewportWindow(m_windowHandle)) {
             LOG_WARNING_C("ViewportRenderTarget::initialize - setViewportWindow failed, "
-                         "rendering to default target", "ViewportRenderTarget");
+                         "swap chain not yet targeting viewport", "ViewportRenderTarget");
+            viewportWindowSet = false;
         }
     }
 
     m_width = m_renderContext->getSwapchainWidth();
     m_height = m_renderContext->getSwapchainHeight();
-    m_state = RenderTargetState::Ready;
+
+    // Only mark Ready if the swap chain is properly configured for this viewport.
+    // If a window handle was provided but setViewportWindow failed, the swap chain
+    // hasn't been created for this viewport yet — use NeedsResize for deferred init.
+    if (viewportWindowSet && m_width > 0 && m_height > 0) {
+        m_state = RenderTargetState::Ready;
+    } else {
+        m_state = RenderTargetState::NeedsResize;
+    }
 
     LOG_INFO_C("ViewportRenderTarget initialized (" +
                std::to_string(m_width) + "x" + std::to_string(m_height) + ")", "ViewportRenderTarget");
@@ -157,6 +167,18 @@ float ViewportRenderTarget::getAspectRatio() const noexcept
         return 16.0f / 9.0f; // Default aspect ratio
     }
     return static_cast<float>(m_width) / static_cast<float>(m_height);
+}
+
+void ViewportRenderTarget::notifySwapChainCreated(int width, int height)
+{
+    if (width > 0 && height > 0 && m_renderContext) {
+        m_width = width;
+        m_height = height;
+        m_state = RenderTargetState::Ready;
+        LOG_INFO_C("ViewportRenderTarget swap chain ready (" +
+                   std::to_string(width) + "x" + std::to_string(height) + ")",
+                   "ViewportRenderTarget");
+    }
 }
 
 } // namespace fresh

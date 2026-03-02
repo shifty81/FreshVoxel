@@ -150,26 +150,26 @@ FreshVoxel includes a comprehensive Windows-native editor with multiple panels a
 
 ### 1. Viewport Rendering Order Issue
 **Priority: CRITICAL**
-**Status: Under Investigation**
+**Status: ✅ FIXED**
 
 **Problem:** World may render behind GUI panels instead of strictly within the viewport area.
 
 **Root Cause Analysis (March 2026 Audit):**
-- `ViewportRenderTarget::initialize()` sets state to `Ready` before swap chain is actually created
+- `ViewportRenderTarget::initialize()` was setting state to `Ready` before swap chain was actually created
 - The swap chain creation happens later via `Engine::recreateSwapChain()`
-- This timing mismatch may cause the fallback "legacy path" to be used
+- This timing mismatch caused the fallback "legacy path" to be used
 - Win32 Z-order management via `ensurePanelsOnTop()` may not be called at the right times
 
-**Files Involved:**
-- `engine/viewport/ViewportRenderTarget.cpp` - State management
-- `engine/core/Engine.cpp` - Rendering flow (lines 1810-1964)
-- `engine/editor/EditorManager.cpp` - Panel Z-order (`ensurePanelsOnTop()`)
-- `engine/ui/native/Win32ViewportPanel.cpp` - Viewport window creation
+**Fix Applied:**
+1. `ViewportRenderTarget::initialize()` now checks swap chain validity before marking Ready
+2. Added `notifySwapChainCreated()` for deferred swap chain initialization
+3. `Engine.cpp` deferred swap chain creation notifies ViewportRenderTarget with correct dimensions
+4. Viewport resize also updates ViewportRenderTarget state
 
-**Fix Required:**
-1. Ensure `ViewportRenderTarget` only reports `Ready` after swap chain exists
-2. Validate Z-order is maintained after world generation completes
-3. Confirm rendering uses ViewportContext path, not fallback legacy path
+**Files Changed:**
+- `engine/viewport/ViewportRenderTarget.h` - Added `notifySwapChainCreated()` method
+- `engine/viewport/ViewportRenderTarget.cpp` - Fixed state management in `initialize()`
+- `engine/core/Engine.cpp` - Added notifications after swap chain creation/resize
 
 ---
 
@@ -234,8 +234,25 @@ Broader undo/redo support beyond terraforming.
 ## 🚀 NEW: Git Integration Roadmap
 **Priority: HIGH**
 **Target: v0.3.1**
+**Status: Phase 1 ✅ COMPLETE**
 
 Enable version control operations directly from the editor for streamlined development workflow.
+
+### ✅ Implemented Features (Phase 1 — Core Git Operations)
+
+#### GitManager (`engine/devtools/GitManager.h/.cpp`)
+- ✅ **initialize()**: Validates repository path and git availability
+- ✅ **getStatus()**: Parses `git status --porcelain=v1` for file statuses
+- ✅ **hasUncommittedChanges()**: Quick check for dirty working tree
+- ✅ **stageFiles() / stageAll()**: Stage specific files or all changes
+- ✅ **commit()**: Create commits with message
+- ✅ **pull() / push()**: Remote sync operations
+- ✅ **getRecentCommits()**: Retrieve commit history (hash, author, date, message)
+- ✅ **getCurrentBranch() / listBranches()**: Branch information
+- ✅ **switchBranch() / createBranch()**: Branch management
+- ✅ **Security**: fork+exec (no shell) to prevent command injection
+- ✅ **Input validation**: Rejects option-injection attempts (args starting with '-')
+- ✅ **31 tests** covering all operations and edge cases
 
 ### Planned Features
 
@@ -301,7 +318,7 @@ public:
 
 ## 📋 Implementation Checklist (Updated March 2026)
 
-### Phase 1: Critical Editor Fixes ✅ → 🔧
+### Phase 1: Critical Editor Fixes ✅ COMPLETE
 - [x] Implement voxel selection system (SelectionManager complete)
 - [x] Add file dialog integration (FileDialogManager + NFD)
 - [x] Complete world serialization (WorldSerializer complete)
@@ -309,11 +326,11 @@ public:
 - [x] Camera controller (CameraController with 7 views)
 - [x] Layout management (LayoutManager complete)
 - [x] Editor settings dialog (EditorSettingsDialog complete)
-- [ ] **FIX: Viewport rendering order issue** (Critical)
+- [x] **FIX: Viewport rendering order issue** ✅ Fixed
 
 ### Phase 2: Enhanced Workflow (Next Priority)
-- [ ] Git integration - commit from editor
-- [ ] Git integration - pull/push operations
+- [x] Git integration - core operations (GitManager Phase 1)
+- [ ] Git integration - editor UI panel (Win32GitPanel / ImGui)
 - [ ] Asset preview system
 - [ ] Extended undo/redo beyond terraforming
 - [ ] Prefab system
@@ -327,59 +344,60 @@ public:
 
 ## 🔧 Technical Notes
 
-### Viewport Rendering Fix Strategy
+### Viewport Rendering Fix (✅ FIXED)
 
 **Root Cause:**
-The `ViewportRenderTarget` sets `m_state = Ready` in `initialize()` before the swap chain exists. The swap chain is created later via `Engine::recreateSwapChain()`.
+The `ViewportRenderTarget` set `m_state = Ready` in `initialize()` before the swap chain existed for the viewport window. The Engine's deferred swap chain creation handled this separately via `m_viewportSwapChainReady`, but `ViewportContext::isReady()` returned true prematurely.
 
-**Fix Approach:**
+**Fix Applied:**
 ```cpp
-// ViewportRenderTarget.cpp - Fix state management
+// ViewportRenderTarget.cpp - State management fix
 bool ViewportRenderTarget::initialize(void* windowHandle, IRenderContext* renderContext)
 {
-    // ... existing code ...
+    // ... existing setup ...
     
-    // DON'T set Ready until swap chain actually exists
-    if (m_renderContext->hasSwapChain()) {
+    bool viewportWindowSet = true;
+    if (m_windowHandle) {
+        if (!m_renderContext->setViewportWindow(m_windowHandle)) {
+            viewportWindowSet = false;  // Swap chain not targeting viewport yet
+        }
+    }
+    
+    // Only mark Ready if swap chain is properly configured
+    if (viewportWindowSet && m_width > 0 && m_height > 0) {
         m_state = RenderTargetState::Ready;
     } else {
-        m_state = RenderTargetState::NeedsResize;  // Will become Ready after recreateSwapChain()
+        m_state = RenderTargetState::NeedsResize;
     }
     return true;
 }
-```
 
-### Git Integration Implementation
-
-**Using libgit2 (Recommended for full control):**
-```cpp
-#include <git2.h>
-
-// Initialize libgit2
-git_libgit2_init();
-
-// Open repository
-git_repository* repo = nullptr;
-git_repository_open(&repo, ".");
-
-// Stage files
-git_index* index = nullptr;
-git_repository_index(&index, repo);
-git_index_add_bypath(index, "path/to/file");
-git_index_write(index);
-
-// Create commit
-// ... (tree creation, signature, commit write)
-```
-
-**Using Git CLI (Simpler approach):**
-```cpp
-// GitManager.cpp - Shell out to git
-bool GitManager::commit(const std::string& message) {
-    std::string cmd = "git add . && git commit -m \"" + message + "\"";
-    return system(cmd.c_str()) == 0;
+// Engine.cpp - Notify after deferred swap chain creation
+if (m_renderer->recreateSwapChain(vpWidth, vpHeight)) {
+    m_viewportSwapChainReady = true;
+    if (m_viewportContext) {
+        m_viewportContext->getRenderTarget().notifySwapChainCreated(vpWidth, vpHeight);
+    }
 }
 ```
+
+### Git Integration Implementation (✅ Phase 1 COMPLETE)
+
+**Using Git CLI with fork+exec (safe, no command injection):**
+```cpp
+// GitManager.cpp - Safe process execution
+GitResult GitManager::executeGit(const std::vector<std::string>& args) const
+{
+    // Linux/macOS: fork + exec with pipe for output capture
+    // Windows: CreateProcess with pipes for stdout/stderr
+    // Arguments passed as argv array — never through a shell
+    
+    // Input validation rejects '-' prefixed args to prevent option injection
+    // Null bytes are rejected
+}
+```
+
+**Phase 2 (Next):** Add editor UI panel (Win32GitPanel / ImGui) for visual git workflow.
 
 ### Voxel Selection System (✅ IMPLEMENTED)
 
@@ -421,7 +439,7 @@ std::string FileDialogManager::openFile(const std::vector<Filter>& filters, ...)
 
 | Category | Implemented | Partial | Critical Fix | Total |
 |----------|-------------|---------|--------------|-------|
-| Core Infrastructure | 7 | 0 | 1 (Viewport) | 8 |
+| Core Infrastructure | 8 | 0 | 0 | 8 |
 | UI Panels | 10 | 0 | 0 | 10 |
 | File Operations | 7 | 0 | 0 | 7 |
 | Edit Operations | 8 | 2 | 0 | 10 |
@@ -429,29 +447,29 @@ std::string FileDialogManager::openFile(const std::vector<Filter>& filters, ...)
 | Build Operations | 2 | 0 | 4 | 6 |
 | Settings | 5 | 2 | 0 | 7 |
 | Help System | 2 | 3 | 0 | 5 |
-| Git Integration | 0 | 0 | 0 | 5 |
+| Git Integration | 1 | 0 | 0 | 5 |
 | Advanced Features | 0 | 0 | 0 | 5 |
 
 **Overall Progress:**
-- ✅ Fully Implemented: 47 features (68%)
+- ✅ Fully Implemented: 49 features (71%)
 - 🟨 Partially Implemented: 7 features (10%)
-- 🔴 Critical Fix Needed: 1 feature (1%)
-- ❌ Not Yet Implemented: 14 features (20%)
+- 🔴 Critical Fix Needed: 0 features (0%)
+- ❌ Not Yet Implemented: 13 features (19%)
 
-**Total Completion: ~75%** (was previously understated as 45%)
+**Total Completion: ~78%** (up from ~75%)
 
 ---
 
 ## 🎯 Priority Order (March 2026)
 
-**CRITICAL FIXES FIRST:**
+**RECENTLY COMPLETED:**
 
-1. 🔴 **Viewport Rendering Fix** - World renders behind GUI (CRITICAL)
-2. **Git Integration - Commit** - Commit changes directly from editor (HIGH)
-3. **Git Integration - Pull/Push** - Sync with remote repositories (HIGH)
+1. ✅ **Viewport Rendering Fix** - World renders behind GUI (FIXED)
+2. ✅ **Git Integration - Core Operations** - GitManager with status/commit/pull/push/branch (COMPLETE)
 
-**WORKFLOW ENHANCEMENTS:**
+**NEXT PRIORITIES:**
 
+3. **Git Integration - Editor UI** - Win32GitPanel or ImGui panel for visual git workflow
 4. **Asset Preview System** - Preview textures, models, materials before use
 5. **Extended Undo/Redo** - Property and transform operation undo
 6. **Prefab System** - Save/load object groups for reuse

@@ -105,6 +105,7 @@ add_library(FreshEngine STATIC
     devtools/DebugConsole.cpp
     devtools/DevToolsManager.cpp
     devtools/TimeCommands.cpp
+    devtools/GitManager.cpp
     sim/TickScheduler.cpp
     sim/StateHasher.cpp
     sim/ReplayRecorder.cpp
