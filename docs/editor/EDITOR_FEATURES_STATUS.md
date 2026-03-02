@@ -4,16 +4,20 @@ This document provides a comprehensive overview of the editor features, their cu
 
 ## 🎯 Overview
 
-The Fresh Voxel Engine includes a modern ImGui-based editor with multiple panels and features. This document tracks which features are fully implemented, partially implemented, or planned.
+FreshVoxel includes a comprehensive Windows-native editor with multiple panels and professional-grade features. On Windows, native Win32 UI panels are used; on other platforms, ImGui provides cross-platform support. This document tracks which features are fully implemented, partially implemented, or planned.
+
+**Overall Progress: ~75% Complete** (previously understated as ~45%)
 
 ## ✅ Fully Implemented Features
 
 ### Core Editor Infrastructure
-- ✅ **EditorManager**: Main editor coordinator
+- ✅ **EditorManager**: Main editor coordinator with full panel orchestration
 - ✅ **ImGuiContext**: Cross-platform ImGui integration (OpenGL, DirectX 11/12)
+- ✅ **Native Win32 UI**: Professional Windows-native panels (Win32InspectorPanel, Win32SceneHierarchyPanel, etc.)
 - ✅ **Dockable Windows**: ImGui docking support with pass-through input
 - ✅ **Editor Visibility Toggle**: Can show/hide editor
 - ✅ **Input Capture System**: Properly blocks world input when GUI is active
+- ✅ **ViewportContext**: Per ENGINE.md, viewport-centric rendering pipeline
 
 ### UI Panels (All Functional)
 - ✅ **Scene Hierarchy Panel**: Tree view of world objects/chunks
@@ -27,170 +31,129 @@ The Fresh Voxel Engine includes a modern ImGui-based editor with multiple panels
   - Search and filter
   - Import, delete, rename operations
   - Asset type icons
-- ✅ **Console Panel**: Message logging and filtering
+- ✅ **Console Panel**: Message logging and filtering with command input
 - ✅ **Voxel Tool Palette**: Terraforming tools
   - Multiple tools (brush, sphere, cube, flatten, smooth, paint)
   - Tool size and strength controls
   - Material selection
 - ✅ **Main Menu Panel**: Game launcher menu
 - ✅ **Settings Panel**: Engine configuration
+- ✅ **Hotbar Panel**: Quick access tool/item bar
+- ✅ **Status Bar**: FPS, memory usage, world info display
+- ✅ **LLM Assistant Panel**: AI-powered development assistance
 
-### Menu System
-- ✅ **File Menu**: Structure in place
-- ✅ **Edit Menu**: Structure in place
-- ✅ **Window Menu**: Panel visibility toggles
-- ✅ **Build Menu**: Structure in place
-- ✅ **Settings Menu**: Structure in place
-- ✅ **Help Menu**: Structure in place
+### Menu System (Fully Wired)
+- ✅ **File Menu**: New/Open/Save/Save As/Recent Worlds/Import/Export
+- ✅ **Edit Menu**: Undo/Redo/Cut/Copy/Paste/Delete/Select All/Deselect All
+- ✅ **Window Menu**: Panel visibility toggles + Layout management
+- ✅ **Build Menu**: Build World/Build & Run/Package Game
+- ✅ **Settings Menu**: Graphics/Quality/Input/Audio/Editor settings
+- ✅ **Help Menu**: Documentation/About
 
 ### Editor Integration
 - ✅ **World Editor**: High-level editing interface
 - ✅ **Terraforming System**: Voxel manipulation with undo/redo
-- ✅ **Input Handling**: Smart mouse/keyboard capture
+- ✅ **Input Handling**: Smart mouse/keyboard capture with Unreal-style controls
+
+### Voxel Selection System ✅ COMPLETE
+- ✅ **SelectionManager**: Full selection management with 3 modes
+  - Box selection (drag to select region)
+  - Brush selection (configurable radius 1-16)
+  - Wand selection (flood fill of same type, configurable limit)
+- ✅ **SelectionRenderer**: Visual feedback with customizable color/transparency
+- ✅ **Cut/Copy/Paste**: Full clipboard operations via TerraformingSystem integration
+- ✅ **Selection Manipulation**: Move, delete, bounds calculation
+- ✅ **Paste Preview**: Visual preview before pasting
+- ✅ **Comprehensive Tests**: 57 tests covering all selection functionality
+
+### File Dialog Integration ✅ COMPLETE
+- ✅ **FileDialogManager**: Cross-platform file dialogs using NFD (Native File Dialog)
+  - Open file dialog (single and multiple files)
+  - Save file dialog
+  - Folder picker
+  - Filter support for file types
+- ✅ **Integration with File Menu**: Connected to Open/Save/Import operations
+- ✅ **Asset Import Workflow**: Multi-file selection for bulk import
+
+### World Serialization ✅ COMPLETE
+- ✅ **WorldSerializer**: Binary world format with metadata
+- ✅ **EditorManager Integration**: saveWorld(), loadWorld(), saveWorldAs() methods
+- ✅ **Last Session Config**: Remembers and restores last opened world
+- ✅ **Auto-save**: Configurable auto-save interval in EditorSettingsDialog
+
+### Transform Gizmo System ✅ COMPLETE
+- ✅ **TransformGizmo**: Full 3D manipulation handles
+  - Move gizmo (3-axis arrows)
+  - Rotate gizmo (3-axis circles)
+  - Scale gizmo (3-axis handles with uniform scale)
+- ✅ **Snap to Grid**: Configurable grid snapping
+- ✅ **Local/World Space Toggle**: Transform in local or world coordinates
+- ✅ **Visual Feedback**: Highlighted active axis
+
+### Camera Controller ✅ COMPLETE
+- ✅ **CameraController**: Full camera control system
+  - 7 orthographic views (Top, Bottom, Front, Back, Left, Right, Perspective)
+  - Focus on selection (F key)
+  - Frame selection in view
+  - Camera speed controls (slow, medium, fast)
+  - Camera bookmarks (save/restore positions)
+  - Smooth transitions between views
+
+### Layout Management ✅ COMPLETE
+- ✅ **LayoutManager**: Workspace layout system
+  - Save/Load custom layouts
+  - Predefined layouts (Default, Minimal, Debugging)
+  - Reset to default layout
+  - Layout persistence across sessions
+
+### Editor Settings ✅ COMPLETE
+- ✅ **EditorSettingsDialog**: Full settings configuration
+  - Auto-save interval
+  - Grid settings (size, subdivisions, visibility)
+  - Snap settings (grid snap, angle snap)
+  - UI theme selection
+  - Default tool settings
+  - Camera settings (speed, FOV, near/far planes)
+  - Performance settings
+
+### Atlas-Style Editor Workflow ✅ COMPLETE
+- ✅ **GamePackager**: Build distributable game packages
+  - Packages world saves, assets, shaders, sounds, textures, configs, scripts
+  - Creates ready-to-distribute folder structure
+- ✅ **ClientLauncher**: Launch FreshClient/FreshServer from editor
+  - Live testing with auto-save before launch
+  - CLI arguments for project/world loading
+- ✅ **Blueprint Editor**: Visual scripting system for game logic
+- ✅ **Dialogue Manager**: Dialogue tree editor and runtime
 
 ## 🟨 Partially Implemented Features
 
-### File Operations
-- 🟨 **New World**: Menu item exists, needs full implementation
-- 🟨 **Open World**: Menu item exists, needs file dialog
-- 🟨 **Save World**: Menu item exists, needs full save logic
-- 🟨 **Save World As**: Menu item exists, needs file dialog
-- 🟨 **Recent Worlds**: Placeholder list, needs persistence
-- 🟨 **Import Assets**: Connected to Content Browser, needs file dialog
-- 🟨 **Export World**: Menu item exists, needs implementation
+### Undo/Redo System
+- 🟨 **Undo/Redo**: Connected to TerraformingSystem for voxel operations
+  - ✅ Works for: Terraforming, voxel selection operations
+  - ⚠️ Needs expansion: Scene hierarchy changes, property changes, object transforms
 
-### Edit Operations
-- 🟨 **Undo/Redo**: Connected to TerraformingSystem, needs broader support
-- ⚠️ **Cut**: Requires voxel selection system
-- ⚠️ **Copy**: Requires voxel selection system
-- ⚠️ **Paste**: Requires voxel selection system
-- ⚠️ **Delete**: Works for scene objects, needs voxel selection support
-- ✅ **Select All**: Implemented for scene hierarchy
-- ✅ **Deselect All**: Implemented for scene hierarchy
-- ⚠️ **Preferences**: Menu item exists, needs implementation
-
-### Window Management
-- ✅ **Panel Toggles**: All working
-- 🟨 **Layout Management**: Menu structure exists
-  - Default layout - needs implementation
-  - Minimal layout - needs implementation
-  - Debugging layout - needs implementation
-  - Save layout - needs implementation
-  - Reset layout - needs implementation
-
-### Build Operations
-- ⚠️ **Build World**: Menu item exists, needs implementation
-- ⚠️ **Build and Run**: Menu item exists, needs implementation
-- ⚠️ **Generate Lightmaps**: Menu item exists, needs implementation
-- ⚠️ **Optimize Meshes**: Menu item exists, needs implementation
-- ⚠️ **Compress Textures**: Menu item exists, needs implementation
-- ⚠️ **Build Settings**: Menu item exists, needs implementation
-
-### Settings
+### Settings Integration
 - ✅ **Game Settings**: Connected to SettingsPanel
-- 🟨 **Graphics API Selection**: Menu exists, needs backend switching
-- 🟨 **Quality Settings**: Radio buttons exist, needs effect on rendering
-- ⚠️ **Input Settings**: Menu item exists, needs implementation
-- ⚠️ **Audio Settings**: Menu item exists, needs implementation
-- ⚠️ **Editor Settings**: Menu item exists, needs implementation
+- 🟨 **Graphics API Selection**: Backend selection works, runtime switching limited
+- 🟨 **Quality Settings**: Affects rendering, some settings need tuning
+- 🟨 **Input Settings**: Basic keybinding, advanced rebinding needed
+- 🟨 **Audio Settings**: Volume controls work, advanced audio settings limited
 
 ### Help System
-- ⚠️ **Documentation**: Menu item exists, needs browser/viewer integration
-- ⚠️ **API Reference**: Menu item exists, needs Doxygen integration
-- ⚠️ **Tutorials**: Menu item exists, needs content and viewer
-- ⚠️ **Report Bug**: Menu item exists, needs GitHub integration
-- ⚠️ **Feature Request**: Menu item exists, needs GitHub integration
 - ✅ **About Dialog**: Fully implemented and working
+- 🟨 **Documentation**: Menu opens docs folder, integrated viewer would be better
+- ⚠️ **API Reference**: Doxygen configured, integration into editor needed
+- ⚠️ **Report Bug/Feature Request**: GitHub URLs exist, deep integration planned
 
 ## ❌ Not Yet Implemented Features
 
-### Missing Critical Features
+### Remaining Features (Lower Priority)
 
-#### 1. Voxel Selection System
-**Priority: HIGH**
-
-Currently, the editor can place/remove individual voxels, but lacks a proper selection system for bulk operations.
-
-**Needed:**
-- Region selection (box select)
-- Brush selection
-- Magic wand selection (similar voxels)
-- Selection visualization (highlight/outline)
-- Selection manipulation (move, rotate, scale)
-- Selection clipboard (cut/copy/paste)
-
-**Impact:** Blocks Cut/Copy/Paste functionality
-
-#### 2. File Dialog Integration
-**Priority: HIGH**
-
-Many file operations need native file dialogs.
-
-**Needed:**
-- Open file dialog for "Open World"
-- Save file dialog for "Save World As"
-- Multi-file dialog for "Import Assets"
-- Cross-platform support (Windows/Linux/macOS)
-
-**Options:**
-- Native File Dialog (NFD) library
-- ImGui file dialog extensions
-- Platform-specific implementations
-
-#### 3. World Serialization
-**Priority: HIGH**
-
-Save/Load functionality needs proper world serialization.
-
-**Needed:**
-- Complete world save format
-- Incremental save (only modified chunks)
-- Compression support
-- Metadata (world name, creation date, etc.)
-- Backward compatibility handling
-- Auto-save functionality
-
-#### 4. Toolbar Actions
+#### 1. Asset Preview System
 **Priority: MEDIUM**
 
-The toolbar exists but lacks most tool buttons.
-
-**Needed:**
-- Transform tools (Move, Rotate, Scale)
-- Selection mode toggles
-- Grid snapping controls
-- Camera controls (focus, top view, etc.)
-- Play/Pause/Step controls for simulation
-
-#### 5. Visual Gizmos
-**Priority: MEDIUM**
-
-3D manipulation handles for objects.
-
-**Needed:**
-- Move gizmo (3-axis arrows)
-- Rotate gizmo (3-axis circles)
-- Scale gizmo (3-axis boxes)
-- Uniform scale handle
-- Snap to grid option
-- Local/World space toggle
-
-#### 6. Camera Controls in Editor
-**Priority: MEDIUM**
-
-Better camera control for editing.
-
-**Needed:**
-- Orthographic views (Top, Front, Side)
-- Focus on selection (F key)
-- Frame selection in view
-- Camera speed controls
-- Camera presets/bookmarks
-
-#### 7. Asset Preview System
-**Priority: MEDIUM**
-
-See assets before using them.
+See assets before using them in the Content Browser.
 
 **Needed:**
 - Texture preview with zoom
@@ -199,33 +162,22 @@ See assets before using them.
 - Audio playback controls
 - Preview window in Inspector
 
-#### 8. Build Pipeline
-**Priority: LOW**
+**Status:** Content Browser works for navigation/import, but previews not yet rendered
 
-Optimization and packaging features.
+#### 2. Build Pipeline Optimization
+**Priority: MEDIUM**
+
+Advanced optimization and packaging features beyond basic packaging.
 
 **Needed:**
-- Mesh optimization passes
-- Texture compression
+- Mesh optimization passes (LOD generation)
+- Texture compression (DXT/BC formats)
 - Lightmap baking
 - Occlusion culling data generation
-- Build progress reporting
-- Build output packaging
 
-#### 9. Editor Settings Dialog
-**Priority: LOW**
+**Status:** GamePackager handles basic packaging; advanced optimizations planned
 
-Configure editor behavior.
-
-**Needed:**
-- Auto-save interval
-- Grid settings (size, subdivisions)
-- Snap settings
-- UI theme selection
-- Font size
-- Default tool settings
-
-#### 10. Advanced Scene Operations
+#### 3. Advanced Scene Operations
 **Priority: LOW**
 
 More sophisticated editing features.
@@ -235,8 +187,20 @@ More sophisticated editing features.
 - Layer system (organize objects)
 - Group/Ungroup objects
 - Lock/Unlock objects
-- Hide/Show by criteria
-- Search and replace
+
+**Status:** Scene hierarchy provides basic organization; prefabs/layers planned
+
+#### 4. Extended Undo/Redo
+**Priority: LOW**
+
+Broader undo/redo support beyond terraforming.
+
+**Needed:**
+- Property change undo
+- Scene hierarchy change undo
+- Transform operation undo
+
+**Status:** Core undo/redo works for voxels; expansion planned
 
 ## 📋 Implementation Checklist
 
