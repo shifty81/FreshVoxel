@@ -328,12 +328,29 @@ GitResult GitManager::executeGit(const std::vector<std::string>& args) const
 #ifdef _WIN32
     // Windows: Use CreateProcess with pipe for output capture
     // Build command line: "git" arg1 arg2 ...
+    // Windows CommandLineToArgvW uses these escaping rules:
+    //   - Arguments containing spaces or quotes must be double-quoted
+    //   - Backslashes before quotes are treated as escape characters
+    //   - Quotes within arguments must be escaped as \"
     std::string cmdLine = "git";
     for (const auto& arg : args) {
         cmdLine += " ";
-        // Quote arguments that contain spaces
-        if (arg.find(' ') != std::string::npos) {
-            cmdLine += "\"" + arg + "\"";
+        bool needsQuoting = arg.find(' ') != std::string::npos ||
+                            arg.find('"') != std::string::npos ||
+                            arg.find('\t') != std::string::npos;
+        if (needsQuoting) {
+            cmdLine += '"';
+            for (size_t i = 0; i < arg.size(); ++i) {
+                if (arg[i] == '"') {
+                    cmdLine += "\\\"";
+                } else if (arg[i] == '\\' && i + 1 < arg.size() && arg[i + 1] == '"') {
+                    cmdLine += "\\\\\\\"";
+                    ++i;
+                } else {
+                    cmdLine += arg[i];
+                }
+            }
+            cmdLine += '"';
         } else {
             cmdLine += arg;
         }
