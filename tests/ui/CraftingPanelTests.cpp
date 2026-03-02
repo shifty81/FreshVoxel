@@ -170,17 +170,15 @@ TEST_F(CraftingPanelTest, CraftingProgress_IncreasesOverTime)
             break;
         }
     }
+    ASSERT_GE(pickaxeIndex, 0) << "Wooden Pickaxe recipe not found";
+
+    inventoryManager->addItem(rpg::ResourceType::Plank, 10.0f);
+    panel->setSelectedRecipe(pickaxeIndex);
     
-    if (pickaxeIndex >= 0) {
-        inventoryManager->addItem(rpg::ResourceType::Plank, 10.0f);
-        panel->setSelectedRecipe(pickaxeIndex);
-        
-        if (panel->craftSelectedRecipe()) {
-            float initialProgress = panel->getCraftingProgress();
-            panel->update(0.5f); // Half a second
-            EXPECT_GT(panel->getCraftingProgress(), initialProgress);
-        }
-    }
+    ASSERT_TRUE(panel->craftSelectedRecipe()) << "Should start crafting with resources";
+    float initialProgress = panel->getCraftingProgress();
+    panel->update(0.5f); // Half a second
+    EXPECT_GT(panel->getCraftingProgress(), initialProgress);
 }
 
 TEST_F(CraftingPanelTest, CancelCrafting_StopsCrafting)
@@ -197,15 +195,13 @@ TEST_F(CraftingPanelTest, CancelCrafting_StopsCrafting)
             break;
         }
     }
-    
-    if (pickaxeIndex >= 0) {
-        panel->setSelectedRecipe(pickaxeIndex);
-        if (panel->craftSelectedRecipe()) {
-            panel->update(0.2f);
-            panel->cancelCrafting();
-            EXPECT_FALSE(panel->isCrafting());
-        }
-    }
+    ASSERT_GE(pickaxeIndex, 0) << "Wooden Pickaxe recipe not found";
+
+    panel->setSelectedRecipe(pickaxeIndex);
+    ASSERT_TRUE(panel->craftSelectedRecipe()) << "Should start crafting with resources";
+    panel->update(0.2f);
+    panel->cancelCrafting();
+    EXPECT_FALSE(panel->isCrafting());
 }
 
 // ============================================================================

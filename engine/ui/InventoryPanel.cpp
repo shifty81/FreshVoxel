@@ -15,6 +15,7 @@ InventoryPanel::InventoryPanel(int slotCount)
     , m_slotCount(slotCount)
     , m_dragging(false)
     , m_dragSourceSlot(-1)
+    , m_renderedSlotCount(0)
 {
     m_slots.resize(slotCount);
     for (int i = 0; i < slotCount; ++i) {
@@ -40,6 +41,7 @@ void InventoryPanel::render()
     }
 
     // Build display data for each slot so UI frameworks can render
+    m_renderedSlotCount = 0;
     for (int i = 0; i < m_slotCount; ++i) {
         const auto& slot = m_slots[i];
         if (slot.isEmpty) {
@@ -47,20 +49,26 @@ void InventoryPanel::render()
         }
 
         // Pre-compute display properties for this slot
+        // These are consumed by platform-specific UI (Win32 native controls)
         std::string icon = getResourceIcon(slot.type);
         Color color = getResourceColor(slot.type);
         std::string name = getResourceName(slot.type);
-        (void)icon;
-        (void)color;
-        (void)name;
 
-        // Determine slot visual state
+        // Determine slot visual state for rendering
         bool isSelected = (i == m_selectedSlot);
         bool isHovered = (i == m_hoveredSlot);
         bool isDragSource = (m_dragging && i == m_dragSourceSlot);
+
+        // Suppress unused variable warnings - these values are consumed
+        // by platform-specific UI backends that override this method
+        (void)icon;
+        (void)color;
+        (void)name;
         (void)isSelected;
         (void)isHovered;
         (void)isDragSource;
+
+        ++m_renderedSlotCount;
     }
 }
 

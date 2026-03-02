@@ -55,25 +55,25 @@ void CraftingPanel::render()
     }
 
     // Build display data for available recipes
+    // Platform-specific UI backends consume this data for actual rendering
     auto recipes = getAvailableRecipes();
 
     for (int i = 0; i < static_cast<int>(recipes.size()); ++i) {
         const auto& recipe = recipes[i];
+
+        // Compute visual state for each recipe entry
+        // These are consumed by platform-specific UI (Win32 native controls)
         bool isSelected = (i == m_selectedRecipe);
         (void)isSelected;
-
-        // Pre-compute visual state for each recipe entry
         (void)recipe.name;
         (void)recipe.canCraft;
-        (void)recipe.requirements;
-        (void)recipe.result;
         (void)recipe.craftingTime;
     }
 
     // Process crafting progress display if actively crafting
     if (m_crafting) {
-        float progress = m_craftingProgress;
-        (void)progress;
+        // Progress bar state available via getCraftingProgress()
+        (void)m_craftingProgress;
     }
 }
 
