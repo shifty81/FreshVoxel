@@ -648,6 +648,8 @@ if(BUILD_TESTS)
         tests/core/ReflectionTests.cpp
         tests/core/ResourceManagerTests.cpp
         tests/scripting/EventSystemTests.cpp
+        tests/scripting/LuaWeatherBindingsTests.cpp
+        tests/scripting/LuaSeasonBindingsTests.cpp
         tests/rpg/InventoryTests.cpp
         tests/rpg/CraftingSystemTests.cpp
         tests/character/VoxelCharacterTests.cpp
@@ -700,6 +702,8 @@ if(BUILD_TESTS)
         engine/core/ResourceManager.cpp
         engine/renderer/stb_image_impl.cpp
         engine/scripting/EventSystem.cpp
+        engine/scripting/lua/LuaWeatherBindings.cpp
+        engine/scripting/lua/LuaSeasonBindings.cpp
         engine/input/InputManager.cpp
         engine/gameplay/TimeManager.cpp
         engine/gameplay/Camera.cpp
