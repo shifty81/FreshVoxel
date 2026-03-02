@@ -99,10 +99,10 @@ TEST_F(InventoryPanelTooltipTest, GetTooltipForSlot_Iron_HasDescription)
     EXPECT_FALSE(tooltip.description.empty());
 }
 
-TEST_F(InventoryPanelTooltipTest, GetTooltipForSlot_Iron_HasCommonRarity)
+TEST_F(InventoryPanelTooltipTest, GetTooltipForSlot_Iron_HasRareRarity)
 {
     auto tooltip = panel->getTooltipForSlot(0);
-    EXPECT_EQ("Common", tooltip.rarity);
+    EXPECT_EQ("Rare", tooltip.rarity);
 }
 
 TEST_F(InventoryPanelTooltipTest, GetTooltipForSlot_Avorion_HasLegendaryRarity)

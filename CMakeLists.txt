@@ -648,9 +648,8 @@ if(BUILD_TESTS)
         tests/core/ReflectionTests.cpp
         tests/core/ResourceManagerTests.cpp
         tests/scripting/EventSystemTests.cpp
-        # RPG tests disabled: pre-existing build failures (ResourceType enum mismatch)
-        # tests/rpg/InventoryTests.cpp
-        # tests/rpg/CraftingSystemTests.cpp
+        tests/rpg/InventoryTests.cpp
+        tests/rpg/CraftingSystemTests.cpp
         tests/character/VoxelCharacterTests.cpp
         tests/character/BodyPartLibraryTests.cpp
         tests/character/AnimationClipTests.cpp
@@ -675,8 +674,9 @@ if(BUILD_TESTS)
         tests/schema/SchemaValidatorTests.cpp
         tests/module/ModuleLoaderTests.cpp
         tests/devtools/TimeCommandsTests.cpp
-        # UI inventory test disabled: pre-existing build failure (ResourceType enum mismatch)
-        # tests/ui/InventoryPanelTests.cpp
+        tests/ui/InventoryPanelTests.cpp
+        tests/ui/InventoryPanelTransferTests.cpp
+        tests/ui/CraftingPanelTests.cpp
         tests/viewport/ViewportContextTests.cpp
         tests/viewport/InputContextTests.cpp
         tests/viewport/ViewportRenderTargetTests.cpp
@@ -738,6 +738,9 @@ if(BUILD_TESTS)
         engine/schema/SchemaValidator.cpp
         engine/module/ModuleLoader.cpp
         engine/ui/InventoryPanel.cpp
+        engine/ui/CraftingPanel.cpp
+        engine/ui/HotbarPanel.cpp
+        engine/gameplay/InventoryManager.cpp
         engine/audio/AudioEngine.cpp
         engine/viewport/ViewportContext.cpp
         engine/viewport/ViewportRenderTarget.cpp

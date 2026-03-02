@@ -15,43 +15,43 @@ protected:
     std::unique_ptr<Inventory> inventory;
 };
 
-// SubsystemUpgrade Tests
-TEST(SubsystemUpgradeTest, Constructor_Default_CreatesValidUpgrade) {
-    SubsystemUpgrade upgrade;
-    EXPECT_EQ(SubsystemType::Shield, upgrade.getType());
-    EXPECT_EQ(1, upgrade.getLevel());
-    EXPECT_EQ("Basic Upgrade", upgrade.getName());
+// CraftedItem Tests
+TEST(CraftedItemTest, Constructor_Default_CreatesValidItem) {
+    CraftedItem item;
+    EXPECT_EQ(ItemCategory::Material, item.getType());
+    EXPECT_EQ(0, item.getLevel());
+    EXPECT_EQ("Unknown Item", item.getName());
 }
 
-TEST(SubsystemUpgradeTest, Constructor_WithParameters_SetsCorrectValues) {
-    SubsystemUpgrade upgrade(SubsystemType::Weapon, 5, "Advanced Laser");
-    EXPECT_EQ(SubsystemType::Weapon, upgrade.getType());
-    EXPECT_EQ(5, upgrade.getLevel());
-    EXPECT_EQ("Advanced Laser", upgrade.getName());
+TEST(CraftedItemTest, Constructor_WithParameters_SetsCorrectValues) {
+    CraftedItem item(ItemCategory::Weapon, MaterialTier::Diamond, "Diamond Sword");
+    EXPECT_EQ(ItemCategory::Weapon, item.getType());
+    EXPECT_EQ(4, item.getLevel());
+    EXPECT_EQ("Diamond Sword", item.getName());
 }
 
-TEST(SubsystemUpgradeTest, SetStatBonus_AndGet_ReturnsCorrectValue) {
-    SubsystemUpgrade upgrade;
-    upgrade.setStatBonus("damage", 50.0f);
-    upgrade.setStatBonus("fireRate", 2.5f);
+TEST(CraftedItemTest, SetStatBonus_AndGet_ReturnsCorrectValue) {
+    CraftedItem item;
+    item.setStatBonus("damage", 50.0f);
+    item.setStatBonus("fireRate", 2.5f);
     
-    EXPECT_EQ(50.0f, upgrade.getStatBonus("damage"));
-    EXPECT_EQ(2.5f, upgrade.getStatBonus("fireRate"));
+    EXPECT_EQ(50.0f, item.getStatBonus("damage"));
+    EXPECT_EQ(2.5f, item.getStatBonus("fireRate"));
 }
 
-TEST(SubsystemUpgradeTest, GetStatBonus_NonExistent_ReturnsZero) {
-    SubsystemUpgrade upgrade;
-    EXPECT_EQ(0.0f, upgrade.getStatBonus("nonexistent"));
+TEST(CraftedItemTest, GetStatBonus_NonExistent_ReturnsZero) {
+    CraftedItem item;
+    EXPECT_EQ(0.0f, item.getStatBonus("nonexistent"));
 }
 
-TEST(SubsystemUpgradeTest, SetCost_AndGetCost_ReturnsCorrectMap) {
-    SubsystemUpgrade upgrade;
+TEST(CraftedItemTest, SetCost_AndGetCost_ReturnsCorrectMap) {
+    CraftedItem item;
     std::map<ResourceType, float> cost;
     cost[ResourceType::Iron] = 100.0f;
     cost[ResourceType::Titanium] = 50.0f;
     
-    upgrade.setCost(cost);
-    const auto& retrievedCost = upgrade.getCost();
+    item.setCost(cost);
+    const auto& retrievedCost = item.getCost();
     
     EXPECT_EQ(2u, retrievedCost.size());
     EXPECT_EQ(100.0f, retrievedCost.at(ResourceType::Iron));
@@ -66,10 +66,10 @@ TEST_F(CraftingSystemTest, Constructor_InitializesDefaultRecipes) {
 }
 
 TEST_F(CraftingSystemTest, GetRecipe_ExistingRecipe_ReturnsValid) {
-    const CraftingRecipe* recipe = crafting->getRecipe("Basic Shield");
+    const CraftingRecipe* recipe = crafting->getRecipe("Wooden Pickaxe");
     ASSERT_NE(nullptr, recipe);
-    EXPECT_EQ("Basic Shield", recipe->name);
-    EXPECT_EQ(SubsystemType::Shield, recipe->result.getType());
+    EXPECT_EQ("Wooden Pickaxe", recipe->name);
+    EXPECT_EQ(ItemCategory::Tool, recipe->result.getType());
 }
 
 TEST_F(CraftingSystemTest, GetRecipe_NonExistent_ReturnsNull) {
@@ -82,70 +82,70 @@ TEST_F(CraftingSystemTest, GetAllRecipeNames_ReturnsAllRecipes) {
     EXPECT_FALSE(recipes.empty());
     
     // Check for known default recipes
-    bool hasBasicShield = false;
-    bool hasAdvancedShield = false;
-    bool hasBasicWeapon = false;
-    bool hasCargoExpansion = false;
+    bool hasPlanks = false;
+    bool hasWoodenPickaxe = false;
+    bool hasWoodenSword = false;
+    bool hasFurnace = false;
     
     for (const auto& name : recipes) {
-        if (name == "Basic Shield") hasBasicShield = true;
-        if (name == "Advanced Shield") hasAdvancedShield = true;
-        if (name == "Basic Weapon") hasBasicWeapon = true;
-        if (name == "Cargo Expansion") hasCargoExpansion = true;
+        if (name == "Planks") hasPlanks = true;
+        if (name == "Wooden Pickaxe") hasWoodenPickaxe = true;
+        if (name == "Wooden Sword") hasWoodenSword = true;
+        if (name == "Furnace") hasFurnace = true;
     }
     
-    EXPECT_TRUE(hasBasicShield);
-    EXPECT_TRUE(hasAdvancedShield);
-    EXPECT_TRUE(hasBasicWeapon);
-    EXPECT_TRUE(hasCargoExpansion);
+    EXPECT_TRUE(hasPlanks);
+    EXPECT_TRUE(hasWoodenPickaxe);
+    EXPECT_TRUE(hasWoodenSword);
+    EXPECT_TRUE(hasFurnace);
 }
 
 TEST_F(CraftingSystemTest, AddRecipe_CustomRecipe_CanBeRetrieved) {
     CraftingRecipe customRecipe;
-    customRecipe.name = "Custom Upgrade";
-    customRecipe.result = SubsystemUpgrade(SubsystemType::Engine, 1, "Basic Engine");
-    customRecipe.requirements[ResourceType::Iron] = 50.0f;
+    customRecipe.name = "Custom Tool";
+    customRecipe.result = CraftedItem(ItemCategory::Tool, MaterialTier::Iron, "Custom Tool");
+    customRecipe.requirements[ResourceType::IronIngot] = 50.0f;
     customRecipe.craftingTime = 20.0f;
     
     crafting->addRecipe(customRecipe);
     
-    const CraftingRecipe* retrieved = crafting->getRecipe("Custom Upgrade");
+    const CraftingRecipe* retrieved = crafting->getRecipe("Custom Tool");
     ASSERT_NE(nullptr, retrieved);
-    EXPECT_EQ("Custom Upgrade", retrieved->name);
-    EXPECT_EQ(SubsystemType::Engine, retrieved->result.getType());
+    EXPECT_EQ("Custom Tool", retrieved->name);
+    EXPECT_EQ(ItemCategory::Tool, retrieved->result.getType());
 }
 
 // CanCraft Tests
 TEST_F(CraftingSystemTest, CanCraft_SufficientResources_ReturnsTrue) {
-    // Basic Shield requires: Iron 50, Titanium 20
-    inventory->addResource(ResourceType::Iron, 100.0f);
-    inventory->addResource(ResourceType::Titanium, 50.0f);
+    // Wooden Pickaxe requires: Plank 3, Wood 2
+    inventory->addResource(ResourceType::Plank, 10.0f);
+    inventory->addResource(ResourceType::Wood, 10.0f);
     
-    EXPECT_TRUE(crafting->canCraft("Basic Shield", *inventory));
+    EXPECT_TRUE(crafting->canCraft("Wooden Pickaxe", *inventory));
 }
 
 TEST_F(CraftingSystemTest, CanCraft_InsufficientResources_ReturnsFalse) {
-    // Basic Shield requires: Iron 50, Titanium 20
-    inventory->addResource(ResourceType::Iron, 30.0f);
-    inventory->addResource(ResourceType::Titanium, 10.0f);
+    // Wooden Pickaxe requires: Plank 3, Wood 2
+    inventory->addResource(ResourceType::Plank, 1.0f);
+    inventory->addResource(ResourceType::Wood, 1.0f);
     
-    EXPECT_FALSE(crafting->canCraft("Basic Shield", *inventory));
+    EXPECT_FALSE(crafting->canCraft("Wooden Pickaxe", *inventory));
 }
 
 TEST_F(CraftingSystemTest, CanCraft_MissingOneResource_ReturnsFalse) {
-    // Basic Shield requires: Iron 50, Titanium 20
-    inventory->addResource(ResourceType::Iron, 100.0f);
-    // Missing Titanium
+    // Wooden Pickaxe requires: Plank 3, Wood 2
+    inventory->addResource(ResourceType::Plank, 10.0f);
+    // Missing Wood
     
-    EXPECT_FALSE(crafting->canCraft("Basic Shield", *inventory));
+    EXPECT_FALSE(crafting->canCraft("Wooden Pickaxe", *inventory));
 }
 
 TEST_F(CraftingSystemTest, CanCraft_ExactResources_ReturnsTrue) {
-    // Basic Shield requires: Iron 50, Titanium 20
-    inventory->addResource(ResourceType::Iron, 50.0f);
-    inventory->addResource(ResourceType::Titanium, 20.0f);
+    // Wooden Pickaxe requires: Plank 3, Wood 2
+    inventory->addResource(ResourceType::Plank, 3.0f);
+    inventory->addResource(ResourceType::Wood, 2.0f);
     
-    EXPECT_TRUE(crafting->canCraft("Basic Shield", *inventory));
+    EXPECT_TRUE(crafting->canCraft("Wooden Pickaxe", *inventory));
 }
 
 TEST_F(CraftingSystemTest, CanCraft_NonExistentRecipe_ReturnsFalse) {
@@ -155,101 +155,97 @@ TEST_F(CraftingSystemTest, CanCraft_NonExistentRecipe_ReturnsFalse) {
 
 // Craft Tests
 TEST_F(CraftingSystemTest, Craft_ValidRecipeAndResources_Succeeds) {
-    // Basic Shield requires: Iron 50, Titanium 20
-    inventory->addResource(ResourceType::Iron, 100.0f);
-    inventory->addResource(ResourceType::Titanium, 50.0f);
+    // Wooden Pickaxe requires: Plank 3, Wood 2
+    inventory->addResource(ResourceType::Plank, 10.0f);
+    inventory->addResource(ResourceType::Wood, 10.0f);
     
-    SubsystemUpgrade result;
-    EXPECT_TRUE(crafting->craft("Basic Shield", *inventory, result));
+    CraftedItem result;
+    EXPECT_TRUE(crafting->craft("Wooden Pickaxe", *inventory, result));
     
     // Check resources were consumed
-    EXPECT_EQ(50.0f, inventory->getResourceAmount(ResourceType::Iron));
-    EXPECT_EQ(30.0f, inventory->getResourceAmount(ResourceType::Titanium));
+    EXPECT_EQ(7.0f, inventory->getResourceAmount(ResourceType::Plank));
+    EXPECT_EQ(8.0f, inventory->getResourceAmount(ResourceType::Wood));
     
     // Check result
-    EXPECT_EQ(SubsystemType::Shield, result.getType());
-    EXPECT_EQ("Basic Shield", result.getName());
-    EXPECT_EQ(100.0f, result.getStatBonus("shieldCapacity"));
-    EXPECT_EQ(10.0f, result.getStatBonus("shieldRecharge"));
+    EXPECT_EQ(ItemCategory::Tool, result.getType());
+    EXPECT_EQ("Wooden Pickaxe", result.getName());
+    EXPECT_EQ(2.0f, result.getStatBonus("miningSpeed"));
 }
 
 TEST_F(CraftingSystemTest, Craft_InsufficientResources_Fails) {
-    // Basic Shield requires: Iron 50, Titanium 20
-    inventory->addResource(ResourceType::Iron, 30.0f);
-    inventory->addResource(ResourceType::Titanium, 10.0f);
+    // Wooden Pickaxe requires: Plank 3, Wood 2
+    inventory->addResource(ResourceType::Plank, 1.0f);
+    inventory->addResource(ResourceType::Wood, 1.0f);
     
-    SubsystemUpgrade result;
-    EXPECT_FALSE(crafting->craft("Basic Shield", *inventory, result));
+    CraftedItem result;
+    EXPECT_FALSE(crafting->craft("Wooden Pickaxe", *inventory, result));
     
     // Resources should not be consumed
-    EXPECT_EQ(30.0f, inventory->getResourceAmount(ResourceType::Iron));
-    EXPECT_EQ(10.0f, inventory->getResourceAmount(ResourceType::Titanium));
+    EXPECT_EQ(1.0f, inventory->getResourceAmount(ResourceType::Plank));
+    EXPECT_EQ(1.0f, inventory->getResourceAmount(ResourceType::Wood));
 }
 
 TEST_F(CraftingSystemTest, Craft_NonExistentRecipe_Fails) {
     inventory->addResource(ResourceType::Iron, 1000.0f);
     
-    SubsystemUpgrade result;
+    CraftedItem result;
     EXPECT_FALSE(crafting->craft("NonExistent", *inventory, result));
 }
 
 TEST_F(CraftingSystemTest, Craft_MultipleTimes_ConsumesCorrectly) {
-    // Basic Weapon requires: Iron 30, Titanium 30
-    inventory->addResource(ResourceType::Iron, 100.0f);
-    inventory->addResource(ResourceType::Titanium, 100.0f);
+    // Planks requires: Wood 1
+    inventory->addResource(ResourceType::Wood, 5.0f);
     
-    SubsystemUpgrade result1, result2;
+    CraftedItem result1, result2;
     
-    EXPECT_TRUE(crafting->craft("Basic Weapon", *inventory, result1));
-    EXPECT_EQ(70.0f, inventory->getResourceAmount(ResourceType::Iron));
-    EXPECT_EQ(70.0f, inventory->getResourceAmount(ResourceType::Titanium));
+    EXPECT_TRUE(crafting->craft("Planks", *inventory, result1));
+    EXPECT_EQ(4.0f, inventory->getResourceAmount(ResourceType::Wood));
     
-    EXPECT_TRUE(crafting->craft("Basic Weapon", *inventory, result2));
-    EXPECT_EQ(40.0f, inventory->getResourceAmount(ResourceType::Iron));
-    EXPECT_EQ(40.0f, inventory->getResourceAmount(ResourceType::Titanium));
+    EXPECT_TRUE(crafting->craft("Planks", *inventory, result2));
+    EXPECT_EQ(3.0f, inventory->getResourceAmount(ResourceType::Wood));
 }
 
 // Default Recipe Tests
-TEST_F(CraftingSystemTest, DefaultRecipe_BasicShield_HasCorrectRequirements) {
-    const CraftingRecipe* recipe = crafting->getRecipe("Basic Shield");
+TEST_F(CraftingSystemTest, DefaultRecipe_WoodenPickaxe_HasCorrectRequirements) {
+    const CraftingRecipe* recipe = crafting->getRecipe("Wooden Pickaxe");
     ASSERT_NE(nullptr, recipe);
     
     EXPECT_EQ(2u, recipe->requirements.size());
-    EXPECT_EQ(50.0f, recipe->requirements.at(ResourceType::Iron));
-    EXPECT_EQ(20.0f, recipe->requirements.at(ResourceType::Titanium));
-    EXPECT_EQ(30.0f, recipe->craftingTime);
+    EXPECT_EQ(3.0f, recipe->requirements.at(ResourceType::Plank));
+    EXPECT_EQ(2.0f, recipe->requirements.at(ResourceType::Wood));
+    EXPECT_EQ(1.0f, recipe->craftingTime);
 }
 
-TEST_F(CraftingSystemTest, DefaultRecipe_AdvancedShield_HasCorrectRequirements) {
-    const CraftingRecipe* recipe = crafting->getRecipe("Advanced Shield");
+TEST_F(CraftingSystemTest, DefaultRecipe_IronPickaxe_HasCorrectRequirements) {
+    const CraftingRecipe* recipe = crafting->getRecipe("Iron Pickaxe");
     ASSERT_NE(nullptr, recipe);
     
     EXPECT_EQ(2u, recipe->requirements.size());
-    EXPECT_EQ(100.0f, recipe->requirements.at(ResourceType::Titanium));
-    EXPECT_EQ(50.0f, recipe->requirements.at(ResourceType::Naonite));
-    EXPECT_EQ(60.0f, recipe->craftingTime);
-    EXPECT_EQ(250.0f, recipe->result.getStatBonus("shieldCapacity"));
+    EXPECT_EQ(3.0f, recipe->requirements.at(ResourceType::IronIngot));
+    EXPECT_EQ(2.0f, recipe->requirements.at(ResourceType::Wood));
+    EXPECT_EQ(2.0f, recipe->craftingTime);
+    EXPECT_EQ(6.0f, recipe->result.getStatBonus("miningSpeed"));
 }
 
-TEST_F(CraftingSystemTest, DefaultRecipe_BasicWeapon_HasCorrectRequirements) {
-    const CraftingRecipe* recipe = crafting->getRecipe("Basic Weapon");
+TEST_F(CraftingSystemTest, DefaultRecipe_WoodenSword_HasCorrectRequirements) {
+    const CraftingRecipe* recipe = crafting->getRecipe("Wooden Sword");
     ASSERT_NE(nullptr, recipe);
     
     EXPECT_EQ(2u, recipe->requirements.size());
-    EXPECT_EQ(30.0f, recipe->requirements.at(ResourceType::Iron));
-    EXPECT_EQ(30.0f, recipe->requirements.at(ResourceType::Titanium));
-    EXPECT_EQ(45.0f, recipe->craftingTime);
-    EXPECT_EQ(SubsystemType::Weapon, recipe->result.getType());
+    EXPECT_EQ(2.0f, recipe->requirements.at(ResourceType::Plank));
+    EXPECT_EQ(1.0f, recipe->requirements.at(ResourceType::Wood));
+    EXPECT_EQ(1.0f, recipe->craftingTime);
+    EXPECT_EQ(ItemCategory::Weapon, recipe->result.getType());
 }
 
-TEST_F(CraftingSystemTest, DefaultRecipe_CargoExpansion_HasCorrectRequirements) {
-    const CraftingRecipe* recipe = crafting->getRecipe("Cargo Expansion");
+TEST_F(CraftingSystemTest, DefaultRecipe_Chest_HasCorrectRequirements) {
+    const CraftingRecipe* recipe = crafting->getRecipe("Chest");
     ASSERT_NE(nullptr, recipe);
     
     EXPECT_EQ(1u, recipe->requirements.size());
-    EXPECT_EQ(100.0f, recipe->requirements.at(ResourceType::Iron));
-    EXPECT_EQ(40.0f, recipe->craftingTime);
-    EXPECT_EQ(500.0f, recipe->result.getStatBonus("cargoCapacity"));
+    EXPECT_EQ(8.0f, recipe->requirements.at(ResourceType::Plank));
+    EXPECT_EQ(1.0f, recipe->craftingTime);
+    EXPECT_EQ(27.0f, recipe->result.getStatBonus("storageSlots"));
 }
 
 // Integration Tests
@@ -258,54 +254,54 @@ TEST_F(CraftingSystemTest, Integration_FullCraftingWorkflow_Succeeds) {
     EXPECT_EQ(0.0f, inventory->getTotalUsed());
     
     // Gather resources
-    inventory->addResource(ResourceType::Iron, 200.0f);
-    inventory->addResource(ResourceType::Titanium, 100.0f);
+    inventory->addResource(ResourceType::Wood, 20.0f);
+    inventory->addResource(ResourceType::Plank, 20.0f);
+    inventory->addResource(ResourceType::Cobblestone, 10.0f);
     
     // Check what we can craft
-    EXPECT_TRUE(crafting->canCraft("Basic Shield", *inventory));
-    EXPECT_TRUE(crafting->canCraft("Basic Weapon", *inventory));
-    EXPECT_TRUE(crafting->canCraft("Cargo Expansion", *inventory));
-    EXPECT_FALSE(crafting->canCraft("Advanced Shield", *inventory)); // Missing Naonite
+    EXPECT_TRUE(crafting->canCraft("Wooden Pickaxe", *inventory));
+    EXPECT_TRUE(crafting->canCraft("Stone Pickaxe", *inventory));
+    EXPECT_TRUE(crafting->canCraft("Crafting Table", *inventory));
+    EXPECT_FALSE(crafting->canCraft("Iron Pickaxe", *inventory)); // Missing IronIngot
     
-    // Craft Basic Shield
-    SubsystemUpgrade shield;
-    EXPECT_TRUE(crafting->craft("Basic Shield", *inventory, shield));
-    EXPECT_EQ(SubsystemType::Shield, shield.getType());
+    // Craft Wooden Pickaxe
+    CraftedItem pickaxe;
+    EXPECT_TRUE(crafting->craft("Wooden Pickaxe", *inventory, pickaxe));
+    EXPECT_EQ(ItemCategory::Tool, pickaxe.getType());
     
     // Verify remaining resources
-    EXPECT_EQ(150.0f, inventory->getResourceAmount(ResourceType::Iron));
-    EXPECT_EQ(80.0f, inventory->getResourceAmount(ResourceType::Titanium));
+    EXPECT_EQ(18.0f, inventory->getResourceAmount(ResourceType::Wood));
+    EXPECT_EQ(17.0f, inventory->getResourceAmount(ResourceType::Plank));
     
-    // Craft Basic Weapon
-    SubsystemUpgrade weapon;
-    EXPECT_TRUE(crafting->craft("Basic Weapon", *inventory, weapon));
-    EXPECT_EQ(SubsystemType::Weapon, weapon.getType());
+    // Craft Stone Sword
+    CraftedItem sword;
+    EXPECT_TRUE(crafting->craft("Stone Sword", *inventory, sword));
+    EXPECT_EQ(ItemCategory::Weapon, sword.getType());
     
-    // Verify final resources
-    EXPECT_EQ(120.0f, inventory->getResourceAmount(ResourceType::Iron));
-    EXPECT_EQ(50.0f, inventory->getResourceAmount(ResourceType::Titanium));
+    // Verify resources consumed
+    EXPECT_EQ(17.0f, inventory->getResourceAmount(ResourceType::Wood));
+    EXPECT_EQ(8.0f, inventory->getResourceAmount(ResourceType::Cobblestone));
 }
 
 // Edge Cases
 TEST_F(CraftingSystemTest, Craft_ExactResourceAmount_Succeeds) {
-    // Exactly enough resources
-    inventory->addResource(ResourceType::Iron, 50.0f);
-    inventory->addResource(ResourceType::Titanium, 20.0f);
+    // Planks requires: Wood 1
+    inventory->addResource(ResourceType::Wood, 1.0f);
     
-    SubsystemUpgrade result;
-    EXPECT_TRUE(crafting->craft("Basic Shield", *inventory, result));
+    CraftedItem result;
+    EXPECT_TRUE(crafting->craft("Planks", *inventory, result));
     
     // All resources consumed
-    EXPECT_EQ(0.0f, inventory->getResourceAmount(ResourceType::Iron));
-    EXPECT_EQ(0.0f, inventory->getResourceAmount(ResourceType::Titanium));
+    EXPECT_EQ(0.0f, inventory->getResourceAmount(ResourceType::Wood));
 }
 
 TEST_F(CraftingSystemTest, Craft_OneResourceShortBySmallAmount_Fails) {
-    inventory->addResource(ResourceType::Iron, 49.99f);
-    inventory->addResource(ResourceType::Titanium, 20.0f);
+    // Wooden Pickaxe requires: Plank 3, Wood 2
+    inventory->addResource(ResourceType::Plank, 2.99f);
+    inventory->addResource(ResourceType::Wood, 2.0f);
     
-    SubsystemUpgrade result;
-    EXPECT_FALSE(crafting->craft("Basic Shield", *inventory, result));
+    CraftedItem result;
+    EXPECT_FALSE(crafting->craft("Wooden Pickaxe", *inventory, result));
 }
 
 // Search/Filter Tests
@@ -316,30 +312,30 @@ TEST_F(CraftingSystemTest, SearchRecipes_EmptyQuery_ReturnsAll) {
 }
 
 TEST_F(CraftingSystemTest, SearchRecipes_ExactName_ReturnsMatch) {
-    auto results = crafting->searchRecipes("Basic Shield");
+    auto results = crafting->searchRecipes("Wooden Pickaxe");
     EXPECT_EQ(1u, results.size());
-    EXPECT_EQ("Basic Shield", results[0]);
+    EXPECT_EQ("Wooden Pickaxe", results[0]);
 }
 
 TEST_F(CraftingSystemTest, SearchRecipes_SubstringMatch) {
-    auto results = crafting->searchRecipes("Shield");
-    EXPECT_GE(results.size(), 2u); // Basic Shield and Advanced Shield
+    auto results = crafting->searchRecipes("Sword");
+    EXPECT_GE(results.size(), 2u); // Multiple sword variants
     
-    bool hasBasic = false, hasAdvanced = false;
+    bool hasWooden = false, hasStone = false;
     for (const auto& name : results) {
-        if (name == "Basic Shield") hasBasic = true;
-        if (name == "Advanced Shield") hasAdvanced = true;
+        if (name == "Wooden Sword") hasWooden = true;
+        if (name == "Stone Sword") hasStone = true;
     }
-    EXPECT_TRUE(hasBasic);
-    EXPECT_TRUE(hasAdvanced);
+    EXPECT_TRUE(hasWooden);
+    EXPECT_TRUE(hasStone);
 }
 
 TEST_F(CraftingSystemTest, SearchRecipes_CaseInsensitive) {
-    auto results = crafting->searchRecipes("basic");
-    EXPECT_GE(results.size(), 2u); // Basic Shield and Basic Weapon
+    auto results = crafting->searchRecipes("wooden");
+    EXPECT_GE(results.size(), 2u); // Wooden Pickaxe, Wooden Sword, etc.
     
-    auto results2 = crafting->searchRecipes("SHIELD");
-    EXPECT_GE(results2.size(), 2u);
+    auto results2 = crafting->searchRecipes("PICKAXE");
+    EXPECT_GE(results2.size(), 1u);
 }
 
 TEST_F(CraftingSystemTest, SearchRecipes_NoMatch) {
@@ -347,30 +343,30 @@ TEST_F(CraftingSystemTest, SearchRecipes_NoMatch) {
     EXPECT_TRUE(results.empty());
 }
 
-TEST_F(CraftingSystemTest, GetRecipesByType_Shield) {
-    auto results = crafting->getRecipesByType(SubsystemType::Shield);
-    EXPECT_GE(results.size(), 2u); // Basic and Advanced Shield
+TEST_F(CraftingSystemTest, GetRecipesByType_Tool) {
+    auto results = crafting->getRecipesByType(ItemCategory::Tool);
+    EXPECT_GE(results.size(), 2u); // Multiple tool recipes
     
     for (const auto& name : results) {
         const CraftingRecipe* recipe = crafting->getRecipe(name);
         ASSERT_NE(nullptr, recipe);
-        EXPECT_EQ(SubsystemType::Shield, recipe->result.getType());
+        EXPECT_EQ(ItemCategory::Tool, recipe->result.getType());
     }
 }
 
 TEST_F(CraftingSystemTest, GetRecipesByType_Weapon) {
-    auto results = crafting->getRecipesByType(SubsystemType::Weapon);
-    EXPECT_GE(results.size(), 1u); // Basic Weapon
+    auto results = crafting->getRecipesByType(ItemCategory::Weapon);
+    EXPECT_GE(results.size(), 1u);
     
     for (const auto& name : results) {
         const CraftingRecipe* recipe = crafting->getRecipe(name);
         ASSERT_NE(nullptr, recipe);
-        EXPECT_EQ(SubsystemType::Weapon, recipe->result.getType());
+        EXPECT_EQ(ItemCategory::Weapon, recipe->result.getType());
     }
 }
 
 TEST_F(CraftingSystemTest, GetRecipesByType_NoMatch) {
-    auto results = crafting->getRecipesByType(SubsystemType::Computer);
+    auto results = crafting->getRecipesByType(ItemCategory::Decoration);
     EXPECT_TRUE(results.empty());
 }
 
@@ -380,28 +376,32 @@ TEST_F(CraftingSystemTest, GetCraftableRecipes_NoResources_ReturnsEmpty) {
 }
 
 TEST_F(CraftingSystemTest, GetCraftableRecipes_SomeResources) {
-    // Give enough for Basic Shield and Cargo Expansion only
-    inventory->addResource(ResourceType::Iron, 100.0f);
-    inventory->addResource(ResourceType::Titanium, 20.0f);
+    // Give enough for Planks and Torch
+    inventory->addResource(ResourceType::Wood, 10.0f);
+    inventory->addResource(ResourceType::Coal, 5.0f);
     
     auto results = crafting->getCraftableRecipes(*inventory);
     EXPECT_GE(results.size(), 2u);
     
-    bool hasBasicShield = false, hasCargo = false;
+    bool hasPlanks = false, hasTorch = false;
     for (const auto& name : results) {
-        if (name == "Basic Shield") hasBasicShield = true;
-        if (name == "Cargo Expansion") hasCargo = true;
+        if (name == "Planks") hasPlanks = true;
+        if (name == "Torch") hasTorch = true;
     }
-    EXPECT_TRUE(hasBasicShield);
-    EXPECT_TRUE(hasCargo);
+    EXPECT_TRUE(hasPlanks);
+    EXPECT_TRUE(hasTorch);
 }
 
 TEST_F(CraftingSystemTest, GetCraftableRecipes_AllResources) {
     // Use a large-capacity inventory to fit all resources needed
     Inventory largeInventory(100000.0f);
-    largeInventory.addResource(ResourceType::Iron, 10000.0f);
-    largeInventory.addResource(ResourceType::Titanium, 10000.0f);
-    largeInventory.addResource(ResourceType::Naonite, 10000.0f);
+    largeInventory.addResource(ResourceType::Wood, 10000.0f);
+    largeInventory.addResource(ResourceType::Plank, 10000.0f);
+    largeInventory.addResource(ResourceType::Cobblestone, 10000.0f);
+    largeInventory.addResource(ResourceType::IronIngot, 10000.0f);
+    largeInventory.addResource(ResourceType::Diamond, 10000.0f);
+    largeInventory.addResource(ResourceType::Coal, 10000.0f);
+    largeInventory.addResource(ResourceType::Wheat, 10000.0f);
     
     auto results = crafting->getCraftableRecipes(largeInventory);
     auto allRecipes = crafting->getAllRecipeNames();
