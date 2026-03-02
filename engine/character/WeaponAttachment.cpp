@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cmath>
 
+#include <glm/gtc/constants.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace fresh
@@ -10,7 +11,7 @@ namespace fresh
 
 // Constants for swing animation generation
 static constexpr float BASE_SWING_DURATION = 0.5f;
-static constexpr float PI = 3.14159265358979323846f;
+static constexpr float PI = glm::pi<float>();
 
 WeaponAttachment::WeaponAttachment() = default;
 

@@ -266,6 +266,14 @@ TEST_F(WeaponAttachmentTest, IsCompatible_Tool_HandsAndHip)
     EXPECT_FALSE(WeaponAttachment::isCompatible(GripType::Tool, AttachmentSlot::Back));
 }
 
+TEST_F(WeaponAttachmentTest, IsCompatible_DualWield_HandsOnly)
+{
+    EXPECT_TRUE(WeaponAttachment::isCompatible(GripType::DualWield, AttachmentSlot::RightHand));
+    EXPECT_TRUE(WeaponAttachment::isCompatible(GripType::DualWield, AttachmentSlot::LeftHand));
+    EXPECT_FALSE(WeaponAttachment::isCompatible(GripType::DualWield, AttachmentSlot::Back));
+    EXPECT_FALSE(WeaponAttachment::isCompatible(GripType::DualWield, AttachmentSlot::Hip));
+}
+
 // ============================================================================
 // Bone Name Mapping Tests
 // ============================================================================
@@ -299,12 +307,16 @@ TEST_F(WeaponAttachmentTest, GetBoneNameForSlot_Hip_ReturnsRoot)
 // Grip Position Tests
 // ============================================================================
 
-TEST_F(WeaponAttachmentTest, CalculateGripPosition_EmptySlot_ReturnsZero)
+TEST_F(WeaponAttachmentTest, CalculateGripPosition_EmptySlot_ReturnsFinitePosition)
 {
     glm::vec3 pos = attachment->calculateGripPosition(*character, AttachmentSlot::RightHand);
-    // With no weapon attached, should still return a valid position (bone position)
-    // (exact value depends on skeleton setup, just verify no crash)
-    (void)pos;
+    // With no weapon attached, should return bone position (finite values)
+    EXPECT_FALSE(std::isnan(pos.x));
+    EXPECT_FALSE(std::isnan(pos.y));
+    EXPECT_FALSE(std::isnan(pos.z));
+    EXPECT_FALSE(std::isinf(pos.x));
+    EXPECT_FALSE(std::isinf(pos.y));
+    EXPECT_FALSE(std::isinf(pos.z));
 }
 
 TEST_F(WeaponAttachmentTest, CalculateGripPosition_AttachedWeapon_ReturnsPosition)
