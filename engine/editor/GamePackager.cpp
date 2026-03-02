@@ -261,7 +261,13 @@ std::string GamePackager::createManifest(const PackageConfig& config,
     // Timestamp
     std::time_t now = std::time(nullptr);
     char timeBuf[64];
+#ifdef _MSC_VER
+    std::tm tmBuf;
+    gmtime_s(&tmBuf, &now);
+    std::strftime(timeBuf, sizeof(timeBuf), "%Y-%m-%dT%H:%M:%SZ", &tmBuf);
+#else
     std::strftime(timeBuf, sizeof(timeBuf), "%Y-%m-%dT%H:%M:%SZ", std::gmtime(&now));
+#endif
     json << "  \"packaged_at\": \"" << timeBuf << "\",\n";
 
     json << "  \"file_count\": " << files.size() << ",\n";

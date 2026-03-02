@@ -49,6 +49,17 @@ enum class ResourceType {
     Gunpowder,  // From enemies
     String,     // From spiders
     Bone,       // From skeletons
+
+    // Advanced materials (trading/loot)
+    Iron,       // Refined iron
+    Titanium,   // Rare metal
+    Naonite,    // Exotic mineral
+    Trinium,    // Exotic mineral
+    Xanion,     // Exotic mineral
+    Ogonite,    // Exotic mineral
+    Avorion,    // Legendary material
+    Energy,     // Energy resource
+    Credits,    // Currency
     
     // Count for iteration
     COUNT
@@ -88,6 +99,15 @@ inline std::string getResourceName(ResourceType type)
     case ResourceType::Gunpowder:   return "Gunpowder";
     case ResourceType::String:      return "String";
     case ResourceType::Bone:        return "Bone";
+    case ResourceType::Iron:        return "Iron";
+    case ResourceType::Titanium:    return "Titanium";
+    case ResourceType::Naonite:     return "Naonite";
+    case ResourceType::Trinium:     return "Trinium";
+    case ResourceType::Xanion:      return "Xanion";
+    case ResourceType::Ogonite:     return "Ogonite";
+    case ResourceType::Avorion:     return "Avorion";
+    case ResourceType::Energy:      return "Energy";
+    case ResourceType::Credits:     return "Credits";
     default:                        return "Unknown";
     }
 }
@@ -126,14 +146,23 @@ inline int getResourceRarity(ResourceType type)
     case ResourceType::Redstone:
     case ResourceType::Lapis:
     case ResourceType::Gunpowder:
+    case ResourceType::Iron:
+    case ResourceType::Energy:
+    case ResourceType::Credits:
         return 2; // Rare
         
     case ResourceType::GoldOre:
     case ResourceType::GoldIngot:
     case ResourceType::Emerald:
+    case ResourceType::Titanium:
+    case ResourceType::Naonite:
+    case ResourceType::Trinium:
         return 3; // Epic
         
     case ResourceType::Diamond:
+    case ResourceType::Xanion:
+    case ResourceType::Ogonite:
+    case ResourceType::Avorion:
         return 4; // Legendary
         
     default:
