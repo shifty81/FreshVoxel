@@ -1,14 +1,42 @@
 # Fresh Voxel Engine - Development Roadmap
 
-> **Last Updated:** 2026-02-17  
+> **Last Updated:** 2026-03-02  
 > **Note:** This roadmap shows the historical development plan including platform evolution. For accurate current implementation status, see [PROJECT_STATUS.md](PROJECT_STATUS.md).
 > 
 > **Platform Evolution:**
 > - **Initial Development**: OpenGL/Vulkan with GLFW (cross-platform)
 > - **Current State**: DirectX 12/11 with Win32 native windowing (Windows-exclusive)
-> - **Editor**: ImGui-based panels with native Win32 window management
+> - **Editor**: Native Win32 panels with ImGui fallback for cross-platform
 
 ## Recent Updates (2026-03-02)
+
+### 🔴 CRITICAL: Editor Audit Findings
+
+**Viewport Rendering Issue Identified:**
+- World may render behind GUI panels instead of strictly within viewport
+- Root cause: ViewportRenderTarget marks itself Ready before swap chain exists
+- Fix required in viewport state management and Z-order enforcement
+- See [EDITOR_FEATURES_STATUS.md](../editor/EDITOR_FEATURES_STATUS.md) for details
+
+**Documentation Realignment:**
+- Editor implementation was **significantly understated** (45% → 75% complete)
+- Many features documented as "not implemented" were actually working:
+  - ✅ Voxel Selection System (SelectionManager with 3 modes)
+  - ✅ File Dialog Integration (FileDialogManager + NFD)
+  - ✅ World Serialization (WorldSerializer complete)
+  - ✅ Transform Gizmos (TransformGizmo with move/rotate/scale)
+  - ✅ Camera Controller (7 orthographic views, bookmarks)
+  - ✅ Layout Management (LayoutManager with save/load)
+  - ✅ Editor Settings (EditorSettingsDialog complete)
+
+### 🚀 NEW: Git Integration Roadmap (v0.3.1)
+
+**Target: Direct version control from editor for streamlined workflow**
+
+- **Commit from Editor**: Stage and commit changes without leaving editor
+- **Pull/Push Operations**: Sync with remote repositories
+- **Branch Management**: Switch/create branches from toolbar
+- **Asset Repository Integration**: Pull asset packs from Git URLs
 
 ### 🚀 Dynamic Weapon/Tool Handling System (Latest)
 - **WeaponAttachment**: Complete weapon/tool attachment system for character bones
@@ -1047,19 +1075,26 @@ This section provides concrete suggestions for fleshing out and improving existi
 
 ## 🚀 Milestones
 
-### Milestone 1: Playable Single-Player (Estimated: 2-3 months) - 70% COMPLETE
+### Milestone 0: Critical Editor Fixes (IMMEDIATE) - 🔴 IN PROGRESS
+- 🔴 Fix viewport rendering order (world behind GUI)
+- ✅ Documentation audit and realignment
+- 🎯 Git integration - commit from editor
+- 🎯 Git integration - pull/push operations
+
+### Milestone 1: Playable Single-Player (Estimated: 2-3 months) - 80% COMPLETE
 - ✅ Core engine
 - ✅ Voxel world
 - ✅ Terrain generation
 - ✅ Player controller
 - ✅ Chunk streaming (90%)
-- 📋 Basic inventory
-- 📋 Resource gathering
-- 📋 Day/night cycle
+- ✅ Basic inventory (InventoryManager + InventoryPanel)
+- ✅ Crafting system (rpg::CraftingSystem + CraftingPanel)
+- ✅ Day/night cycle (TimeManager)
+- 📋 Resource gathering completion
+- 📋 Weather system
 
 ### Milestone 2: Full Gameplay Loop (Estimated: 4-5 months)
 - 🎯 All 12 professions
-- 🎯 Crafting system
 - 🎯 Building system
 - 🎯 NPC interactions
 - 🎯 Quest system basics
@@ -1067,21 +1102,21 @@ This section provides concrete suggestions for fleshing out and improving existi
 - 🎯 Combat system
 
 ### Milestone 3: Multiplayer Support (Estimated: 6-7 months)
-- 🎯 Networking foundation
-- 🎯 Lobby system
+- ✅ Networking foundation (AtlasForge merge - 45%)
+- 🎯 TCP/UDP transport integration
 - 🎯 Player synchronization
 - 🎯 Chat system
 - 🎯 Multi-player building
 - 🎯 Server hosting tools
 
 ### Milestone 4: Polish & Release (Estimated: 8-10 months)
-- 🎯 Audio system
+- ✅ Audio system (95% complete)
 - 🎯 Visual effects
 - 🎯 UI/UX polish
 - 🎯 Performance optimization
 - 🎯 Testing and bug fixes
 - 🎯 Documentation complete
-- 🎯 Modding support
+- 🎯 Modding support (Lua Sol2)
 
 ---
 
