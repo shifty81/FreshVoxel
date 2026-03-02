@@ -1575,6 +1575,12 @@ void Engine::updateEditor(float deltaTime)
                         m_viewportSwapChainReady = true;
                         LOG_INFO_C("✓ Deferred viewport swap chain created: " +
                                   std::to_string(vpWidth) + "x" + std::to_string(vpHeight), "Engine");
+
+                        // Notify the ViewportContext that the swap chain is now ready
+                        if (m_viewportContext) {
+                            m_viewportContext->getRenderTarget().notifySwapChainCreated(vpWidth, vpHeight);
+                        }
+
                         if (m_player) {
                             float aspectRatio = static_cast<float>(vpWidth) / static_cast<float>(vpHeight);
                             m_player->getCamera().setAspectRatio(aspectRatio);
@@ -1596,6 +1602,12 @@ void Engine::updateEditor(float deltaTime)
             if (vpWidth > 0 && vpHeight > 0) {
                 if (m_renderer->recreateSwapChain(vpWidth, vpHeight)) {
                     m_viewportSwapChainReady = true;
+
+                    // Notify the ViewportContext of the new dimensions
+                    if (m_viewportContext) {
+                        m_viewportContext->getRenderTarget().notifySwapChainCreated(vpWidth, vpHeight);
+                    }
+
                     // Update camera aspect ratio
                     if (m_player) {
                         float aspectRatio = static_cast<float>(vpWidth) / static_cast<float>(vpHeight);

@@ -120,6 +120,16 @@ public:
      */
     [[nodiscard]] void* getWindowHandle() const noexcept { return m_windowHandle; }
 
+    /**
+     * @brief Notify that the swap chain has been created externally
+     *
+     * Called by the engine after deferred swap chain creation succeeds.
+     * Transitions state from NeedsResize to Ready with correct dimensions.
+     * @param width Swap chain width in pixels
+     * @param height Swap chain height in pixels
+     */
+    void notifySwapChainCreated(int width, int height);
+
 private:
     void* m_windowHandle = nullptr;
     IRenderContext* m_renderContext = nullptr;
