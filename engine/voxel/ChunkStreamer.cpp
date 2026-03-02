@@ -199,8 +199,8 @@ void ChunkStreamer::generationThreadFunc()
         {
             std::unique_lock<std::mutex> lock(queueMutex);
             // Wait until there's work to do or we're shutting down
-            queueCV.wait_for(lock, std::chrono::milliseconds(50),
-                             [this] { return !backgroundQueue.empty() || !shouldRun; });
+            queueCV.wait(lock,
+                         [this] { return !backgroundQueue.empty() || !shouldRun; });
 
             if (!shouldRun) {
                 break;
