@@ -193,7 +193,7 @@ void ChunkStreamer::processLoadQueue()
 void ChunkStreamer::generationThreadFunc()
 {
     while (shouldRun) {
-        ChunkLoadRequest request;
+        ChunkLoadRequest request{};
         bool hasWork = false;
 
         {

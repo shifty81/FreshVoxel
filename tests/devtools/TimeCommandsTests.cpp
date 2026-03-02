@@ -123,7 +123,6 @@ TEST_F(TimeCommandsTest, SetTimeRateZero)
 
 TEST_F(TimeCommandsTest, SetTimeRateNegative)
 {
-    float originalRate = timeManager->getTimeRate();
     console->executeCommand("time rate -1");
     // Should show error or clamp to 0
     EXPECT_GE(timeManager->getTimeRate(), 0.0f);

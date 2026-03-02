@@ -23,7 +23,7 @@ InventoryPanel::InventoryPanel(int slotCount)
     }
 }
 
-void InventoryPanel::update(float deltaTime)
+void InventoryPanel::update(float /*deltaTime*/)
 {
     if (!m_visible || !m_inventory) {
         return;
@@ -98,6 +98,7 @@ void InventoryPanel::transferItem(int fromSlot, int toSlot, float amount)
     }
 
     float transferAmount = (amount <= 0.0f) ? fromSlotData.amount : std::min(amount, fromSlotData.amount);
+    (void)transferAmount;
 
     // This is a simplified implementation
     // In a real implementation, you would need to handle:
