@@ -8,6 +8,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Atlas-style Editor Workflow** — Build, package, and live-test games from the editor
+  - `GamePackager`: Packages game projects (world saves, assets, shaders, sounds, textures, config, Lua scripts) into distributable directories with a `package.json` manifest. Users can zip and share for play-testing.
+  - `ClientLauncher`: Launches FreshClient/FreshServer/FreshRuntime from the editor as separate processes for live testing. Auto-saves the world before launch. Cross-platform (CreateProcess on Windows, fork+exec on Linux/macOS).
+  - `EditorManager::buildPackage()`, `launchClient()`, `launchServer()` operations wired into the editor
+  - FreshClient now accepts `--project`, `--world`, `--width`, `--height`, `--windowed` CLI arguments for editor integration
+
+- **ViewportContext Rendering Pipeline** — Voxel world now renders through ViewportContext's render target
+  - Per ENGINE.md: "Nothing renders unless a ViewportRenderTarget is bound"
+  - Editor separates viewport rendering (voxel world) from editor composite (UI panels)
+  - Falls back to legacy direct-render path when ViewportContext is not yet initialized
+  - ViewportContext automatically wired to new worlds on creation
+
+- **OpenGL Texture GPU Operations** — Complete implementation of Texture GPU operations
+  - `createFromData()`: Uploads pixel data to GPU via glGenTextures/glTexImage2D
+  - `createEmpty()`: Creates empty GPU textures for render targets
+  - `setFilter()`: Updates GPU min/mag filter modes (Nearest, Linear, Bilinear, Trilinear)
+  - `setWrap()`: Updates GPU wrap modes (Repeat, Clamp, Mirror)
+  - `bind()`/`unbind()`: Texture binding to GPU texture units
+  - `cleanup()`: Proper GPU resource deletion with glDeleteTextures
+  - Full TextureFormat support: R8, RG8, RGB8, RGBA8, RGB16F, RGBA16F, RGB32F, RGBA32F, Depth24, Depth32F
+  - Non-OpenGL fallback preserved for DirectX backends
+
+- **ChunkStreamer Background Generation** — Background thread now pre-generates chunk data
+  - Background thread pulls from generation queue and builds terrain + mesh data
+  - Pre-generated chunks stored in ready cache for main thread to pick up
+  - Condition variable notification for efficient thread wake-up
+  - `VoxelWorld::generateChunkData()` for thread-safe terrain generation
+  - Non-const `VoxelWorld::getChunks()` accessor for chunk insertion
+
+- **22 new tests** for GamePackager (12 tests) and ClientLauncher (10 tests)
+
+### Changed
+- `Engine::renderEditor()` now routes voxel world rendering through ViewportContext when available
+- `Engine::createNewWorld()` wires ViewportContext to the new world
+- FreshClient updated with CLI argument parsing for editor integration
+
+### Added
 - **FreshVoxel Rebranding** — Project renamed from "Fresh" to "FreshVoxel" to reflect voxel-only focus
   - All project files, build scripts, and documentation updated
   - Scope locked to voxel games only (isometric/2.5D to full 3D)

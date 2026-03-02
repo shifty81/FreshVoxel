@@ -52,6 +52,7 @@ void ChunkStreamer::shutdown()
 {
     // Signal background thread to stop and wait for it to finish
     shouldRun = false;
+    queueCV.notify_all();
     if (generationThread.joinable()) {
         generationThread.join();
     }
@@ -100,16 +101,20 @@ void ChunkStreamer::determineChunksToLoad(const glm::vec3& playerPos)
                 if (pendingLoads.find(chunkPos) != pendingLoads.end())
                     continue;
 
-                // Add to load queue with priority based on distance
+                // Add to both load queue and background queue
                 ChunkLoadRequest request;
                 request.chunkPos = chunkPos;
                 request.priority = radius;
 
                 loadQueue.push(request);
+                backgroundQueue.push(request);
                 pendingLoads.insert(chunkPos);
             }
         }
     }
+
+    // Notify background thread that new work is available
+    queueCV.notify_one();
 }
 
 void ChunkStreamer::determineChunksToUnload(const glm::vec3& playerPos)
@@ -146,7 +151,21 @@ void ChunkStreamer::processLoadQueue()
 
     std::lock_guard<std::mutex> lock(queueMutex);
 
+    // First, insert any pre-generated chunks from the background thread
     int processed = 0;
+    auto it = readyChunks.begin();
+    while (it != readyChunks.end() && processed < chunksPerFrame) {
+        ChunkPos pos(it->first.x, it->first.y);
+        if (!world->getChunk(pos)) {
+            // Move the pre-generated chunk directly into the world
+            world->getChunks()[pos] = std::move(it->second);
+        }
+        pendingLoads.erase(it->first);
+        it = readyChunks.erase(it);
+        ++processed;
+    }
+
+    // Then process any remaining requests synchronously
     while (!loadQueue.empty() && processed < chunksPerFrame) {
         ChunkLoadRequest request = loadQueue.top();
         loadQueue.pop();
@@ -174,17 +193,45 @@ void ChunkStreamer::processLoadQueue()
 void ChunkStreamer::generationThreadFunc()
 {
     while (shouldRun) {
-        // Background chunk generation would happen here
-        // For now, just sleep to avoid busy-waiting
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        ChunkLoadRequest request;
+        bool hasWork = false;
 
-        // TODO: Pull from generation queue and pre-generate chunk data
-        // std::lock_guard<std::mutex> lock(queueMutex);
-        // if (!loadQueue.empty()) {
-        //     auto request = loadQueue.top();
-        //     // Pre-generate chunk data in background
-        //     // Store in cache for main thread to pick up
-        // }
+        {
+            std::unique_lock<std::mutex> lock(queueMutex);
+            // Wait until there's work to do or we're shutting down
+            queueCV.wait_for(lock, std::chrono::milliseconds(50),
+                             [this] { return !backgroundQueue.empty() || !shouldRun; });
+
+            if (!shouldRun) {
+                break;
+            }
+
+            if (!backgroundQueue.empty()) {
+                request = backgroundQueue.top();
+                backgroundQueue.pop();
+                hasWork = true;
+            }
+        }
+
+        if (hasWork && world) {
+            // Pre-generate chunk data in background thread
+            // This is the expensive operation (terrain generation + mesh building)
+            ChunkPos pos(request.chunkPos.x, request.chunkPos.y);
+
+            auto chunk = std::make_unique<Chunk>(pos);
+            {
+                std::lock_guard<std::mutex> lock(worldMutex);
+                // Access terrain generator through the world (thread-safe read)
+                world->generateChunkData(chunk.get());
+            }
+            chunk->generateMesh();
+
+            // Store in the ready cache for the main thread to pick up
+            {
+                std::lock_guard<std::mutex> lock(queueMutex);
+                readyChunks[request.chunkPos] = std::move(chunk);
+            }
+        }
     }
 }
 

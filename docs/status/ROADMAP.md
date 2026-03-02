@@ -10,6 +10,15 @@
 
 ## Recent Updates (2026-03-01)
 
+### 🚀 Atlas-style Editor Workflow (Latest)
+- **GamePackager**: Build distributable packages from editor (world saves, assets, shaders, sounds, textures, config, scripts)
+- **ClientLauncher**: Launch FreshClient/FreshServer from editor for live testing with auto-save
+- **ViewportContext Rendering**: Voxel world renders only through ViewportContext (per ENGINE.md)
+- **Texture GPU Ops**: Complete OpenGL texture upload, bind/unbind, filter/wrap, cleanup
+- **ChunkStreamer Background Gen**: Background thread now pre-generates chunk data
+- **FreshClient CLI**: Added --project, --world, --width, --height CLI args for editor integration
+- **22 new tests** for packaging and launcher systems
+
 ### 🚀 Version 0.2.7 Released
 - **AtlasForge Networking Merge**: Production-ready NetContext, NetHardening, QoSScheduler, and Replication systems ported
 - **Code Audit Complete**: All 22 subsystems verified, include headers validated, shutdown cleanup confirmed
