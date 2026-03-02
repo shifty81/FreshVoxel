@@ -62,6 +62,8 @@ add_library(FreshEngine STATIC
     editor/LayoutManager.cpp
     editor/EditorSettingsDialog.cpp
     editor/CameraController.cpp
+    editor/GamePackager.cpp
+    editor/ClientLauncher.cpp
     serialization/WorldSerializer.cpp
     ui/MainMenu.cpp
     ui/EditorToolbar.cpp

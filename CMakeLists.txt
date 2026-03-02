@@ -656,6 +656,8 @@ if(BUILD_TESTS)
         tests/character/AnimationClipTests.cpp
         tests/editor/SelectionManagerTests.cpp
         tests/editor/SelectionRendererTests.cpp
+        tests/editor/GamePackagerTests.cpp
+        tests/editor/ClientLauncherTests.cpp
         tests/ecs/HealthComponentTests.cpp
         tests/ecs/MovementComponentTests.cpp
         tests/ecs/CombatSystemTests.cpp
@@ -714,6 +716,8 @@ if(BUILD_TESTS)
         engine/editor/TransformGizmo.cpp
         engine/editor/TerraformingSystem.cpp
         engine/editor/FileDialogManager.cpp
+        engine/editor/GamePackager.cpp
+        engine/editor/ClientLauncher.cpp
         engine/devtools/DebugRenderer.cpp
         engine/devtools/DebugConsole.cpp
         engine/devtools/TimeCommands.cpp

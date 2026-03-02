@@ -49,6 +49,8 @@ class ProjectManager;
 class ViewportContext;
 class BlueprintEditor;
 class DialogueManager;
+class GamePackager;
+class ClientLauncher;
 
 namespace ecs
 {
@@ -519,6 +521,34 @@ public:
     void launchBlueprintEditor();
     
     /**
+     * @brief Build a distributable game package
+     *
+     * Atlas-style workflow: packages the current project (world saves, assets,
+     * shaders, sounds, textures, config, scripts) into a distributable directory
+     * that can be zipped and given to users for play-testing.
+     *
+     * @param outputPath Directory where the package will be created
+     */
+    void buildPackage(const std::string& outputPath = "");
+    
+    /**
+     * @brief Launch FreshClient for live testing
+     *
+     * Atlas-style workflow: launches FreshClient as a separate process that
+     * loads the current project's world, allowing real-time play-testing
+     * directly from the editor.
+     */
+    void launchClient();
+    
+    /**
+     * @brief Launch FreshServer for multiplayer testing
+     *
+     * Launches FreshServer as a separate process for testing multiplayer
+     * functionality with the current project's world.
+     */
+    void launchServer();
+    
+    /**
      * @brief Load a workspace layout
      * @param name Layout name ("Default", "Minimal", "Debugging", or custom name)
      */
@@ -681,6 +711,10 @@ private:
     // Blueprint and Dialogue editors
     std::unique_ptr<BlueprintEditor> m_blueprintEditor;
     std::unique_ptr<DialogueManager> m_dialogueManager;
+
+    // Atlas-style editor tools: packaging and live testing
+    std::unique_ptr<GamePackager> m_gamePackager;
+    std::unique_ptr<ClientLauncher> m_clientLauncher;
 
 #ifdef _WIN32
     // Windows-native integration managers

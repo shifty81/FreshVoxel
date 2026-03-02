@@ -50,6 +50,8 @@
 #include "voxel/VoxelWorld.h"
 #include "blueprint/BlueprintEditor.h"
 #include "dialogue/DialogueManager.h"
+#include "editor/GamePackager.h"
+#include "editor/ClientLauncher.h"
 
 #include <glm/glm.hpp>
 
@@ -694,6 +696,11 @@ bool EditorManager::initialize(WindowType* window, IRenderContext* renderContext
     m_dialogueManager = std::make_unique<DialogueManager>();
     LOG_INFO_C("Blueprint editor and Dialogue manager initialized", "EditorManager");
 
+    // Initialize Atlas-style editor tools: packaging and live testing
+    m_gamePackager = std::make_unique<GamePackager>();
+    m_clientLauncher = std::make_unique<ClientLauncher>();
+    LOG_INFO_C("GamePackager and ClientLauncher initialized", "EditorManager");
+
     m_initialized = true;
     LOG_INFO_C("EditorManager initialized successfully", "EditorManager");
     LOG_INFO_C("All editor UI panels initialized", "EditorManager");
@@ -889,6 +896,10 @@ void EditorManager::shutdown()
         m_blueprintEditor.reset();
     }
     m_dialogueManager.reset();
+
+    // Shutdown Atlas-style editor tools
+    m_gamePackager.reset();
+    m_clientLauncher.reset();
 
     // Shutdown in reverse order
     m_hotbar.reset();
@@ -2641,5 +2652,106 @@ void EditorManager::handleConsoleCommand(const std::string& command)
     }
 }
 #endif
+
+// ========== Atlas-style Editor Operations ==========
+
+void EditorManager::buildPackage(const std::string& outputPath)
+{
+    if (!m_gamePackager) {
+        LOG_WARNING_C("GamePackager not initialized", "EditorManager");
+        return;
+    }
+
+    // Auto-save the world before packaging
+    if (m_world && m_worldSerializer) {
+        if (!m_currentWorldPath.empty()) {
+            LOG_INFO_C("Auto-saving world before packaging...", "EditorManager");
+            m_worldSerializer->saveWorld(m_world, m_currentWorldPath);
+        }
+    }
+
+    PackageConfig config;
+    config.projectName = "FreshVoxelGame";
+    config.projectPath = ".";
+    config.worldSavePath = m_currentWorldPath;
+
+    // Use provided output path, or default to "dist/"
+    config.outputPath = outputPath.empty() ? "dist" : outputPath;
+
+    // Use project manager info if available
+    if (m_projectManager) {
+        // ProjectManager may provide project name and path
+        LOG_INFO_C("Using project settings for packaging", "EditorManager");
+    }
+
+    PackageResult result = m_gamePackager->buildPackage(config);
+
+    if (result.success) {
+        LOG_INFO_C("Package built successfully: " + result.outputFilePath + " (" +
+                       std::to_string(result.filesIncluded.size()) + " files, " +
+                       std::to_string(result.totalSizeBytes / 1024) + " KB)",
+                   "EditorManager");
+    } else {
+        LOG_ERROR_C("Package build failed: " + result.errorMessage, "EditorManager");
+    }
+}
+
+void EditorManager::launchClient()
+{
+    if (!m_clientLauncher) {
+        LOG_WARNING_C("ClientLauncher not initialized", "EditorManager");
+        return;
+    }
+
+    // Auto-save the world before launching client
+    if (m_world && m_worldSerializer) {
+        if (!m_currentWorldPath.empty()) {
+            LOG_INFO_C("Auto-saving world before launching client...", "EditorManager");
+            m_worldSerializer->saveWorld(m_world, m_currentWorldPath);
+        }
+    }
+
+    std::string projectPath = ".";
+    std::string worldPath = m_currentWorldPath;
+
+    LaunchResult result = m_clientLauncher->launchClient(projectPath, worldPath);
+
+    if (result.success) {
+        LOG_INFO_C("FreshClient launched successfully (PID: " +
+                       std::to_string(result.processId) + ")",
+                   "EditorManager");
+    } else {
+        LOG_ERROR_C("Failed to launch FreshClient: " + result.errorMessage, "EditorManager");
+    }
+}
+
+void EditorManager::launchServer()
+{
+    if (!m_clientLauncher) {
+        LOG_WARNING_C("ClientLauncher not initialized", "EditorManager");
+        return;
+    }
+
+    // Auto-save the world before launching server
+    if (m_world && m_worldSerializer) {
+        if (!m_currentWorldPath.empty()) {
+            LOG_INFO_C("Auto-saving world before launching server...", "EditorManager");
+            m_worldSerializer->saveWorld(m_world, m_currentWorldPath);
+        }
+    }
+
+    std::string projectPath = ".";
+    std::string worldPath = m_currentWorldPath;
+
+    LaunchResult result = m_clientLauncher->launchServer(projectPath, worldPath);
+
+    if (result.success) {
+        LOG_INFO_C("FreshServer launched successfully (PID: " +
+                       std::to_string(result.processId) + ")",
+                   "EditorManager");
+    } else {
+        LOG_ERROR_C("Failed to launch FreshServer: " + result.errorMessage, "EditorManager");
+    }
+}
 
 } // namespace fresh

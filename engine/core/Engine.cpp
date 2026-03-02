@@ -668,6 +668,12 @@ void Engine::createNewWorld(const std::string& name, int seed, bool is3D, int ga
     std::cout << "World '" << name << "' created successfully!" << std::endl;
     std::cout << "Total chunks: " << m_world->getChunks().size() << std::endl;
 
+    // Wire the ViewportContext to the new world (per ENGINE.md)
+    if (m_viewportContext) {
+        m_viewportContext->setWorld(m_world.get());
+        LOG_INFO_C("ViewportContext wired to new world", "Engine");
+    }
+
     // Now initialize game systems after world is created
     initializeGameSystems();
 
@@ -1804,7 +1810,9 @@ void Engine::renderGame()
 void Engine::renderEditor()
 {
     // EDITOR MODE RENDERING: Renders editor preview to viewport and editor UI
-    // This is the default mode where users build and edit their game
+    // Per ENGINE.md: "Nothing renders unless a ViewportRenderTarget is bound."
+    // The voxel world only renders through the ViewportContext's render target,
+    // not directly to the main window backbuffer.
     
     if (!m_renderer) {
         return;
@@ -1813,10 +1821,115 @@ void Engine::renderEditor()
     // Set clear color for editor (sky blue)
     m_renderer->clearColor(0.53f, 0.81f, 0.92f, 1.0f);
 
+    // === Viewport Rendering ===
+    // Route voxel world rendering through ViewportContext (per ENGINE.md)
+    // The viewport binds its render target, renders the world, then presents.
+    if (m_viewportContext && m_viewportContext->isReady()) {
+        // Bind the viewport render target
+        if (m_viewportContext->beginFrame()) {
+            // Render voxel world INTO the viewport only
+#if defined(FRESH_OPENGL_SUPPORT) && defined(FRESH_GLEW_AVAILABLE)
+            if (m_renderer->getAPI() == GraphicsAPI::OpenGL) {
+                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+                if (m_world && !m_isGeneratingWorld) {
+                    renderVoxelWorld();
+                }
+            }
+#endif
+
+#ifdef _WIN32
+            if (m_renderer->getAPI() == GraphicsAPI::DirectX11) {
+                if (m_world && m_player && !m_isGeneratingWorld) {
+                    auto* dx11Context = dynamic_cast<DirectX11RenderContext*>(m_renderer.get());
+                    if (dx11Context) {
+                        dx11Context->renderVoxelWorld(m_world.get(), m_player.get());
+                    }
+                }
+            }
+
+            if (m_renderer->getAPI() == GraphicsAPI::DirectX12) {
+                if (m_world && m_player && !m_isGeneratingWorld) {
+                    auto* dx12Context = dynamic_cast<DirectX12RenderContext*>(m_renderer.get());
+                    if (dx12Context) {
+                        dx12Context->renderVoxelWorld(m_world.get(), m_player.get());
+                    }
+                }
+            }
+#endif
+
+            // Present the viewport frame
+            m_viewportContext->endFrame();
+        }
+    } else {
+        // Fallback: ViewportContext not ready — render directly (legacy path)
+        // This path handles the case before the viewport is initialized
+        if (!m_renderer->beginFrame()) {
+#ifdef _WIN32
+            if (m_editorManager && m_editorManager->getViewportPanel()) {
+                m_editorManager->getViewportPanel()->setRenderingActive(false);
+            }
+#endif
+            return;
+        }
+
+#ifdef _WIN32
+        if (m_editorManager && m_editorManager->getViewportPanel()) {
+            m_editorManager->getViewportPanel()->setRenderingActive(true);
+        }
+#endif
+
+        m_renderer->setViewport(0, 0, m_renderer->getSwapchainWidth(),
+                                m_renderer->getSwapchainHeight());
+
+#if defined(FRESH_OPENGL_SUPPORT) && defined(FRESH_GLEW_AVAILABLE)
+        if (m_renderer->getAPI() == GraphicsAPI::OpenGL) {
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            if (m_world && !m_isGeneratingWorld) {
+                renderVoxelWorld();
+            }
+        }
+#endif
+
+#ifdef _WIN32
+        if (m_renderer->getAPI() == GraphicsAPI::DirectX11) {
+            if (m_world && m_player && !m_isGeneratingWorld) {
+                auto* dx11Context = dynamic_cast<DirectX11RenderContext*>(m_renderer.get());
+                if (dx11Context) {
+                    dx11Context->renderVoxelWorld(m_world.get(), m_player.get());
+                }
+            }
+        }
+
+        if (m_renderer->getAPI() == GraphicsAPI::DirectX12) {
+            if (m_world && m_player && !m_isGeneratingWorld) {
+                auto* dx12Context = dynamic_cast<DirectX12RenderContext*>(m_renderer.get());
+                if (dx12Context) {
+                    dx12Context->renderVoxelWorld(m_world.get(), m_player.get());
+                }
+            }
+        }
+#endif
+
+        // Render editor UI (panels, gizmos, selection)
+        if (m_editorManager && m_editorManager->isInitialized()) {
+            m_editorManager->beginFrame();
+        }
+
+        if (m_editorManager && m_editorManager->isInitialized() && m_editorManager->isVisible()) {
+            m_editorManager->render();
+        }
+
+        if (m_editorManager && m_editorManager->isInitialized()) {
+            m_editorManager->endFrame();
+        }
+
+        m_renderer->endFrame();
+        return;
+    }
+
+    // === Editor UI Rendering ===
+    // Editor composite goes to the main window backbuffer (separate from viewport)
     if (!m_renderer->beginFrame()) {
-        // Swap chain not ready yet (viewport not initialized).
-        // Mark the viewport as not actively rendering so its WM_PAINT
-        // handler paints a solid background instead of leaving artifacts.
 #ifdef _WIN32
         if (m_editorManager && m_editorManager->getViewportPanel()) {
             m_editorManager->getViewportPanel()->setRenderingActive(false);
@@ -1826,54 +1939,16 @@ void Engine::renderEditor()
     }
 
 #ifdef _WIN32
-    // DirectX is presenting to the viewport – tell the panel so WM_PAINT
-    // only validates the region instead of doing GDI painting.
     if (m_editorManager && m_editorManager->getViewportPanel()) {
         m_editorManager->getViewportPanel()->setRenderingActive(true);
     }
 #endif
 
-    // Set viewport to match swap chain size (viewport panel)
     m_renderer->setViewport(0, 0, m_renderer->getSwapchainWidth(),
                             m_renderer->getSwapchainHeight());
 
-#if defined(FRESH_OPENGL_SUPPORT) && defined(FRESH_GLEW_AVAILABLE)
-    if (m_renderer->getAPI() == GraphicsAPI::OpenGL) {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        // Render editor preview of world (if exists)
-        if (m_world && !m_isGeneratingWorld) {
-            renderVoxelWorld();
-        }
-        // Note: If no world exists, viewport shows clear color (empty scene)
-        // This is correct for blank projects - use File > New Level to add content
-    }
-#endif
-
-#ifdef _WIN32
-    // DirectX 11 editor preview rendering
-    if (m_renderer->getAPI() == GraphicsAPI::DirectX11) {
-        if (m_world && m_player && !m_isGeneratingWorld) {
-            auto* dx11Context = dynamic_cast<DirectX11RenderContext*>(m_renderer.get());
-            if (dx11Context) {
-                dx11Context->renderVoxelWorld(m_world.get(), m_player.get());
-            }
-        }
-    }
-
-    // DirectX 12 editor preview rendering
-    if (m_renderer->getAPI() == GraphicsAPI::DirectX12) {
-        if (m_world && m_player && !m_isGeneratingWorld) {
-            auto* dx12Context = dynamic_cast<DirectX12RenderContext*>(m_renderer.get());
-            if (dx12Context) {
-                dx12Context->renderVoxelWorld(m_world.get(), m_player.get());
-            }
-        }
-    }
-#endif
-    
     // Render editor UI (panels, gizmos, selection)
-    // This happens AFTER viewport content is rendered
+    // This happens AFTER viewport content is rendered to its own target
     if (m_editorManager && m_editorManager->isInitialized()) {
         m_editorManager->beginFrame();
     }

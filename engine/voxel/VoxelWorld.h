@@ -75,11 +75,21 @@ public:
     void setVoxel(const WorldPos& pos, const Voxel& voxel);
 
     /**
-     * @brief Get all loaded chunks
+     * @brief Get all loaded chunks (const)
      * @return Map of chunk positions to chunks
      */
     [[nodiscard]] const std::unordered_map<ChunkPos, std::unique_ptr<Chunk>>&
     getChunks() const noexcept
+    {
+        return m_chunks;
+    }
+
+    /**
+     * @brief Get all loaded chunks (mutable, for ChunkStreamer insertion)
+     * @return Map of chunk positions to chunks
+     */
+    [[nodiscard]] std::unordered_map<ChunkPos, std::unique_ptr<Chunk>>&
+    getChunks() noexcept
     {
         return m_chunks;
     }
@@ -108,6 +118,16 @@ public:
      * @brief Regenerate terrain for all currently loaded chunks
      */
     void regenerateLoadedChunks();
+
+    /**
+     * @brief Generate terrain data for a chunk (thread-safe for background generation)
+     *
+     * Fills the chunk with terrain data using the terrain generator.
+     * This does NOT insert the chunk into the world — the caller is responsible
+     * for managing chunk ownership. Safe to call from background threads.
+     * @param chunk Chunk to fill with terrain data
+     */
+    void generateChunkData(Chunk* chunk);
 
 private:
     std::unordered_map<ChunkPos, std::unique_ptr<Chunk>> m_chunks;

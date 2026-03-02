@@ -3,6 +3,11 @@
 
 #include <cstring>
 
+// OpenGL texture operations (when available)
+#if defined(FRESH_OPENGL_SUPPORT) && defined(FRESH_GLEW_AVAILABLE)
+#include <GL/glew.h>
+#endif
+
 // Forward declare stb_image functions (implementation is in stb_image_impl.cpp)
 extern "C" {
     unsigned char* stbi_load(char const* filename, int* x, int* y, int* channels_in_file, int desired_channels);
@@ -12,6 +17,101 @@ extern "C" {
 
 namespace fresh
 {
+
+// Helper: Convert TextureFormat to OpenGL internal format, pixel format, and type
+#if defined(FRESH_OPENGL_SUPPORT) && defined(FRESH_GLEW_AVAILABLE)
+static void getGLFormats(TextureFormat format, GLenum& internalFormat, GLenum& pixelFormat,
+                         GLenum& pixelType)
+{
+    switch (format) {
+    case TextureFormat::R8:
+        internalFormat = GL_R8;
+        pixelFormat = GL_RED;
+        pixelType = GL_UNSIGNED_BYTE;
+        break;
+    case TextureFormat::RG8:
+        internalFormat = GL_RG8;
+        pixelFormat = GL_RG;
+        pixelType = GL_UNSIGNED_BYTE;
+        break;
+    case TextureFormat::RGB8:
+        internalFormat = GL_RGB8;
+        pixelFormat = GL_RGB;
+        pixelType = GL_UNSIGNED_BYTE;
+        break;
+    case TextureFormat::RGBA8:
+        internalFormat = GL_RGBA8;
+        pixelFormat = GL_RGBA;
+        pixelType = GL_UNSIGNED_BYTE;
+        break;
+    case TextureFormat::RGB16F:
+        internalFormat = GL_RGB16F;
+        pixelFormat = GL_RGB;
+        pixelType = GL_FLOAT;
+        break;
+    case TextureFormat::RGBA16F:
+        internalFormat = GL_RGBA16F;
+        pixelFormat = GL_RGBA;
+        pixelType = GL_FLOAT;
+        break;
+    case TextureFormat::RGB32F:
+        internalFormat = GL_RGB32F;
+        pixelFormat = GL_RGB;
+        pixelType = GL_FLOAT;
+        break;
+    case TextureFormat::RGBA32F:
+        internalFormat = GL_RGBA32F;
+        pixelFormat = GL_RGBA;
+        pixelType = GL_FLOAT;
+        break;
+    case TextureFormat::Depth24:
+        internalFormat = GL_DEPTH_COMPONENT24;
+        pixelFormat = GL_DEPTH_COMPONENT;
+        pixelType = GL_UNSIGNED_INT;
+        break;
+    case TextureFormat::Depth32F:
+        internalFormat = GL_DEPTH_COMPONENT32F;
+        pixelFormat = GL_DEPTH_COMPONENT;
+        pixelType = GL_FLOAT;
+        break;
+    default:
+        internalFormat = GL_RGBA8;
+        pixelFormat = GL_RGBA;
+        pixelType = GL_UNSIGNED_BYTE;
+        break;
+    }
+}
+
+static GLenum getGLMinFilter(TextureFilter filter, bool hasMipmaps)
+{
+    switch (filter) {
+    case TextureFilter::Nearest:
+        return hasMipmaps ? GL_NEAREST_MIPMAP_NEAREST : GL_NEAREST;
+    case TextureFilter::Linear:
+    case TextureFilter::Bilinear:
+        return hasMipmaps ? GL_LINEAR_MIPMAP_NEAREST : GL_LINEAR;
+    case TextureFilter::Trilinear:
+        return hasMipmaps ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR;
+    default:
+        return GL_LINEAR;
+    }
+}
+
+static GLenum getGLMagFilter(TextureFilter filter)
+{
+    return (filter == TextureFilter::Nearest) ? GL_NEAREST : GL_LINEAR;
+}
+
+static GLenum getGLWrapMode(TextureWrap wrap)
+{
+    switch (wrap) {
+    case TextureWrap::Repeat: return GL_REPEAT;
+    case TextureWrap::Clamp:  return GL_CLAMP_TO_EDGE;
+    case TextureWrap::Mirror: return GL_MIRRORED_REPEAT;
+    default:                  return GL_REPEAT;
+    }
+}
+#endif
 
 Texture::Texture() {}
 
@@ -108,27 +208,37 @@ bool Texture::createFromData(const void* data, int w, int h, TextureFormat fmt,
     this->format = fmt;
     this->hasMipmaps = generateMipmaps;
 
-    // TODO: Create actual GPU texture from data
-    // For now, we mark the texture as valid by assigning a non-zero ID
-    // Real GPU texture upload needs to be implemented in the rendering backend
-    // (OpenGL, DirectX 11, DirectX 12)
-    //
-    // Example for OpenGL:
-    //   glGenTextures(1, &textureID);
-    //   glBindTexture(GL_TEXTURE_2D, textureID);
-    //   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-    //   if (generateMipmaps) glGenerateMipmap(GL_TEXTURE_2D);
-    //
-    // Example for DirectX 11:
-    //   D3D11_TEXTURE2D_DESC desc;
-    //   D3D11_SUBRESOURCE_DATA initData;
-    //   device->CreateTexture2D(&desc, &initData, &texture);
-    //
-    // This will be implemented when integrating with the RenderContext backends
-    
-    this->textureID = 1; // Placeholder - indicates "valid" texture loaded in memory
-    
+#if defined(FRESH_OPENGL_SUPPORT) && defined(FRESH_GLEW_AVAILABLE)
+    // Create GPU texture using OpenGL
+    GLenum internalFormat, pixelFormat, pixelType;
+    getGLFormats(fmt, internalFormat, pixelFormat, pixelType);
+
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_2D, textureID);
+
+    // Upload pixel data
+    glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, w, h, 0, pixelFormat, pixelType, data);
+
+    // Generate mipmaps if requested
+    if (generateMipmaps) {
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+
+    // Set default filtering and wrap modes
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+                    getGLMinFilter(filter, generateMipmaps));
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, getGLMagFilter(filter));
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, getGLWrapMode(wrap));
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, getGLWrapMode(wrap));
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    return textureID != 0;
+#else
+    // Non-OpenGL fallback: mark as valid placeholder
+    this->textureID = 1;
     return true;
+#endif
 }
 
 bool Texture::createEmpty(int w, int h, TextureFormat fmt)
@@ -144,39 +254,83 @@ bool Texture::createEmpty(int w, int h, TextureFormat fmt)
     this->format = fmt;
     this->hasMipmaps = false;
 
-    // TODO: Create actual GPU texture
-    this->textureID = 1; // Placeholder
+#if defined(FRESH_OPENGL_SUPPORT) && defined(FRESH_GLEW_AVAILABLE)
+    GLenum internalFormat, pixelFormat, pixelType;
+    getGLFormats(fmt, internalFormat, pixelFormat, pixelType);
 
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_2D, textureID);
+
+    // Create empty texture (no data upload)
+    glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, w, h, 0, pixelFormat, pixelType, nullptr);
+
+    // Default filtering for render targets
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    return textureID != 0;
+#else
+    this->textureID = 1;
     return true;
+#endif
 }
 
 void Texture::setFilter(TextureFilter newFilter)
 {
     filter = newFilter;
-    // TODO: Update GPU texture filtering mode
+#if defined(FRESH_OPENGL_SUPPORT) && defined(FRESH_GLEW_AVAILABLE)
+    if (textureID != 0) {
+        glBindTexture(GL_TEXTURE_2D, textureID);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+                        getGLMinFilter(filter, hasMipmaps));
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, getGLMagFilter(filter));
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+#endif
 }
 
 void Texture::setWrap(TextureWrap newWrap)
 {
     wrap = newWrap;
-    // TODO: Update GPU texture wrap mode
+#if defined(FRESH_OPENGL_SUPPORT) && defined(FRESH_GLEW_AVAILABLE)
+    if (textureID != 0) {
+        glBindTexture(GL_TEXTURE_2D, textureID);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, getGLWrapMode(wrap));
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, getGLWrapMode(wrap));
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+#endif
 }
 
 void Texture::bind(int unit) const
 {
-    // TODO: Bind texture to GPU unit
+#if defined(FRESH_OPENGL_SUPPORT) && defined(FRESH_GLEW_AVAILABLE)
+    if (textureID != 0) {
+        glActiveTexture(GL_TEXTURE0 + unit);
+        glBindTexture(GL_TEXTURE_2D, textureID);
+    }
+#else
     (void)unit;
+#endif
 }
 
 void Texture::unbind() const
 {
-    // TODO: Unbind texture from GPU
+#if defined(FRESH_OPENGL_SUPPORT) && defined(FRESH_GLEW_AVAILABLE)
+    glBindTexture(GL_TEXTURE_2D, 0);
+#endif
 }
 
 void Texture::cleanup()
 {
     if (textureID != 0) {
-        // TODO: Delete GPU texture
+#if defined(FRESH_OPENGL_SUPPORT) && defined(FRESH_GLEW_AVAILABLE)
+        glDeleteTextures(1, &textureID);
+#endif
         textureID = 0;
     }
 }

@@ -134,4 +134,12 @@ void VoxelWorld::regenerateLoadedChunks()
     }
 }
 
+void VoxelWorld::generateChunkData(Chunk* chunk)
+{
+    if (!chunk || !m_terrainGenerator) {
+        return;
+    }
+    m_terrainGenerator->generateChunk(chunk);
+}
+
 } // namespace fresh

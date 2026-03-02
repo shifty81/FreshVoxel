@@ -1,5 +1,6 @@
 #pragma once
 #include <atomic>
+#include <condition_variable>
 #include <map>
 #include <mutex>
 #include <queue>
@@ -121,11 +122,16 @@ private:
     std::set<glm::ivec2, IVec2Comparator> pendingLoads;
     std::vector<glm::ivec2> unloadQueue;
 
+    // Background generation: pre-generated chunks waiting to be inserted into the world
+    std::map<glm::ivec2, std::unique_ptr<Chunk>, IVec2Comparator> readyChunks;
+    std::priority_queue<ChunkLoadRequest> backgroundQueue;
+
     // Threading
     std::thread generationThread;
     std::mutex queueMutex;
     std::mutex worldMutex;
     std::atomic<bool> shouldRun{true};
+    std::condition_variable queueCV;
 
     glm::ivec2 lastPlayerChunk{0, 0};
 };
