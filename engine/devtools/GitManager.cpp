@@ -22,6 +22,20 @@ namespace fs = std::filesystem;
 namespace fresh
 {
 
+namespace
+{
+    // Maximum number of commits to retrieve in history queries
+    constexpr int MAX_COMMIT_HISTORY = 100;
+
+    // Minimum length of a git status --porcelain line ("XY " + 1 char filename)
+    constexpr size_t MIN_STATUS_LINE_LENGTH = 4;
+
+#ifdef _WIN32
+    // Timeout for git operations in milliseconds
+    constexpr unsigned long GIT_OPERATION_TIMEOUT_MS = 30000;
+#endif
+} // anonymous namespace
+
 GitManager::GitManager() = default;
 
 GitManager::~GitManager() = default;
@@ -79,7 +93,7 @@ std::vector<GitFileStatus> GitManager::getStatus()
     std::istringstream stream(result.output);
     std::string line;
     while (std::getline(stream, line)) {
-        if (line.size() < 4) {
+        if (line.size() < MIN_STATUS_LINE_LENGTH) {
             continue; // Need at least "XY " + 1 char filename
         }
 
@@ -195,8 +209,8 @@ std::vector<GitCommitInfo> GitManager::getRecentCommits(int count)
     }
 
     // Clamp count to reasonable limit
-    if (count > 100) {
-        count = 100;
+    if (count > MAX_COMMIT_HISTORY) {
+        count = MAX_COMMIT_HISTORY;
     }
 
     // Use a delimiter that won't appear in commit data
@@ -376,7 +390,7 @@ GitResult GitManager::executeGit(const std::vector<std::string>& args) const
             errOutput += buffer;
         }
 
-        WaitForSingleObject(pi.hProcess, 30000); // 30 second timeout
+        WaitForSingleObject(pi.hProcess, GIT_OPERATION_TIMEOUT_MS);
 
         DWORD exitCode;
         GetExitCodeProcess(pi.hProcess, &exitCode);
