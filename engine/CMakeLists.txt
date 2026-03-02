@@ -117,6 +117,8 @@ add_library(FreshEngine STATIC
     scripting/lua/LuaScriptingEngine.cpp
     scripting/lua/LuaECSBindings.cpp
     scripting/lua/LuaTimeBindings.cpp
+    scripting/lua/LuaWeatherBindings.cpp
+    scripting/lua/LuaSeasonBindings.cpp
     editor/EditorManager.cpp
     viewport/ViewportContext.cpp
     viewport/ViewportRenderTarget.cpp
