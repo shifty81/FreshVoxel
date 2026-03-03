@@ -109,6 +109,7 @@ add_library(FreshEngine STATIC
     sim/TickScheduler.cpp
     sim/StateHasher.cpp
     sim/ReplayRecorder.cpp
+    sim/AlertStack.cpp
     command/CommandHistory.cpp
     mod/ModLoader.cpp
     plugin/PluginSystem.cpp
@@ -126,6 +127,20 @@ add_library(FreshEngine STATIC
     viewport/InputContext.cpp
     ui/HotbarPanel.cpp
     ui/NativeMainMenu.cpp
+    core/EventBus.cpp
+    core/RuntimeBootstrap.cpp
+    core/GameStateManager.cpp
+    ecs/SystemRegistry.cpp
+    ecs/DeltaEditStore.cpp
+    graphvm/GraphVM.cpp
+    graphvm/GraphCompiler.cpp
+    assets/AssetBinaryIO.cpp
+    assets/AssetHotReload.cpp
+    networking/NetworkInterpolationBuffer.cpp
+    networking/DeltaCompression.cpp
+    networking/JitterBuffer.cpp
+    networking/LagCompensation.cpp
+    networking/NetworkQualityMonitor.cpp
 )
 
 # Add platform-specific rendering backends
