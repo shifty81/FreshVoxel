@@ -78,7 +78,7 @@ TEST_F(RagdollSystemTest, Activate_PositionsRootBodyAtGivenPosition)
     glm::vec3 rootPos(5.0f, 10.0f, 15.0f);
     ragdoll->activate(rootPos);
 
-    int rootIdx = ragdoll->getBodyIndex("Root");
+    int rootIdx = ragdoll->getBodyIndex("root");
     ASSERT_GE(rootIdx, 0);
     glm::vec3 pos = ragdoll->getBodies()[rootIdx].position;
     EXPECT_FLOAT_EQ(pos.x, rootPos.x);
@@ -112,7 +112,7 @@ TEST_F(RagdollSystemTest, Update_MovesBodiesUnderGravityWhenActive)
     ragdoll->activate(glm::vec3(0.0f, 10.0f, 0.0f));
 
     // Record initial Y of a non-root body
-    int spineIdx = ragdoll->getBodyIndex("Spine");
+    int spineIdx = ragdoll->getBodyIndex("spine");
     ASSERT_GE(spineIdx, 0);
     float initialY = ragdoll->getBodies()[spineIdx].position.y;
 
@@ -129,9 +129,9 @@ TEST_F(RagdollSystemTest, Update_MovesBodiesUnderGravityWhenActive)
 TEST_F(RagdollSystemTest, GetBodyIndex_FindsBodyByBoneName)
 {
     ragdoll->initialize(*skeleton);
-    EXPECT_GE(ragdoll->getBodyIndex("Root"), 0);
-    EXPECT_GE(ragdoll->getBodyIndex("Head"), 0);
-    EXPECT_GE(ragdoll->getBodyIndex("LeftHand"), 0);
+    EXPECT_GE(ragdoll->getBodyIndex("root"), 0);
+    EXPECT_GE(ragdoll->getBodyIndex("head"), 0);
+    EXPECT_GE(ragdoll->getBodyIndex("left_hand"), 0);
 }
 
 TEST_F(RagdollSystemTest, GetBodyIndex_ReturnsNegativeOneForUnknownName)
@@ -146,7 +146,7 @@ TEST_F(RagdollSystemTest, GetBodyPosition_ReturnsBodyPositionByName)
     ragdoll->initialize(*skeleton);
     ragdoll->activate(glm::vec3(5.0f, 10.0f, 15.0f));
 
-    glm::vec3 rootPos = ragdoll->getBodyPosition("Root");
+    glm::vec3 rootPos = ragdoll->getBodyPosition("root");
     EXPECT_FLOAT_EQ(rootPos.x, 5.0f);
     EXPECT_FLOAT_EQ(rootPos.y, 10.0f);
     EXPECT_FLOAT_EQ(rootPos.z, 15.0f);
@@ -161,7 +161,7 @@ TEST_F(RagdollSystemTest, ApplyImpulse_MovesSpecificBody)
     ragdoll->initialize(*skeleton);
     ragdoll->activate(glm::vec3(0.0f));
 
-    int headIdx = ragdoll->getBodyIndex("Head");
+    int headIdx = ragdoll->getBodyIndex("head");
     ASSERT_GE(headIdx, 0);
     glm::vec3 before = ragdoll->getBodies()[headIdx].position;
 
@@ -178,7 +178,7 @@ TEST_F(RagdollSystemTest, ApplyImpulseAtPoint_AffectsBodiesWithinRadius)
     ragdoll->activate(glm::vec3(0.0f));
 
     // Get a body position to use as the impulse point
-    int headIdx = ragdoll->getBodyIndex("Head");
+    int headIdx = ragdoll->getBodyIndex("head");
     ASSERT_GE(headIdx, 0);
     glm::vec3 headPos = ragdoll->getBodies()[headIdx].position;
     glm::vec3 before = headPos;

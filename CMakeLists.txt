@@ -656,6 +656,9 @@ if(BUILD_TESTS)
         tests/character/BodyPartLibraryTests.cpp
         tests/character/AnimationClipTests.cpp
         tests/character/WeaponAttachmentTests.cpp
+        tests/character/RagdollSystemTests.cpp
+        tests/character/HitReactionSystemTests.cpp
+        tests/physics/ClothSimulationTests.cpp
         tests/editor/SelectionManagerTests.cpp
         tests/editor/SelectionRendererTests.cpp
         tests/editor/GamePackagerTests.cpp
@@ -730,6 +733,11 @@ if(BUILD_TESTS)
         engine/character/AnimationClip.cpp
         engine/character/AnimationController.cpp
         engine/character/WeaponAttachment.cpp
+        engine/character/RagdollSystem.cpp
+        engine/character/HitReactionSystem.cpp
+        engine/character/Bone.cpp
+        engine/character/HumanoidSkeleton.cpp
+        engine/physics/ClothSimulation.cpp
         engine/editor/SelectionManager.cpp
         engine/editor/SelectionRenderer.cpp
         engine/editor/TransformGizmo.cpp

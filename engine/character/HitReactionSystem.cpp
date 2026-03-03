@@ -121,10 +121,11 @@ HitDirection HitReactionSystem::computeHitDirection(const glm::vec3& characterFo
                                                      const glm::vec3& hitDir)
 {
     // Vertical component check first
+    // hitDir is the direction the hit travels; Above/Below describe where it comes FROM
     float upDot = hitDir.y;
-    if (upDot > 0.7f)
-        return HitDirection::Above;
     if (upDot < -0.7f)
+        return HitDirection::Above;
+    if (upDot > 0.7f)
         return HitDirection::Below;
 
     // Horizontal direction relative to character forward (XZ plane)
@@ -143,7 +144,8 @@ HitDirection HitReactionSystem::computeHitDirection(const glm::vec3& characterFo
     }
     else
     {
-        return rightDot >= 0.0f ? HitDirection::Right : HitDirection::Left;
+        // Positive rightDot means hit travels in the right direction (comes FROM left)
+        return rightDot >= 0.0f ? HitDirection::Left : HitDirection::Right;
     }
 }
 
