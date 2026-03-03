@@ -29,6 +29,7 @@ add_library(FreshEngine STATIC
     physics/CollisionDetection.cpp
     physics/PhysicsComponent.cpp
     physics/PhysicsSystemEnhanced.cpp
+    physics/ClothSimulation.cpp
     interaction/RaycastSystem.cpp
     interaction/VoxelInteraction.cpp
     interaction/VoxelTool.cpp
