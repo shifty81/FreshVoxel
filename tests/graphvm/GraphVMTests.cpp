@@ -109,8 +109,9 @@ TEST_F(GraphVMTest, GraphCompiler_CompilesAndRuns) {
 
     fresh::vm::GraphCompiler compiler;
     auto bc = compiler.compile(graph);
-    bc.instructions.push_back({fresh::vm::OpCode::STORE_VAR, 0, 0, 0});
-    bc.instructions.push_back({fresh::vm::OpCode::END, 0, 0, 0});
+    // Insert STORE_VAR before the compiler-generated END instruction
+    bc.instructions.insert(bc.instructions.end() - 1,
+        {fresh::vm::OpCode::STORE_VAR, 0, 0, 0});
 
     fresh::vm::VMContext ctx;
     vm.execute(bc, ctx);

@@ -685,6 +685,18 @@ if(BUILD_TESTS)
         tests/viewport/ViewportRenderTargetTests.cpp
         tests/blueprint/BlueprintGraphTests.cpp
         tests/dialogue/DialogueSystemTests.cpp
+        tests/core/EventBusTests.cpp
+        tests/core/RuntimeBootstrapTests.cpp
+        tests/core/GameStateManagerTests.cpp
+        tests/ecs/SystemRegistryTests.cpp
+        tests/ecs/DeltaEditStoreTests.cpp
+        tests/graphvm/GraphVMTests.cpp
+        tests/networking/NetworkInterpolationBufferTests.cpp
+        tests/networking/DeltaCompressionTests.cpp
+        tests/networking/JitterBufferTests.cpp
+        tests/networking/LagCompensationTests.cpp
+        tests/networking/NetworkQualityMonitorTests.cpp
+        tests/sim/AlertStackTests.cpp
     )
     
     # Engine source files needed for tests (subset from engine/)
@@ -757,6 +769,21 @@ if(BUILD_TESTS)
         engine/dialogue/DialogueNode.cpp
         engine/dialogue/DialogueGraph.cpp
         engine/dialogue/DialogueManager.cpp
+        engine/core/EventBus.cpp
+        engine/core/RuntimeBootstrap.cpp
+        engine/core/GameStateManager.cpp
+        engine/ecs/SystemRegistry.cpp
+        engine/ecs/DeltaEditStore.cpp
+        engine/graphvm/GraphVM.cpp
+        engine/graphvm/GraphCompiler.cpp
+        engine/assets/AssetBinaryIO.cpp
+        engine/assets/AssetHotReload.cpp
+        engine/networking/NetworkInterpolationBuffer.cpp
+        engine/networking/DeltaCompression.cpp
+        engine/networking/JitterBuffer.cpp
+        engine/networking/LagCompensation.cpp
+        engine/networking/NetworkQualityMonitor.cpp
+        engine/sim/AlertStack.cpp
     )
 
     # Create test executable
