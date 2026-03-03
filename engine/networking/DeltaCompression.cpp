@@ -151,7 +151,7 @@ bool DeltaCompression::needsKeyframe(uint32_t entityId,
     const auto& bl = it->second;
     if (bl.forceKeyframe) return true;
 
-    if (currentTick >= bl.lastKeyframeTick + m_keyframeInterval) return true;
+    if (currentTick - bl.lastKeyframeTick >= m_keyframeInterval) return true;
 
     return false;
 }
