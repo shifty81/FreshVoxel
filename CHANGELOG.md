@@ -8,6 +8,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Physics Integration for Character System** — Phase 7 Weeks 13-14 implementation
+  - `ClothSimulation`: Verlet-integration particle-based cloth physics for capes/clothing
+    - Rectangular particle grid with structural (horizontal/vertical) and shear (diagonal) constraints
+    - Configurable damping and constraint solver iterations
+    - Pin/unpin particles, apply forces (gravity, wind), reset to initial state
+    - 17 new tests for grid construction, constraint satisfaction, pinning, and hanging behavior
+  - `RagdollSystem`: Skeleton-to-ragdoll conversion for death/hit physics
+    - Converts HumanoidSkeleton bone hierarchy into Verlet-integrated rigid bodies
+    - Distance constraints maintain bone-to-bone rest lengths
+    - Activate/deactivate ragdoll at any world position
+    - Apply impulses to specific bodies or radially from a point (explosion/hit)
+    - Configurable gravity, damping, and constraint iterations
+    - 17 new tests for initialization, activation, gravity, impulse, and constraint maintenance
+  - `HitReactionSystem`: Procedural hit reaction system for character animations
+    - Process hits with direction, force, and target bone
+    - Compute relative hit direction from character orientation (Front, Back, Left, Right, Above, Below)
+    - Decaying rotation offsets applied to skeleton bones
+    - Force-scaled reactions capped at 30° maximum rotation
+    - Multiple simultaneous reactions with configurable maximum
+    - Global intensity multiplier for gameplay tuning
+    - 21 new tests for hit processing, decay, direction computation, and bone offsets
+  - 55 new tests total for physics integration
+
 - **Dynamic Weapon/Tool Handling System** — Complete weapon attachment and procedural swing animations
   - `WeaponAttachment`: Attach weapons/tools to character bone attachment points (RightHand, LeftHand, BothHands, Back, Hip)
   - `WeaponDefinition`: Data-driven weapon definitions with grip type, weight, length, and voxel geometry
