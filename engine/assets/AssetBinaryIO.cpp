@@ -10,7 +10,7 @@ bool AssetBinaryIO::writeGraph(const std::string& path, const vm::Bytecode& prog
     AssetHeader hdr;
     hdr.type = AssetType::Graph;
     hdr.size = static_cast<uint32_t>(
-        sizeof(uint32_t) +
+        sizeof(uint32_t) * 2 +
         prog.constants.size() * sizeof(vm::Value) +
         prog.instructions.size() * sizeof(vm::Instruction)
     );
@@ -37,7 +37,7 @@ bool AssetBinaryIO::readGraph(const std::string& path, vm::Bytecode& prog) {
     AssetHeader hdr;
     in.read(reinterpret_cast<char*>(&hdr), sizeof(hdr));
 
-    if (hdr.magic != ASSET_MAGIC) return false;
+    if (hdr.magic != ASSET_MAGIC || hdr.type != AssetType::Graph) return false;
 
     uint32_t constCount;
     in.read(reinterpret_cast<char*>(&constCount), sizeof(uint32_t));
