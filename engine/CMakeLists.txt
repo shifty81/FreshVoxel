@@ -29,6 +29,7 @@ add_library(FreshEngine STATIC
     physics/CollisionDetection.cpp
     physics/PhysicsComponent.cpp
     physics/PhysicsSystemEnhanced.cpp
+    physics/ClothSimulation.cpp
     interaction/RaycastSystem.cpp
     interaction/VoxelInteraction.cpp
     interaction/VoxelTool.cpp
@@ -51,6 +52,8 @@ add_library(FreshEngine STATIC
     character/AnimationController.cpp
     character/IKSolver.cpp
     character/CharacterRenderer.cpp
+    character/RagdollSystem.cpp
+    character/HitReactionSystem.cpp
     editor/EditorGUI.cpp
     editor/WorldEditor.cpp
     editor/TerraformingSystem.cpp

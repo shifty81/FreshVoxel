@@ -223,11 +223,11 @@ A high-performance C++ voxel game engine with multiplayer support, featuring pro
 - [x] Procedural swing generation
 
 #### Physics Integration (Weeks 13-14)
-- [ ] Cloth physics for capes/clothing
+- [x] Cloth physics for capes/clothing
 - [ ] Backpack/item physics
 - [ ] Hair physics system
-- [ ] Ragdoll physics
-- [ ] Hit reaction system
+- [x] Ragdoll physics
+- [x] Hit reaction system
 - [ ] Environmental interaction (climbing, swimming, ducking)
 
 ### Phase 8: Advanced Terrain Generation (NEW - 24 weeks)
