@@ -52,6 +52,7 @@ add_library(FreshEngine STATIC
     character/IKSolver.cpp
     character/CharacterRenderer.cpp
     character/RagdollSystem.cpp
+    character/HitReactionSystem.cpp
     editor/EditorGUI.cpp
     editor/WorldEditor.cpp
     editor/TerraformingSystem.cpp
