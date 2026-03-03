@@ -38,6 +38,7 @@ Essential guides for new users and developers:
 - [Getting Started](docs/getting-started/GETTING_STARTED.md) - Complete setup guide
 - [Build Instructions](docs/getting-started/BUILD.md) - Manual build steps
 - [Automated Build](docs/getting-started/AUTOMATED_BUILD.md) - Automated setup script
+- [CI/CD Setup Guide](docs/getting-started/CI_CD_SETUP_GUIDE.md) - Reusable guide for adding automated builds to any repo
 - [Running the Engine](docs/getting-started/RUNNING.md) - How to run
 - [Quick Start - New Features](docs/getting-started/QUICK_START_NEW_FEATURES.md) - Latest features overview
 - [Quick Start - Win32 UI](docs/getting-started/QUICK_START_WIN32_UI.md) - Windows native GUI guide
@@ -200,10 +201,11 @@ fresh/
 ├── ARCHIVED.md                        # Archived content
 │
 └── docs/
-    ├── getting-started/               # Setup and installation (8 docs)
+    ├── getting-started/               # Setup and installation (9 docs)
     │   ├── GETTING_STARTED.md
     │   ├── BUILD.md
     │   ├── AUTOMATED_BUILD.md
+    │   ├── CI_CD_SETUP_GUIDE.md
     │   └── ...
     │
     ├── guides/                        # User guides (19 docs)
@@ -306,7 +308,7 @@ Essential files kept in root for visibility:
 ## 📊 Documentation Statistics
 
 - **Total Documents**: ~240 markdown files
-- **Getting Started**: 8 guides
+- **Getting Started**: 9 guides
 - **User Guides**: 37 guides  
 - **Editor Docs**: 21 documents
 - **Architecture**: 19 documents
