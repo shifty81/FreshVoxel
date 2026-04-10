@@ -7,7 +7,9 @@
 // because they delegate to thread-safe engine APIs internally.
 // ===========================================================================
 
+#ifndef FRESH_ENGINE_EXPORTS
 #define FRESH_ENGINE_EXPORTS  // activates __declspec(dllexport) in the header
+#endif
 #include "core/EngineAPI.h"
 #include "core/Engine.h"
 #include "core/EngineConfig.h"
@@ -16,6 +18,10 @@
 #include "ecs/IComponent.h"
 #include "editor/PrefabSystem.h"
 #include "voxel/VoxelWorld.h"
+
+#ifdef FRESH_VOX_AVAILABLE
+#include "assets/vox/VoxImporter.h"
+#endif
 
 #include <mutex>
 #include <sstream>
