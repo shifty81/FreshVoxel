@@ -46,6 +46,9 @@ if(ENABLE_OPENGL)
     add_definitions(-DFRESH_OPENGL_SUPPORT)
 endif()
 
+# .vox import/export is always available (pure C++, no extra deps)
+add_definitions(-DFRESH_VOX_AVAILABLE)
+
 # ==============================================================================
 # Dependencies
 # ==============================================================================
@@ -597,6 +600,25 @@ add_subdirectory(editor)
 add_subdirectory(client)
 add_subdirectory(server)
 add_subdirectory(runtime)
+
+# --- FreshVoxelEngine.dll — WPF-hostable shared library target (Windows only) ---
+if(WIN32)
+    add_library(FreshVoxelEngine_dll SHARED
+        engine/core/EngineAPI.cpp
+    )
+    set_target_properties(FreshVoxelEngine_dll PROPERTIES
+        OUTPUT_NAME "FreshVoxelEngine"
+        WINDOWS_EXPORT_ALL_SYMBOLS ON
+        POSITION_INDEPENDENT_CODE ON
+    )
+    target_compile_definitions(FreshVoxelEngine_dll PRIVATE FRESH_ENGINE_EXPORTS)
+    target_link_libraries(FreshVoxelEngine_dll PUBLIC FreshEngine)
+    target_include_directories(FreshVoxelEngine_dll PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/engine
+    )
+    install(TARGETS FreshVoxelEngine_dll DESTINATION bin)
+    message(STATUS "FreshVoxelEngine.dll (WPF host target) configured")
+endif()
 
 # Compiler and linker settings are applied in each subdirectory's CMakeLists.txt
 # via inheriting from FreshEngine's PUBLIC properties and per-target options

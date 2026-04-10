@@ -1,0 +1,46 @@
+<UserControl x:Class="FreshEditor.WPF.Controls.OutputLogControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="#FF1E1E1E">
+  <DockPanel>
+    <!-- Header + Clear button -->
+    <Border DockPanel.Dock="Top" Background="#FF2D2D30" Padding="4,2">
+      <DockPanel>
+        <Button DockPanel.Dock="Right" Content="Clear" Padding="6,1"
+                Background="#FF3F3F46" Foreground="White" BorderBrush="#FF555558"
+                Click="ClearButton_Click"/>
+        <TextBlock Text="Output Log" FontWeight="Bold" Foreground="#FFD4D4D4"
+                   VerticalAlignment="Center"/>
+      </DockPanel>
+    </Border>
+
+    <!-- Virtualised log list -->
+    <ListView x:Name="LogList"
+              Background="#FF1E1E1E" Foreground="White"
+              BorderBrush="Transparent"
+              VirtualizingPanel.IsVirtualizing="True"
+              VirtualizingPanel.VirtualizationMode="Recycling"
+              ScrollViewer.HorizontalScrollBarVisibility="Auto">
+      <ListView.View>
+        <GridView>
+          <GridViewColumn Header="Level" Width="55">
+            <GridViewColumn.CellTemplate>
+              <DataTemplate>
+                <TextBlock Text="{Binding Level}" Foreground="{Binding LevelBrush}"
+                           FontFamily="Consolas" FontSize="11"/>
+              </DataTemplate>
+            </GridViewColumn.CellTemplate>
+          </GridViewColumn>
+          <GridViewColumn Header="Message" Width="800">
+            <GridViewColumn.CellTemplate>
+              <DataTemplate>
+                <TextBlock Text="{Binding Message}" Foreground="{Binding LevelBrush}"
+                           FontFamily="Consolas" FontSize="11"/>
+              </DataTemplate>
+            </GridViewColumn.CellTemplate>
+          </GridViewColumn>
+        </GridView>
+      </ListView.View>
+    </ListView>
+  </DockPanel>
+</UserControl>

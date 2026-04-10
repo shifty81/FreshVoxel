@@ -1,0 +1,13 @@
+<UserControl x:Class="FreshEditor.WPF.Controls.DetailsControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="#FF1E1E1E">
+  <DockPanel>
+    <Border DockPanel.Dock="Top" Background="#FF2D2D30" Padding="4,2">
+      <TextBlock Text="Details" FontWeight="Bold" Foreground="#FFD4D4D4"/>
+    </Border>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+      <StackPanel x:Name="PropertyStack" Margin="4"/>
+    </ScrollViewer>
+  </DockPanel>
+</UserControl>
