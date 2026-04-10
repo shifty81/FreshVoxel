@@ -13,6 +13,7 @@
 #endif
 
 #include <chrono>
+#include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -2244,100 +2245,201 @@ void Engine::renderVoxelWorld()
                         static_cast<float>(m_renderer->getSwapchainHeight());
     glm::mat4 projection = m_player->getCamera().getProjectionMatrix(aspectRatio);
 
-    // Render each chunk
+    // Combined VP matrix used for frustum extraction and MVP per chunk
+    const glm::mat4 vp = projection * view;
+
+    // -----------------------------------------------------------------------
+    // Gribb-Hartmann frustum plane extraction (6 planes from VP matrix).
+    // Each plane is (nx,ny,nz,d) where the inward-facing half-space is nx*x+ny*y+nz*z+d >= 0.
+    // -----------------------------------------------------------------------
+    glm::vec4 frustumPlanes[6];
+    // Left  : col3 + col0
+    frustumPlanes[0] = vp[3] + vp[0];
+    // Right : col3 - col0
+    frustumPlanes[1] = vp[3] - vp[0];
+    // Bottom: col3 + col1
+    frustumPlanes[2] = vp[3] + vp[1];
+    // Top   : col3 - col1
+    frustumPlanes[3] = vp[3] - vp[1];
+    // Near  : col3 + col2
+    frustumPlanes[4] = vp[3] + vp[2];
+    // Far   : col3 - col2
+    frustumPlanes[5] = vp[3] - vp[2];
+
+    // Normalise planes so we can do radius-based sphere tests
+    for (auto& p : frustumPlanes) {
+        float len = glm::length(glm::vec3(p));
+        if (len > 0.0f) p /= len;
+    }
+
+    // Lambda: AABB visibility test — returns false if the box is entirely outside any plane
+    auto isAABBVisible = [&frustumPlanes](const glm::vec3& minB, const glm::vec3& maxB) -> bool {
+        for (const auto& plane : frustumPlanes) {
+            // The "positive vertex" is the corner most in the direction of the plane normal
+            glm::vec3 pv(
+                (plane.x >= 0.0f) ? maxB.x : minB.x,
+                (plane.y >= 0.0f) ? maxB.y : minB.y,
+                (plane.z >= 0.0f) ? maxB.z : minB.z
+            );
+            if (plane.x * pv.x + plane.y * pv.y + plane.z * pv.z + plane.w < 0.0f)
+                return false; // entirely outside this plane
+        }
+        return true;
+    };
+
+    // Vertex layout: 8 floats per vertex (pos.xyz, normal.xyz, ao, typeId)
+    constexpr int kStride = 8 * static_cast<int>(sizeof(float));
+
+    // Lambda: upload / rebuild GPU buffers for a chunk
+    auto uploadChunk = [&](const ChunkPos& chunkPos, Chunk* chunk) {
+        bool needsUpload = chunk->isDirty() || (m_chunkVAOs.find(chunkPos) == m_chunkVAOs.end());
+        if (!needsUpload) return;
+
+        if (chunk->isDirty()) {
+            chunk->generateMesh();
+            chunk->clearDirty();
+        }
+
+        const auto& vertices = chunk->getMeshVertices();
+        const auto& indices  = chunk->getMeshIndices();
+
+        if (vertices.empty() || indices.empty()) return;
+
+        GLuint& vao = m_chunkVAOs[chunkPos];
+        GLuint& vbo = m_chunkVBOs[chunkPos];
+        GLuint& ebo = m_chunkEBOs[chunkPos];
+
+        if (vao == 0) {
+            glGenVertexArrays(1, &vao);
+            glGenBuffers(1, &vbo);
+            glGenBuffers(1, &ebo);
+        }
+
+        glBindVertexArray(vao);
+
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glBufferData(GL_ARRAY_BUFFER,
+                     static_cast<GLsizeiptr>(vertices.size() * sizeof(float)),
+                     vertices.data(), GL_STATIC_DRAW);
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+                     static_cast<GLsizeiptr>(indices.size() * sizeof(uint32_t)),
+                     indices.data(), GL_STATIC_DRAW);
+
+        // Position (location 0, vec3)
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, kStride, (void*)0);
+
+        // Normal (location 1, vec3)
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, kStride,
+                              (void*)(3 * sizeof(float)));
+
+        // AO factor (location 2, float packed as single-component)
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, kStride,
+                              (void*)(6 * sizeof(float)));
+
+        // VoxelType ID (location 3, float — cast to int in shader for palette lookup)
+        glEnableVertexAttribArray(3);
+        glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, kStride,
+                              (void*)(7 * sizeof(float)));
+
+        glBindVertexArray(0);
+
+        m_chunkIndexCounts[chunkPos] = indices.size();
+    };
+
+    // Lambda: draw a single chunk (assumes program/uniforms already set)
+    auto drawChunk = [&](const ChunkPos& chunkPos) {
+        auto vaoIt = m_chunkVAOs.find(chunkPos);
+        if (vaoIt == m_chunkVAOs.end()) return;
+
+        size_t indexCount = m_chunkIndexCounts[chunkPos];
+        if (indexCount == 0) return;
+
+        glm::mat4 model = glm::translate(glm::mat4(1.0f),
+                                         glm::vec3(chunkPos.x * CHUNK_SIZE, 0, chunkPos.z * CHUNK_SIZE));
+        glm::mat4 mvp   = vp * model;
+
+        GLint mvpLoc = glGetUniformLocation(m_shaderProgram, "modelViewProj");
+        glUniformMatrix4fv(mvpLoc, 1, GL_FALSE, glm::value_ptr(mvp));
+
+        glBindVertexArray(vaoIt->second);
+        glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indexCount), GL_UNSIGNED_INT, nullptr);
+        glBindVertexArray(0);
+    };
+
+    // -----------------------------------------------------------------------
+    // Pass 1 — opaque chunks (frustum-culled)
+    // Transparent chunk positions are collected for pass 2.
+    // -----------------------------------------------------------------------
+    std::vector<ChunkPos> transparentChunks;
+
     for (const auto& chunkPair : m_world->getChunks()) {
         const ChunkPos& chunkPos = chunkPair.first;
         Chunk* chunk = chunkPair.second.get();
+        if (!chunk) continue;
 
-        if (!chunk)
-            continue;
+        // Chunk world-space AABB
+        const glm::vec3 chunkMin(chunkPos.x * CHUNK_SIZE, 0, chunkPos.z * CHUNK_SIZE);
+        const glm::vec3 chunkMax(chunkMin.x + CHUNK_SIZE,
+                                 static_cast<float>(CHUNK_HEIGHT),
+                                 chunkMin.z + CHUNK_SIZE);
 
-        // Check if we need to upload mesh data to GPU
-        // Upload if chunk is dirty (modified) OR if we haven't created GPU buffers yet
-        bool needsUpload = chunk->isDirty() || (m_chunkVAOs.find(chunkPos) == m_chunkVAOs.end());
+        if (!isAABBVisible(chunkMin, chunkMax)) continue; // frustum culled
 
-        if (needsUpload) {
-            // Generate mesh if dirty
-            if (chunk->isDirty()) {
-                chunk->generateMesh();
-                chunk->clearDirty();
-            }
+        uploadChunk(chunkPos, chunk);
 
-            // Update OpenGL buffers
-            const auto& vertices = chunk->getMeshVertices();
-            const auto& indices = chunk->getMeshIndices();
+        // Scan for transparent voxels — defer to pass 2
+        bool hasTransparent = false;
+        for (int y = 0; y < CHUNK_HEIGHT && !hasTransparent; ++y)
+            for (int z = 0; z < CHUNK_SIZE && !hasTransparent; ++z)
+                for (int x = 0; x < CHUNK_SIZE && !hasTransparent; ++x)
+                    if (chunk->getVoxel(x, y, z).isTransparent())
+                        hasTransparent = true;
 
-            if (vertices.empty() || indices.empty()) {
-                continue;
-            }
-
-            // Create or get VAO/VBO/EBO
-            GLuint& vao = m_chunkVAOs[chunkPos];
-            GLuint& vbo = m_chunkVBOs[chunkPos];
-            GLuint& ebo = m_chunkEBOs[chunkPos];
-
-            if (vao == 0) {
-                glGenVertexArrays(1, &vao);
-                glGenBuffers(1, &vbo);
-                glGenBuffers(1, &ebo);
-            }
-
-            glBindVertexArray(vao);
-
-            // Upload vertex data
-            glBindBuffer(GL_ARRAY_BUFFER, vbo);
-            glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(),
-                         GL_STATIC_DRAW);
-
-            // Upload index data
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint32_t), indices.data(),
-                         GL_STATIC_DRAW);
-
-            // Set up vertex attributes
-            // Position (vec3)
-            glEnableVertexAttribArray(0);
-            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-
-            // Normal (vec3)
-            glEnableVertexAttribArray(1);
-            glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float),
-                                  (void*)(3 * sizeof(float)));
-
-            glBindVertexArray(0);
-
-            m_chunkIndexCounts[chunkPos] = indices.size();
+        if (hasTransparent) {
+            transparentChunks.push_back(chunkPos);
+            continue; // skip in opaque pass
         }
 
-        // Render the chunk if it has a VAO
-        if (m_chunkVAOs.find(chunkPos) != m_chunkVAOs.end()) {
-            GLuint vao = m_chunkVAOs[chunkPos];
-            size_t indexCount = m_chunkIndexCounts[chunkPos];
+        drawChunk(chunkPos);
+    }
 
-            if (indexCount == 0)
-                continue;
+    // -----------------------------------------------------------------------
+    // Pass 2 — transparent chunks, sorted back-to-front then blended
+    // -----------------------------------------------------------------------
+    if (!transparentChunks.empty()) {
+        const glm::vec3 camPos = m_player->getCamera().getPosition();
 
-            // Calculate model matrix (chunk position)
-            glm::mat4 model = glm::mat4(1.0f);
-            model = glm::translate(model,
-                                   glm::vec3(chunkPos.x * CHUNK_SIZE, 0, chunkPos.z * CHUNK_SIZE));
+        // Sort furthest first
+        std::sort(transparentChunks.begin(), transparentChunks.end(),
+                  [&](const ChunkPos& a, const ChunkPos& b) {
+                      auto centre = [](const ChunkPos& cp) -> glm::vec3 {
+                          return glm::vec3(cp.x * CHUNK_SIZE + CHUNK_SIZE * 0.5f,
+                                           CHUNK_HEIGHT * 0.5f,
+                                           cp.z * CHUNK_SIZE + CHUNK_SIZE * 0.5f);
+                      };
+                      return glm::distance(camPos, centre(a)) >
+                             glm::distance(camPos, centre(b));
+                  });
 
-            // Calculate MVP matrix
-            glm::mat4 mvp = projection * view * model;
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glDepthMask(GL_FALSE); // write colour but not depth for transparent geometry
 
-            // Set uniform
-            GLint mvpLoc = glGetUniformLocation(m_shaderProgram, "modelViewProj");
-            glUniformMatrix4fv(mvpLoc, 1, GL_FALSE, glm::value_ptr(mvp));
+        for (const ChunkPos& cp : transparentChunks)
+            drawChunk(cp);
 
-            // Draw
-            glBindVertexArray(vao);
-            glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indexCount), GL_UNSIGNED_INT, 0);
-            glBindVertexArray(0);
-        }
+        glDepthMask(GL_TRUE);
+        glDisable(GL_BLEND);
     }
 
     glUseProgram(0);
 }
+
 
 void Engine::renderCrosshair()
 {

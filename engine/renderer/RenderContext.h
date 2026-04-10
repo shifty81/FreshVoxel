@@ -116,6 +116,40 @@ public:
      */
     virtual bool recreateSwapChain(int width, int height) = 0;
 
+    // ---------------------------------------------------------------------------
+    // Cell / toon shading
+    // ---------------------------------------------------------------------------
+
+    /**
+     * @brief Borderlands-style cell shading parameters.
+     *
+     * Passed to both the toon diffuse pass and the inverted-hull outline pass.
+     */
+    struct CellShadingParams {
+        float outlineThickness = 0.04f; ///< World-space normal extrusion for ink outline
+        float rimThreshold     = 0.60f; ///< dot(V,N) threshold to activate rim highlight
+        float shadowR          = 0.05f; ///< Deep-shadow colour R
+        float shadowG          = 0.02f; ///< Deep-shadow colour G
+        float shadowB          = 0.10f; ///< Deep-shadow colour B
+        float shadowA          = 1.00f; ///< Deep-shadow colour A
+    };
+
+    /**
+     * @brief Enable or disable Borderlands-style cell shading.
+     *
+     * When enabled the renderer switches to the voxel_cell + voxel_outline
+     * shader pair.  When disabled it falls back to the standard voxel shader.
+     */
+    virtual void setCellShadingEnabled(bool enabled) { (void)enabled; }
+
+    /**
+     * @brief Update cell shading parameters.
+     *
+     * Changes take effect on the next rendered frame.  Safe to call every
+     * frame (e.g. when driven by WPF sliders).
+     */
+    virtual void setCellShadingParams(const CellShadingParams& params) { (void)params; }
+
     // Resource creation
     virtual std::shared_ptr<RenderBuffer> createVertexBuffer(const void* data, size_t size) = 0;
     virtual std::shared_ptr<RenderBuffer> createIndexBuffer(const void* data, size_t size) = 0;

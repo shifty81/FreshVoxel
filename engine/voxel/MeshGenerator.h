@@ -24,6 +24,14 @@ struct ChunkNeighbors {
  *
  * Implements greedy meshing algorithm to reduce polygon count
  * by merging adjacent faces of the same type.
+ *
+ * Vertex layout (floats per vertex):
+ *   [0..2]  position  (x, y, z)
+ *   [3..5]  normal    (nx, ny, nz)
+ *   [6]     ao        ambient occlusion factor [0,1] — packed as a single float
+ *   [7]     typeId    VoxelType cast to float, for palette lookup in shader
+ *
+ * Total: 8 floats per vertex.
  */
 class MeshGenerator
 {
@@ -32,9 +40,9 @@ public:
     ~MeshGenerator();
 
     /**
-     * @brief Generate mesh for a chunk using greedy meshing
+     * @brief Generate mesh for a chunk using simple per-face culling.
      * @param chunk Chunk to generate mesh for
-     * @param vertices Output vertex data
+     * @param vertices Output vertex data (8 floats per vertex)
      * @param indices Output index data
      */
     void generateChunkMesh(const Chunk* chunk, std::vector<float>& vertices,
@@ -59,6 +67,18 @@ public:
     void generateMeshWithNeighbors(const Chunk* chunk, const ChunkNeighbors& neighbors,
                                     std::vector<float>& vertices, std::vector<uint32_t>& indices);
 
+    /**
+     * @brief LOD 1 mesh — half-resolution greedy merge.
+     *
+     * Groups 2×2×2 voxel cells into a single face where all voxels match.
+     * Switch to this mesh when the chunk is > 128 m from the camera.
+     * @param chunk Chunk to generate LOD1 mesh for
+     * @param vertices Output vertex data
+     * @param indices Output index data
+     */
+    void generateLOD1Mesh(const Chunk* chunk, std::vector<float>& vertices,
+                          std::vector<uint32_t>& indices);
+
 private:
     struct Face {
         int x, y, z;
@@ -68,12 +88,29 @@ private:
     };
 
     void addFace(const Face& face, std::vector<float>& vertices, std::vector<uint32_t>& indices);
-    
+    void addFaceWithAO(const Face& face,
+                       const Chunk* chunk,
+                       const ChunkNeighbors& neighbors,
+                       std::vector<float>& vertices,
+                       std::vector<uint32_t>& indices);
+
     /**
      * @brief Check if a voxel is opaque, considering neighbors for boundary checks
      */
     bool isVoxelOpaque(const Chunk* chunk, int x, int y, int z, 
                        const ChunkNeighbors& neighbors) const;
+
+    /**
+     * @brief Compute per-corner ambient occlusion factor [0,1] for one face vertex.
+     *
+     * Samples the 8 neighbour voxels around the corner (side1, side2, corner)
+     * using the standard Minecraft-style AO formula.
+     * @param side1Opaque First edge-neighbour is opaque
+     * @param side2Opaque Second edge-neighbour is opaque
+     * @param cornerOpaque Corner-diagonal voxel is opaque
+     * @return AO factor in [0,1]; 0 = fully occluded, 1 = unoccluded
+     */
+    static float computeAOValue(bool side1Opaque, bool side2Opaque, bool cornerOpaque) noexcept;
 };
 
 } // namespace fresh

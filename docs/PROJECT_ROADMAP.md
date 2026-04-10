@@ -1,6 +1,6 @@
 # Fresh Voxel Engine - Project Roadmap & Status Assessment
 
-**Last Updated**: March 2026  
+**Last Updated**: April 2026  
 **Engine Version**: 0.2.7 (Alpha)
 
 This document provides an honest assessment of what is implemented, what is partially working, and what needs to be completed for the engine to be fully functional — particularly around viewport rendering, play mode, and editor UI integration.
@@ -9,6 +9,7 @@ This document provides an honest assessment of what is implemented, what is part
 
 ## Table of Contents
 
+0. [Phase 0: WPF Editor Layer, .vox Import & Cell Shading (NEW — Highest Priority)](#phase-0-wpf-editor-layer-vox-import--cell-shading)
 1. [Critical Issues](#critical-issues)
 2. [Viewport & Rendering Status](#viewport--rendering-status)
 3. [Play Mode Status](#play-mode-status)
@@ -16,6 +17,274 @@ This document provides an honest assessment of what is implemented, what is part
 5. [System-by-System Status](#system-by-system-status)
 6. [Priority Roadmap](#priority-roadmap)
 7. [Architecture Notes](#architecture-notes)
+
+---
+
+## Phase 0: WPF Editor Layer, .vox Import & Cell Shading
+
+> **Priority: HIGHEST — These changes transform the project from a Win32-native prototype into a professional-grade Unreal-style editor with WPF-driven UI, .vox asset import, and Borderlands cell shading.**
+
+### 0-A  Engine → DLL Export Layer
+
+**Status**: ❌ Not done — engine currently builds as an `.exe` only.
+
+The C++ engine must be compiled as `FreshVoxelEngine.dll` so that the WPF host process can load and drive it via P/Invoke.
+
+| Task | Detail |
+|------|--------|
+| Add `SHARED` CMake target | Add `FreshVoxelEngine_dll` target alongside the existing `.exe`; set `WINDOWS_EXPORT_ALL_SYMBOLS ON` |
+| Create `engine/core/EngineAPI.h` | Flat C-linkage (`extern "C"`) exports with `FRESH_API __declspec(dllexport)` |
+| Implement `engine/core/EngineAPI.cpp` | Implement all C exports: `Engine_Create/Destroy/Initialize/Run/Shutdown`, `Engine_SetViewportWindow`, `Engine_ResizeViewport`, `Engine_SetEditorMode`, `Engine_Tick`, `Engine_LoadVoxFile`, `Editor_*` command dispatchers |
+| Extend `dotnet/EngineInterop.cs` | Add P/Invoke signatures for every new C export |
+| Add `Engine_SetTickCallback` | Lets WPF host call `Tick(deltaMs)` from its own render loop instead of `Engine_Run` blocking the thread |
+
+**Design principle**: The WPF process is the host. It owns the window and message loop. It calls `Engine_Tick` every frame from a `CompositionTarget.Rendering` or `DispatcherTimer` callback. The C++ engine renders into a child HWND provided by WPF's `HwndHost`.
+
+---
+
+### 0-B  WPF Editor Application
+
+**Status**: ❌ Not done — `dotnet/` contains only a class library; no WPF project exists.
+
+Create `dotnet/FreshEditor.WPF/` — a full WPF application (`net9.0-windows`, `<UseWPF>true</UseWPF>`).
+
+#### Window Layout  (mirrors Unreal Engine)
+
+```
+┌──────────────────────────────────────────────────────────────────┐
+│  Menu Bar (File / Edit / View / World / Build / Play / Help)     │
+├──────────────────────────────────────────────────────────────────┤
+│  Toolbar (New · Open · Save │ Play ▶ · Simulate · Stop │ Modes) │
+├──────┬───────────────────────────────────┬───────────────────────┤
+│Place │  3-D Viewport (HwndHost→DX11/12)  │  Scene Outliner       │
+│Panel │  ┌─────────────────────────────┐  │  (TreeView + search)  │
+│(220) │  │  C++ engine renders here    │  ├───────────────────────┤
+│      │  │  via setViewportWindow(hwnd)│  │  Details / Inspector  │
+│      │  └─────────────────────────────┘  │  (property grid)      │
+│      │  Viewport toolbar overlay (cam)   │                       │
+├──────┴──────────────────────┬────────────┴───────────────────────┤
+│  Content Browser (assets,   │  Output Log / Console              │
+│  .vox files, textures, …)   │  (filtering, color-coded)          │
+├─────────────────────────────┴───────────────────────────────────┤
+│  Status Bar                                                      │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+#### Key WPF Components to Build
+
+| Component | WPF Type | Notes |
+|-----------|----------|-------|
+| `MainWindow.xaml` | `Window` | `DockPanel`-based outer shell; hosts all regions |
+| `ViewportHost.cs` | `HwndHost` subclass | `BuildWindowCore` creates a Win32 child window; passes HWND to `Engine_SetViewportWindow`; forwards `WM_SIZE` to `Engine_ResizeViewport` |
+| `ViewportControl.xaml` | `UserControl` | Wraps `ViewportHost`; shows camera-speed overlay, gizmo mode buttons, view-mode dropdown |
+| `SceneOutlinerControl.xaml` | `UserControl` | Binds to `SceneViewModel` (ObservableCollection of entity nodes); supports drag-reorder, search, multi-select |
+| `DetailsControl.xaml` | `UserControl` | Reflection-driven property grid; shows component properties for selected entity; editable fields write back via `Engine_SetComponentProperty` P/Invoke |
+| `ContentBrowserControl.xaml` | `UserControl` | File-system tree + thumbnail grid; supports drag-drop onto viewport; double-click imports `.vox` files |
+| `OutputLogControl.xaml` | `UserControl` | Virtualized `ListView`; subscribes to engine log callback (`Engine_SetLogCallback`) |
+| `PlacementPanel.xaml` | `UserControl` | Categorized tabs of placeable actors (Lights, Volumes, Voxel Structures, etc.) |
+| `MainMenuBar.xaml` | `Menu` | All existing `Win32MenuBar` commands forwarded to engine via P/Invoke |
+| `Toolbar.xaml` | `ToolBar` | Play / Simulate / Stop buttons; build buttons; mode toggles |
+| `EditorViewModel.cs` | `INotifyPropertyChanged` | Central data context; exposes play-mode state, selected entities, undo/redo availability |
+| `DockingManager` | Use `AvalonDock` NuGet | Provides Unreal-style floating/dockable panel layout with layout save/restore |
+
+#### Interaction Model (mirroring Unreal)
+
+- **Left-click viewport**: select entity → populate Details panel
+- **Right-click + WASD**: fly-through camera (relay raw input to engine via P/Invoke)
+- **Alt + LMB**: orbit around selection pivot
+- **F**: frame/focus selection  
+- **W / E / R**: translate / rotate / scale gizmo (hot-key forwarded to engine)
+- **Ctrl+Z / Ctrl+Y**: undo/redo via `Engine_Undo` / `Engine_Redo`
+- **Drag asset from Content Browser**: spawn entity at viewport cursor hit-point
+
+#### Frame Loop Integration
+
+```csharp
+// ViewportControl.xaml.cs
+CompositionTarget.Rendering += (_, _) =>
+{
+    double ms = _stopwatch.Elapsed.TotalMilliseconds - _lastMs;
+    _lastMs = _stopwatch.Elapsed.TotalMilliseconds;
+    NativeMethods.Engine_Tick((float)ms);   // drives C++ render loop one frame
+};
+```
+
+---
+
+### 0-C  .vox File Import System (MagicaVoxel Format)
+
+**Status**: ❌ Not implemented anywhere in the project.
+
+MagicaVoxel `.vox` is a chunked binary format. The engine already has a voxel world and chunk system; the importer maps `.vox` data directly onto it.
+
+#### C++ Parser (`engine/assets/vox/`)
+
+| File | Purpose |
+|------|---------|
+| `VoxFileParser.h/.cpp` | Binary reader for `.vox` chunks: `MAIN`, `SIZE`, `XYZI`, `RGBA`, `nTRN`, `nGRP`, `nSHP` (multi-model support) |
+| `VoxImporter.h/.cpp` | Converts parsed data into engine's `VoxelTypeInfo` palette + populates a `VoxelStructureComponent` or seeds a `VoxelWorld` region |
+| `VoxExporter.h/.cpp` | Write a world region back to `.vox` for round-trip editing |
+
+**Binary format summary**:
+```
+4 bytes  magic   "VOX "
+4 bytes  version 150
+MAIN chunk {
+  SIZE chunk  { sx, sy, sz  }          // dimensions
+  XYZI chunk  { numVoxels; x,y,z,i[] } // voxel positions + palette index
+  RGBA chunk  { 256 × RGBA32 }         // color palette
+  nTRN/nGRP/nSHP                       // multi-model scene graph (v150+)
+}
+```
+
+#### C Export API additions
+
+```c
+// Load .vox into a new VoxelStructureComponent at world position
+FRESH_API bool Engine_LoadVoxFile(void* engine, const char* path, int worldX, int worldY, int worldZ);
+
+// Return palette color for voxel type index
+FRESH_API void Engine_GetVoxPaletteColor(void* engine, int idx, float* r, float* g, float* b);
+```
+
+#### WPF Integration
+
+- Content Browser recognizes `.vox` extension; shows voxel thumbnail (render-to-texture preview)
+- Drag a `.vox` file onto the viewport → `Engine_LoadVoxFile` places the structure at the ray-cast hit point
+- Import dialog lets user choose: **Replace World Origin**, **Spawn as Entity**, or **Append to Selection**
+
+---
+
+### 0-D  Borderlands-Style Cell Shading
+
+**Status**: ❌ Not implemented — shaders are plain diffuse-only (no lighting bands, no outlines).
+
+Both HLSL (`shaders/voxel.hlsl`) and GLSL (`shaders/voxel.frag`) must be upgraded.
+
+#### Core Technique
+
+1. **Quantized/toon lighting** — clamp `NdotL` to discrete steps (4–5 bands) instead of linear diffuse
+2. **Rim/specular highlight** — single sharp Phong highlight with hard step at threshold
+3. **Outline pass** — inverted-hull geometry pass OR screen-space edge detection from depth+normals
+4. **Color style** — high saturation, slightly desaturated darks, bright specular, dark ink outlines (≈ 2–3 px at 1080 p)
+
+#### HLSL Upgrade (`shaders/voxel_cell.hlsl`)
+
+```hlsl
+// ---- Toon lighting ----
+float NdotL = saturate(dot(normal, lightDir));
+float toonLight = 
+    NdotL > 0.75 ? 1.0   :   // full lit
+    NdotL > 0.40 ? 0.65  :   // mid
+    NdotL > 0.15 ? 0.35  :   // shadow
+                   0.15  ;   // deep shadow
+
+// ---- Rim light ----
+float rim = 1.0 - saturate(dot(viewDir, normal));
+float rimBand = step(0.6, rim) * 0.4;
+
+// ---- Final color ----
+float3 baseColor   = voxelColor;          // per-block color from palette CB
+float3 litColor    = baseColor * (toonLight + rimBand);
+float3 inkOutline  = step(edgeFactor, 0.3) * float3(0,0,0); // from edge pass
+return float4(litColor + inkOutline, 1.0);
+```
+
+#### Outline Geometry Pass (DX11)
+
+Add a second draw call per chunk with back-face culling **inverted** (`D3D11_CULL_FRONT`) and normals extruded along vertex normal by `outlineThickness`. The outline pass uses a flat black shader. This gives the thick-ink Borderlands look even on voxel hard edges.
+
+#### New Shader Constant Buffer additions
+
+```hlsl
+cbuffer CellShadingParams : register(b1)
+{
+    float3 voxelColor;       // per-draw call palette color
+    float  outlineThickness; // world-space outline extrusion (e.g. 0.04)
+    float3 lightDir;         // directional light in world space
+    float  rimThreshold;     // default 0.6
+    float4 shadowColor;      // dark-tone color for deep shadow (rgba)
+}
+```
+
+#### GLSL Upgrade (`shaders/voxel_cell.frag / voxel_outline.frag`)
+
+Mirror the same toon-band logic and add a separate `voxel_outline.vert` that extrudes verts along normals with `gl_Position` nudging.
+
+#### Integration Points
+
+- `ShaderManager` loads `voxel_cell.hlsl` (DX11) and `voxel_cell.frag/.vert` (OpenGL)
+- `IRenderContext` gets `setCellShadingEnabled(bool)` and `setCellShadingParams(...)` virtual methods
+- New editor panel section **"Rendering Style"** in WPF Details pane with sliders for band count, outline thickness, rim intensity, shadow color
+
+---
+
+### 0-E  Low-Poly Voxel Rendering Best Practices — Missing Items Audit
+
+| Best Practice | Current State | Action Required |
+|--------------|--------------|-----------------|
+| Greedy meshing | ✅ Implemented (`MeshGenerator`) | No change |
+| Face culling (neighbor-aware) | ✅ Implemented | No change |
+| Texture atlas | ⚠️ Atlas generator exists but GPU bind missing | Fix `Texture.cpp` TODOs — GPU upload/bind |
+| Ambient occlusion | ❌ Missing | Add per-vertex AO in `MeshGenerator`: sample 8 corners per face, encode as vertex color channel |
+| Frustum culling | ❌ Not confirmed | Add AABB frustum test before adding chunk to draw list in `Engine::renderVoxelWorld` |
+| Level of Detail (LOD) | ❌ Missing | Add LOD0 (full greedy mesh) and LOD1 (merged flat mesh, 1/4 res) for chunks > 128 m from camera |
+| Chunk mesh caching | ✅ Dirty-flagging exists | Extend: upload VB/IB to GPU once, only re-upload on dirty chunks |
+| Transparent sort | ❌ Missing | Collect transparent (water/glass) chunks, sort back-to-front, render in second pass |
+| GPU instancing | ❌ Not used | Use instancing for repeated small structures (voxel ships, prefabs) |
+| Block color palette | ❌ Color hardcoded in shader | Move palette to a 256-entry constant buffer; index from voxel type; enables cell shading per-block color |
+| .vox scene graph | ❌ Missing | Implement with `nTRN/nGRP/nSHP` chunk parsing (multi-model .vox scenes) |
+
+---
+
+### 0-F  Complete Missing Editor Systems (pre-WPF migration)
+
+The following C++ editor systems must be complete before the WPF layer can fully replace Win32 panels, because WPF calls into them via P/Invoke:
+
+| System | Gap | Fix |
+|--------|-----|-----|
+| `Engine_SetComponentProperty` C API | Missing | Add generic property setter callable from WPF Inspector |
+| `Engine_GetSceneEntities` C API | Missing | Return entity list as JSON string for WPF Outliner binding |
+| `Engine_RaycastViewport` C API | Missing | Convert viewport pixel → world ray → hit entity ID; used for WPF click-to-select |
+| Selection highlight render | ⚠️ Partial (`SelectionRenderer`) | Wire to cell shading outline pass (use outline thickness = 0 with colored outline for selection) |
+| `Engine_SetLogCallback` C API | Missing | Function pointer that WPF Output Log subscribes to instead of reading a file |
+| Prefab system | ❌ Missing | Serialize entity + components to JSON; re-instantiate from Content Browser drag |
+| Multi-select in viewport | ❌ Missing | Rubber-band selection rectangle (box select) in `SelectionManager` |
+
+---
+
+### Phase 0 Checklist
+
+- [ ] **0-A** Build `FreshVoxelEngine.dll` from CMake; add `EngineAPI.h/.cpp` C exports
+- [ ] **0-A** Add `Engine_SetTickCallback`, `Engine_SetViewportWindow`, `Engine_ResizeViewport` exports
+- [ ] **0-A** Add `Engine_GetSceneEntities`, `Engine_RaycastViewport`, `Engine_SetComponentProperty`, `Engine_SetLogCallback` exports
+- [ ] **0-B** Create `dotnet/FreshEditor.WPF/` WPF application project (net9.0-windows)
+- [ ] **0-B** Implement `ViewportHost : HwndHost` — passes HWND to engine DLL
+- [ ] **0-B** Build `MainWindow.xaml` with AvalonDock docking layout matching Unreal panel structure
+- [ ] **0-B** Implement `SceneOutlinerControl`, `DetailsControl`, `ContentBrowserControl`, `OutputLogControl`, `PlacementPanel`
+- [ ] **0-B** Implement `EditorViewModel` with play/stop, undo/redo, entity selection state
+- [ ] **0-B** Wire `CompositionTarget.Rendering` → `Engine_Tick` for per-frame drive
+- [ ] **0-B** Port all Win32 menu/toolbar commands to WPF menu + keybindings
+- [ ] **0-C** Create `engine/assets/vox/VoxFileParser.h/.cpp` (MAIN/SIZE/XYZI/RGBA chunks)
+- [ ] **0-C** Create `engine/assets/vox/VoxImporter.h/.cpp` — populate VoxelWorld from parsed data
+- [ ] **0-C** Create `engine/assets/vox/VoxExporter.h/.cpp` — round-trip export
+- [ ] **0-C** Add `Engine_LoadVoxFile` C export; integrate with Content Browser drag-drop in WPF
+- [ ] **0-D** Write `shaders/voxel_cell.hlsl` with toon bands, rim light, inverted-hull outline pass
+- [ ] **0-D** Write `shaders/voxel_cell.frag/.vert` and `shaders/voxel_outline.frag/.vert` for OpenGL
+- [ ] **0-D** Add `CellShadingParams` constant buffer (b1) and palette color CB (b2)
+- [ ] **0-D** Add `setCellShadingEnabled/Params` to `IRenderContext` and both DX11/GL backends
+- [ ] **0-D** Add "Rendering Style" section to WPF Details panel with live shader parameter sliders
+- [ ] **0-E** Fix `Texture.cpp` GPU upload/bind TODOs (6 items) for texture atlas
+- [ ] **0-E** Add per-vertex ambient occlusion in `MeshGenerator`
+- [ ] **0-E** Add AABB frustum culling in render loop
+- [ ] **0-E** Add LOD0/LOD1 mesh generation and switch in render loop
+- [ ] **0-E** Add transparent block second-pass render with back-to-front sort
+- [ ] **0-E** Move block color data to per-draw-call constant buffer (palette)
+- [ ] **0-F** Implement rubber-band multi-select in `SelectionManager`
+- [ ] **0-F** Implement prefab save/load (JSON serialization of entity + components)
+- [ ] **0-F** Wire selection highlight to cell shading outline color pass
+
+---
 
 ---
 

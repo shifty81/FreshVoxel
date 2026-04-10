@@ -1,9 +1,13 @@
 #include "editor/SelectionManager.h"
 #include "editor/TerraformingSystem.h"
 #include "voxel/VoxelWorld.h"
+#include "voxel/Chunk.h"
 #include "core/Logger.h"
 #include <algorithm>
 #include <cmath>
+
+#include <glm/mat4x4.hpp>
+#include <glm/vec4.hpp>
 
 namespace fresh
 {
@@ -569,6 +573,117 @@ bool SelectionManager::getPastePreviewBounds(glm::ivec3& min, glm::ivec3& max) c
     min = m_clipboard.boundsMin + offset;
     max = m_clipboard.boundsMax + offset;
     
+    return true;
+}
+
+// ---------------------------------------------------------------------------
+// Rubber-band viewport selection
+// ---------------------------------------------------------------------------
+
+void SelectionManager::beginRubberBand(float u, float v)
+{
+    m_rubberBandActive = true;
+    m_rbStartU = u;
+    m_rbStartV = v;
+    m_rbCurU   = u;
+    m_rbCurV   = v;
+}
+
+void SelectionManager::updateRubberBand(float u, float v)
+{
+    if (!m_rubberBandActive) return;
+    m_rbCurU = u;
+    m_rbCurV = v;
+}
+
+void SelectionManager::endRubberBand(VoxelWorld* world,
+                                      const glm::mat4& viewMat,
+                                      const glm::mat4& projMat)
+{
+    if (!m_rubberBandActive) return;
+    m_rubberBandActive = false;
+
+    if (!world) return;
+
+    // Build the combined VP matrix for projection
+    const glm::mat4 vp = projMat * viewMat;
+
+    // Axis-aligned rectangle in NDC ([-1,1] range)
+    const float ndcMinX = std::min(m_rbStartU, m_rbCurU) * 2.0f - 1.0f;
+    const float ndcMaxX = std::max(m_rbStartU, m_rbCurU) * 2.0f - 1.0f;
+    const float ndcMinY = 1.0f - std::max(m_rbStartV, m_rbCurV) * 2.0f; // NDC Y is flipped
+    const float ndcMaxY = 1.0f - std::min(m_rbStartV, m_rbCurV) * 2.0f;
+
+    // If the drag rectangle is too small (< 2 px equivalent), treat as single click
+    if (std::abs(ndcMaxX - ndcMinX) < 0.004f && std::abs(ndcMaxY - ndcMinY) < 0.004f) {
+        // Single-point click — handled by the higher-level input system
+        return;
+    }
+
+    // Collect chunks whose world-space AABB centre projects into the rectangle.
+    // This is a simplified (but fast) test; a full frustum-pyramid intersection
+    // would be more accurate for large chunks near the screen edge.
+    const auto& chunks = world->getChunks();
+
+    m_selection.clear();
+
+    for (const auto& [cp, chunkPtr] : chunks) {
+        if (!chunkPtr) continue;
+        // World-space centre of the chunk
+        const glm::vec3 centre(
+            static_cast<float>(cp.x * CHUNK_SIZE + CHUNK_SIZE / 2),
+            static_cast<float>(CHUNK_HEIGHT / 2),
+            static_cast<float>(cp.z * CHUNK_SIZE + CHUNK_SIZE / 2)
+        );
+
+        // Project to NDC
+        const glm::vec4 clip = vp * glm::vec4(centre, 1.0f);
+        if (clip.w <= 0.0f) continue; // behind camera
+
+        const float ndcX = clip.x / clip.w;
+        const float ndcY = clip.y / clip.w;
+
+        if (ndcX >= ndcMinX && ndcX <= ndcMaxX &&
+            ndcY >= ndcMinY && ndcY <= ndcMaxY)
+        {
+            // All voxels in this chunk are considered "selected"
+            for (int y = 0; y < CHUNK_HEIGHT; ++y) {
+                for (int z = 0; z < CHUNK_SIZE; ++z) {
+                    for (int x = 0; x < CHUNK_SIZE; ++x) {
+                        const WorldPos wp(cp.x * CHUNK_SIZE + x, y, cp.z * CHUNK_SIZE + z);
+                        const Voxel* vp_voxel = const_cast<VoxelWorld*>(world)->getVoxel(wp);
+                        if (vp_voxel && vp_voxel->isSolid()) {
+                            VoxelPosition pos(wp.x, wp.y, wp.z);
+                            m_selection.positions.push_back(pos);
+                            m_selection.types.push_back(vp_voxel->type);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    if (!m_selection.positions.empty()) {
+        calculateBounds();
+        Logger::getInstance().info(
+            "Rubber-band selection: " + std::to_string(m_selection.positions.size()) +
+            " voxels selected", "SelectionManager");
+    }
+}
+
+void SelectionManager::cancelRubberBand()
+{
+    m_rubberBandActive = false;
+}
+
+bool SelectionManager::getRubberBandRect(float& uMin, float& vMin,
+                                          float& uMax, float& vMax) const
+{
+    if (!m_rubberBandActive) return false;
+    uMin = std::min(m_rbStartU, m_rbCurU);
+    vMin = std::min(m_rbStartV, m_rbCurV);
+    uMax = std::max(m_rbStartU, m_rbCurU);
+    vMax = std::max(m_rbStartV, m_rbCurV);
     return true;
 }
 

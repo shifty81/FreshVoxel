@@ -12,6 +12,8 @@ namespace devtools
 class DebugRenderer;
 }
 
+class IRenderContext;  // for syncCellShadingOutlineColor()
+
 /**
  * @brief Renders visual feedback for voxel selection
  * 
@@ -37,7 +39,7 @@ public:
     void render(const SelectionManager* selectionManager);
 
     /**
-     * @brief Set selection color
+     * @brief Set the selection color
      * @param color RGBA color for selection outline
      */
     void setSelectionColor(const glm::vec4& color)
@@ -96,6 +98,18 @@ public:
     {
         return m_previewColor;
     }
+
+    /**
+     * @brief Wire cell-shading outline colour to match the current selection colour.
+     *
+     * When cell shading is active, selected entities render with a coloured outline
+     * instead of the default black ink outline.  Call this whenever the selection
+     * colour changes or a new entity is selected.
+     *
+     * @param renderContext  Active render context (nullptr disables the feature).
+     * @param isActive       True when there is an active selection.
+     */
+    void syncCellShadingOutlineColor(class IRenderContext* renderContext, bool isActive) const;
 
 private:
     devtools::DebugRenderer* m_debugRenderer;

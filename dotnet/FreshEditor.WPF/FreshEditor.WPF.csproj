@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>FreshEditor</AssemblyName>
+    <RootNamespace>FreshEditor.WPF</RootNamespace>
+    <ApplicationIcon>Resources\icon.ico</ApplicationIcon>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <!-- Ensure the engine DLL is in the same output folder -->
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- AvalonDock for Unreal-style dockable panels -->
+    <PackageReference Include="AvalonDock" Version="4.71.0" />
+    <!-- JSON parsing for scene entity data from the engine -->
+    <PackageReference Include="System.Text.Json" Version="9.0.0" />
+  </ItemGroup>
+
+  <!-- Reference the managed engine wrapper library -->
+  <ItemGroup>
+    <ProjectReference Include="..\FreshEngine.Managed\FreshEngine.Managed.csproj" />
+  </ItemGroup>
+
+</Project>

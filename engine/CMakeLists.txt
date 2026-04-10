@@ -60,6 +60,7 @@ add_library(FreshEngine STATIC
     editor/BlockBuilder.cpp
     editor/SelectionManager.cpp
     editor/SelectionRenderer.cpp
+    editor/PrefabSystem.cpp
     editor/TransformGizmo.cpp
     editor/FileDialogManager.cpp
     editor/LayoutManager.cpp
@@ -133,12 +134,16 @@ add_library(FreshEngine STATIC
     core/EventBus.cpp
     core/RuntimeBootstrap.cpp
     core/GameStateManager.cpp
+    core/EngineAPI.cpp
     ecs/SystemRegistry.cpp
     ecs/DeltaEditStore.cpp
     graphvm/GraphVM.cpp
     graphvm/GraphCompiler.cpp
     assets/AssetBinaryIO.cpp
     assets/AssetHotReload.cpp
+    assets/vox/VoxFileParser.cpp
+    assets/vox/VoxImporter.cpp
+    assets/vox/VoxExporter.cpp
     networking/NetworkInterpolationBuffer.cpp
     networking/DeltaCompression.cpp
     networking/JitterBuffer.cpp
