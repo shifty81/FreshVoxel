@@ -128,8 +128,13 @@ bool VoxExporter::exportRegion(const VoxelWorld* world,
                 // but vox Z-axis = engine Z-axis.
                 VoxEntry e;
                 e.x   = static_cast<uint8_t>(x);
-                e.z   = static_cast<uint8_t>(y); // vox Z = engine Y
-                e.y   = static_cast<uint8_t>(z); // vox Y = engine Z
+                // Axis mapping: MagicaVoxel uses Y-up with Z as forward depth.
+                // The engine also uses Y-up but with Z as horizontal depth.
+                // To preserve correct orientation on round-trip import/export:
+                //   engine Y  →  .vox Z  (height axis stays the same)
+                //   engine Z  →  .vox Y  (horizontal depth ↔ vox depth)
+                e.z   = static_cast<uint8_t>(y); // vox Z = engine Y (height)
+                e.y   = static_cast<uint8_t>(z); // vox Y = engine Z (depth)
                 e.idx = static_cast<uint8_t>(typeToIdx[ti]);
                 voxels.push_back(e);
             }

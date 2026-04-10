@@ -146,8 +146,11 @@ public class Engine : IDisposable
     private IntPtr _nativeHandle;
     private bool _disposed;
 
-    // Keep alive to prevent GC collection of the delegate while the native
-    // code holds a pointer to it.
+    // Keep a strong reference to prevent the GC from collecting the delegate
+    // while the native code holds a raw function pointer to it.  The delegate
+    // must remain assigned for the entire lifetime of the callback registration
+    // and must be cleared (by calling SetLogCallback(null)) before the Engine
+    // is disposed, otherwise native code may invoke a collected delegate.
     private NativeMethods.EngineLogCallback? _logCallbackDelegate;
 
     /// <summary>
@@ -380,6 +383,13 @@ public class Engine : IDisposable
         {
             if (_nativeHandle != IntPtr.Zero)
             {
+                // Clear the log callback first so native code cannot invoke the
+                // delegate after the managed object is collected.
+                if (_logCallbackDelegate != null)
+                {
+                    NativeMethods.Engine_SetLogCallback(_nativeHandle, null);
+                    _logCallbackDelegate = null;
+                }
                 NativeMethods.Engine_Destroy(_nativeHandle);
                 _nativeHandle = IntPtr.Zero;
             }
