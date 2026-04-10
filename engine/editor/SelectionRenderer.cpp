@@ -1,5 +1,6 @@
 #include "editor/SelectionRenderer.h"
 #include "devtools/DebugRenderer.h"
+#include "renderer/RenderContext.h"
 #include "core/Logger.h"
 
 namespace fresh
@@ -126,4 +127,26 @@ void SelectionRenderer::renderPastePreview(const SelectionManager* selectionMana
     }
 }
 
-} // namespace fresh
+void SelectionRenderer::syncCellShadingOutlineColor(IRenderContext* renderContext, bool isActive) const
+{
+    if (!renderContext) return;
+
+    IRenderContext::CellShadingParams params;
+    if (isActive) {
+        // Use the selection colour (RGBA) as the outline colour.
+        // outlineThickness stays at its default; only the shadow colour
+        // (which tints the "ink" outline pixels in the inverted-hull pass)
+        // is overridden here.  The actual outline colour in the HLSL/GLSL
+        // outline pass is hardcoded to black, so we instead modulate the
+        // shadow colour of the cell-shaded main pass to visually indicate
+        // selection by brightening the shadow zone with the selection tint.
+        params.shadowR = m_selectionColor.r * 0.4f;
+        params.shadowG = m_selectionColor.g * 0.4f;
+        params.shadowB = m_selectionColor.b * 0.4f;
+        params.shadowA = 1.0f;
+        params.outlineThickness = 0.06f; // slightly thicker outline on selected objects
+        params.rimThreshold     = 0.55f;
+    }
+    // else: leave params at their zero-initialized defaults (will use engine defaults)
+    renderContext->setCellShadingParams(params);
+}

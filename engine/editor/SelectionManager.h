@@ -122,6 +122,68 @@ public:
      */
     int getWandLimit() const { return m_wandLimit; }
 
+    // ---------------------------------------------------------------------------
+    // Viewport rubber-band (2-D screen-space box) selection
+    // ---------------------------------------------------------------------------
+
+    /**
+     * @brief Begin a rubber-band selection drag in normalised viewport space.
+     *
+     * Call when the user starts a left-drag in the viewport without holding
+     * right-mouse (right-mouse is reserved for fly camera).
+     *
+     * @param u  Normalised horizontal position of the drag start [0,1].
+     * @param v  Normalised vertical   position of the drag start [0,1].
+     */
+    void beginRubberBand(float u, float v);
+
+    /**
+     * @brief Update the rubber-band rectangle as the mouse moves.
+     *
+     * @param u  Current normalised horizontal position [0,1].
+     * @param v  Current normalised vertical   position [0,1].
+     */
+    void updateRubberBand(float u, float v);
+
+    /**
+     * @brief Finish the rubber-band selection and resolve it to world voxels.
+     *
+     * Performs a frustum-vs-AABB test for all loaded chunks using the
+     * rectangular pyramid defined by the four screen-space corners.  For now
+     * selects the entity/chunk whose axis-aligned bounding-box centroid
+     * projects within the rectangle.
+     *
+     * @param world   VoxelWorld to query.
+     * @param viewMat Camera view matrix (column-major, matches glm).
+     * @param projMat Camera projection matrix.
+     */
+    void endRubberBand(class VoxelWorld* world,
+                       const glm::mat4& viewMat,
+                       const glm::mat4& projMat);
+
+    /**
+     * @brief Cancel an in-progress rubber-band selection without committing.
+     */
+    void cancelRubberBand();
+
+    /**
+     * @brief Check whether a rubber-band drag is in progress.
+     * @return true while between beginRubberBand() and endRubberBand()/cancelRubberBand().
+     */
+    bool isRubberBandActive() const { return m_rubberBandActive; }
+
+    /**
+     * @brief Get the current rubber-band rectangle in normalised viewport space.
+     *
+     * Returns the axis-aligned rectangle regardless of drag direction.
+     * @param uMin  Output: left edge [0,1].
+     * @param vMin  Output: top  edge [0,1].
+     * @param uMax  Output: right  edge [0,1].
+     * @param vMax  Output: bottom edge [0,1].
+     * @return true if a rubber-band is active.
+     */
+    bool getRubberBandRect(float& uMin, float& vMin, float& uMax, float& vMax) const;
+
     // Selection operations
     /**
      * @brief Start a new selection (mode-dependent)
@@ -331,6 +393,13 @@ private:
     // Paste preview state
     bool m_pastePreviewActive;
     glm::ivec3 m_pastePreviewPosition;
+
+    // Rubber-band (viewport 2-D box) selection state
+    bool  m_rubberBandActive = false;
+    float m_rbStartU = 0.0f;
+    float m_rbStartV = 0.0f;
+    float m_rbCurU   = 0.0f;
+    float m_rbCurV   = 0.0f;
 };
 
 } // namespace fresh
