@@ -134,6 +134,26 @@ internal static class NativeMethods
     public static extern void Engine_SetCellShadingParams(IntPtr engine,
         float outlineThickness, float rimThreshold,
         float shadowR, float shadowG, float shadowB, float shadowA);
+
+    // -------------------------------------------------------------------------
+    // Prefab system
+    // -------------------------------------------------------------------------
+
+    [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+    public static extern int Engine_SavePrefab(IntPtr engine, uint entityId,
+        [MarshalAs(UnmanagedType.LPStr)] string filePath);
+
+    [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+    public static extern uint Engine_SpawnPrefab(IntPtr engine,
+        [MarshalAs(UnmanagedType.LPStr)] string filePath);
+
+    /// <summary>
+    /// Returns a pointer to a C string containing a JSON array of prefab paths.
+    /// The string is owned by the native DLL — do not free it.
+    /// </summary>
+    [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+    public static extern IntPtr Engine_ListPrefabs(IntPtr engine,
+        [MarshalAs(UnmanagedType.LPStr)] string directory);
 }
 
 /// <summary>
@@ -355,6 +375,60 @@ public class Engine : IDisposable
         NativeMethods.Engine_SetCellShadingParams(_nativeHandle,
             outlineThickness, rimThreshold,
             shadowR, shadowG, shadowB, shadowA);
+    }
+
+    // -------------------------------------------------------------------------
+    // Prefab system
+    // -------------------------------------------------------------------------
+
+    /// <summary>
+    /// Serialize the given entity to a .prefab JSON file on disk.
+    /// </summary>
+    /// <param name="entityId">Entity ID from <see cref="GetSceneEntitiesJson"/>.</param>
+    /// <param name="filePath">Absolute output path (recommended extension: .prefab).</param>
+    /// <returns>true on success.</returns>
+    public bool SavePrefab(uint entityId, string filePath)
+    {
+        ThrowIfDisposed();
+        return NativeMethods.Engine_SavePrefab(_nativeHandle, entityId, filePath) != 0;
+    }
+
+    /// <summary>
+    /// Spawn (instantiate) a prefab file and return the new entity ID.
+    /// </summary>
+    /// <param name="filePath">Absolute path to a .prefab file.</param>
+    /// <returns>Entity ID of the spawned entity, or 0 on failure.</returns>
+    public uint SpawnPrefab(string filePath)
+    {
+        ThrowIfDisposed();
+        return NativeMethods.Engine_SpawnPrefab(_nativeHandle, filePath);
+    }
+
+    /// <summary>
+    /// List all .prefab files found in <paramref name="directory"/> (non-recursive).
+    /// </summary>
+    /// <param name="directory">Absolute directory path to scan.</param>
+    /// <returns>Array of absolute prefab file paths (may be empty).</returns>
+    public string[] ListPrefabs(string directory)
+    {
+        ThrowIfDisposed();
+        var ptr = NativeMethods.Engine_ListPrefabs(_nativeHandle, directory);
+        if (ptr == IntPtr.Zero)
+            return Array.Empty<string>();
+
+        var json = System.Runtime.InteropServices.Marshal.PtrToStringAnsi(ptr) ?? "[]";
+        // Parse the simple JSON array: ["path1","path2",...]
+        json = json.Trim();
+        if (json == "[]" || json.Length < 2)
+            return Array.Empty<string>();
+
+        // Strip outer brackets and split on '", "'
+        json = json.Substring(1, json.Length - 2).Trim();
+        var parts = json.Split(new[] { "\", \"" }, StringSplitOptions.RemoveEmptyEntries);
+        var result = new string[parts.Length];
+        for (int i = 0; i < parts.Length; i++)
+            result[i] = parts[i].Trim('"').Replace("\\\\", "\\");
+        return result;
     }
 
     // -------------------------------------------------------------------------

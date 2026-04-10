@@ -111,6 +111,16 @@ public:
     const EngineConfig& getConfig() const { return m_config; }
 
     /**
+     * @brief Get the voxel world (may be nullptr before Initialize).
+     */
+    VoxelWorld* getWorld() const { return m_world.get(); }
+
+    /**
+     * @brief Get the ECS entity manager (may be nullptr before Initialize).
+     */
+    ecs::EntityManager* getEntityManager() const { return m_entityManager.get(); }
+
+    /**
      * @brief Get the engine operating mode
      * @return Current engine mode (Editor, Client, Server, Runtime)
      */

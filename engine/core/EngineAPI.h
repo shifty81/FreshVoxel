@@ -188,6 +188,42 @@ FRESH_API void  Engine_SetCellShadingParams(void* engine,
                                             float shadowR, float shadowG,
                                             float shadowB, float shadowA);
 
+// ---------------------------------------------------------------------------
+// Prefab system
+// ---------------------------------------------------------------------------
+
+/**
+ * Save a single entity as a prefab JSON file in the Content Browser directory.
+ *
+ * @param entityId   Entity ID returned by Engine_GetSceneEntities().
+ * @param filePath   Absolute path of the output file (should end in .prefab).
+ * @return Non-zero on success.
+ */
+FRESH_API int   Engine_SavePrefab(void* engine,
+                                  unsigned int entityId,
+                                  const char* filePath);
+
+/**
+ * Spawn an entity from a prefab file and return its new entity ID.
+ *
+ * @param filePath  Absolute path of the .prefab file.
+ * @return The new entity ID, or 0 on failure.
+ */
+FRESH_API unsigned int Engine_SpawnPrefab(void* engine, const char* filePath);
+
+/**
+ * List all .prefab files in a directory.
+ *
+ * The result is a UTF-8 JSON array of absolute paths:
+ *   ["/path/to/a.prefab", "/path/to/b.prefab"]
+ * The returned pointer is valid until the next API call.
+ * The caller must NOT free it.
+ *
+ * @param directory  Directory to scan (non-recursive).
+ * @return JSON array string, or "[]" on failure.
+ */
+FRESH_API const char* Engine_ListPrefabs(void* engine, const char* directory);
+
 #ifdef __cplusplus
 } // extern "C"
 #endif

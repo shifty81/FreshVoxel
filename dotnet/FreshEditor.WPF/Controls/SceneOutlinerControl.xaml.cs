@@ -1,7 +1,9 @@
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using FreshEditor.WPF.ViewModels;
+using FreshEngine.Managed;
 
 namespace FreshEditor.WPF.Controls;
 
@@ -11,10 +13,20 @@ public partial class SceneOutlinerControl : UserControl
         DependencyProperty.Register(nameof(ViewModel), typeof(EditorViewModel),
             typeof(SceneOutlinerControl), new PropertyMetadata(null, OnVMChanged));
 
+    public static readonly DependencyProperty EngineProperty =
+        DependencyProperty.Register(nameof(Engine), typeof(Engine),
+            typeof(SceneOutlinerControl), new PropertyMetadata(null));
+
     public EditorViewModel? ViewModel
     {
         get => (EditorViewModel?)GetValue(ViewModelProperty);
         set => SetValue(ViewModelProperty, value);
+    }
+
+    public Engine? Engine
+    {
+        get => (Engine?)GetValue(EngineProperty);
+        set => SetValue(EngineProperty, value);
     }
 
     public SceneOutlinerControl()
@@ -47,5 +59,39 @@ public partial class SceneOutlinerControl : UserControl
         if (ViewModel is null) return;
         if (e.NewValue is EntityNode node)
             ViewModel.SelectedEntityId = node.Id;
+    }
+
+    // -------------------------------------------------------------------------
+    // Context menu: Save as Prefab
+    // -------------------------------------------------------------------------
+
+    private void SaveAsPrefab_Click(object sender, RoutedEventArgs e)
+    {
+        if (Engine is null || ViewModel is null) return;
+
+        uint entityId = ViewModel.SelectedEntityId;
+        if (entityId == 0)
+        {
+            MessageBox.Show("No entity selected.", "Save Prefab",
+                MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        var dlg = new Microsoft.Win32.SaveFileDialog
+        {
+            Title      = "Save Entity as Prefab",
+            Filter     = "Prefab Files (*.prefab)|*.prefab|All Files (*.*)|*.*",
+            DefaultExt = ".prefab",
+            FileName   = $"entity_{entityId}"
+        };
+
+        if (dlg.ShowDialog() != true) return;
+
+        bool ok = Engine.SavePrefab(entityId, dlg.FileName);
+        string msg = ok
+            ? $"Prefab saved: {Path.GetFileName(dlg.FileName)}"
+            : $"Failed to save prefab for entity {entityId}";
+        MessageBox.Show(msg, "Save Prefab", MessageBoxButton.OK,
+            ok ? MessageBoxImage.Information : MessageBoxImage.Error);
     }
 }

@@ -60,6 +60,7 @@ add_library(FreshEngine STATIC
     editor/BlockBuilder.cpp
     editor/SelectionManager.cpp
     editor/SelectionRenderer.cpp
+    editor/PrefabSystem.cpp
     editor/TransformGizmo.cpp
     editor/FileDialogManager.cpp
     editor/LayoutManager.cpp

@@ -19,6 +19,11 @@
     <TreeView x:Name="EntityTree" Background="#FF1E1E1E" Foreground="#FFD4D4D4"
               BorderBrush="Transparent"
               SelectedItemChanged="EntityTree_SelectedItemChanged">
+      <TreeView.ContextMenu>
+        <ContextMenu>
+          <MenuItem Header="Save as Prefab…" Click="SaveAsPrefab_Click"/>
+        </ContextMenu>
+      </TreeView.ContextMenu>
       <TreeView.ItemContainerStyle>
         <Style TargetType="TreeViewItem">
           <Setter Property="Foreground" Value="#FFD4D4D4"/>

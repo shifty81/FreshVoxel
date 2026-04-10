@@ -16,7 +16,8 @@ public sealed class FileItem
     public string Name { get; init; } = string.Empty;
     public string FullPath { get; init; } = string.Empty;
     public string Icon { get; init; } = "📄";
-    public bool   IsVox  => Path.GetExtension(FullPath).Equals(".vox", StringComparison.OrdinalIgnoreCase);
+    public bool   IsVox    => Path.GetExtension(FullPath).Equals(".vox",    StringComparison.OrdinalIgnoreCase);
+    public bool   IsPrefab => Path.GetExtension(FullPath).Equals(".prefab", StringComparison.OrdinalIgnoreCase);
 }
 
 // ---------------------------------------------------------------------------
@@ -90,7 +91,8 @@ public partial class ContentBrowserControl : UserControl
                 string ext = Path.GetExtension(file).ToLowerInvariant();
                 string icon = ext switch
                 {
-                    ".vox"  => "🧊",
+                    ".vox"    => "🧊",
+                    ".prefab" => "🏗",
                     ".png" or ".jpg" or ".bmp" => "🖼",
                     ".lua"  => "📜",
                     ".json" => "🗂",
@@ -120,8 +122,14 @@ public partial class ContentBrowserControl : UserControl
     private void FileList_DoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
     {
         if (FileList.SelectedItem is not FileItem fi) return;
-        if (!fi.IsVox) return;
-        ImportVoxFile(fi.FullPath);
+        if (fi.IsVox)
+        {
+            ImportVoxFile(fi.FullPath);
+        }
+        else if (fi.IsPrefab)
+        {
+            SpawnPrefabFile(fi.FullPath);
+        }
     }
 
     private void FileList_Drop(object sender, DragEventArgs e)
@@ -131,8 +139,11 @@ public partial class ContentBrowserControl : UserControl
         if (paths is null) return;
         foreach (string path in paths)
         {
-            if (Path.GetExtension(path).Equals(".vox", StringComparison.OrdinalIgnoreCase))
+            string ext = Path.GetExtension(path).ToLowerInvariant();
+            if (ext == ".vox")
                 ImportVoxFile(path);
+            else if (ext == ".prefab")
+                SpawnPrefabFile(path);
         }
     }
 
@@ -151,6 +162,22 @@ public partial class ContentBrowserControl : UserControl
             : $"Failed to import: {Path.GetFileName(path)}";
         MessageBox.Show(msg, "Content Browser", MessageBoxButton.OK,
             ok ? MessageBoxImage.Information : MessageBoxImage.Error);
+    }
+
+    private void SpawnPrefabFile(string path)
+    {
+        if (Engine is null)
+        {
+            MessageBox.Show("No engine attached.", "Content Browser", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        uint entityId = Engine.SpawnPrefab(path);
+        string msg = entityId != 0
+            ? $"Spawned prefab '{Path.GetFileNameWithoutExtension(path)}' as entity {entityId}"
+            : $"Failed to spawn prefab: {Path.GetFileName(path)}";
+        MessageBox.Show(msg, "Content Browser", MessageBoxButton.OK,
+            entityId != 0 ? MessageBoxImage.Information : MessageBoxImage.Error);
     }
 
     private void RefreshButton_Click(object sender, RoutedEventArgs e)

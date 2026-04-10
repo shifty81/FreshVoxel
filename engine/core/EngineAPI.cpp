@@ -14,9 +14,11 @@
 #include "core/Logger.h"
 #include "ecs/EntityManager.h"
 #include "ecs/IComponent.h"
+#include "editor/PrefabSystem.h"
 #include "voxel/VoxelWorld.h"
 
 #include <mutex>
+#include <sstream>
 #include <string>
 
 // ---------------------------------------------------------------------------
@@ -294,6 +296,71 @@ FRESH_API void Engine_SetCellShadingParams(void* engine,
     // TODO: route to IRenderContext::setCellShadingParams()
     (void)outlineThickness; (void)rimThreshold;
     (void)shadowR; (void)shadowG; (void)shadowB; (void)shadowA;
+}
+
+// ---------------------------------------------------------------------------
+// Prefab system
+// ---------------------------------------------------------------------------
+
+// Thread-local scratch buffer for string return values (avoids malloc per call)
+static thread_local std::string g_prefabReturnBuffer;
+
+FRESH_API int Engine_SavePrefab(void* engine, unsigned int entityId, const char* filePath)
+{
+    if (!engine || !filePath) return 0;
+    auto* eng = static_cast<fresh::Engine*>(engine);
+    auto* em  = eng->getEntityManager();
+    if (!em) return 0;
+
+    fresh::ecs::Entity entity(static_cast<fresh::ecs::Entity::ID>(entityId));
+    if (!em->isEntityValid(entity)) {
+        fresh::Logger::getInstance().error(
+            "Engine_SavePrefab: entity " + std::to_string(entityId) + " is not valid",
+            "EngineAPI");
+        return 0;
+    }
+
+    fresh::PrefabSystem ps;
+    return ps.saveEntityAsPrefab(*em, entity, filePath) ? 1 : 0;
+}
+
+FRESH_API unsigned int Engine_SpawnPrefab(void* engine, const char* filePath)
+{
+    if (!engine || !filePath) return 0;
+    auto* eng = static_cast<fresh::Engine*>(engine);
+    auto* em  = eng->getEntityManager();
+    if (!em) return 0;
+
+    fresh::PrefabSystem ps;
+    fresh::ecs::Entity spawned = ps.spawnPrefab(*em, filePath);
+    if (!em->isEntityValid(spawned)) return 0;
+    return static_cast<unsigned int>(spawned.getId());
+}
+
+FRESH_API const char* Engine_ListPrefabs(void* engine, const char* directory)
+{
+    if (!directory) { g_prefabReturnBuffer = "[]"; return g_prefabReturnBuffer.c_str(); }
+    (void)engine; // does not need the engine instance
+
+    fresh::PrefabSystem ps;
+    const auto paths = ps.listPrefabs(directory);
+
+    std::ostringstream ss;
+    ss << "[";
+    for (size_t i = 0; i < paths.size(); ++i) {
+        if (i > 0) ss << ", ";
+        ss << "\"";
+        // Escape backslashes (Windows paths)
+        for (char c : paths[i]) {
+            if (c == '\\') ss << "\\\\";
+            else if (c == '"') ss << "\\\"";
+            else ss << c;
+        }
+        ss << "\"";
+    }
+    ss << "]";
+    g_prefabReturnBuffer = ss.str();
+    return g_prefabReturnBuffer.c_str();
 }
 
 } // extern "C"
