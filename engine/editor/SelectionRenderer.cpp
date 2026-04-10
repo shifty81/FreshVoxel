@@ -150,3 +150,5 @@ void SelectionRenderer::syncCellShadingOutlineColor(IRenderContext* renderContex
     // else: leave params at their zero-initialized defaults (will use engine defaults)
     renderContext->setCellShadingParams(params);
 }
+
+} // namespace fresh

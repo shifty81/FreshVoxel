@@ -9,6 +9,7 @@ InventoryManager::InventoryManager(float capacity, int hotbarSize)
     , m_inventoryPanel(40) // 40 inventory slots
     , m_hotbarPanel()
 {
+    (void)hotbarSize;
     // Initialize hotbar bindings with common starting materials
     for (auto& binding : m_hotbarBindings) {
         binding = rpg::ResourceType::Wood; // Default to Wood

@@ -27,10 +27,12 @@ void HumanoidSkeleton::createBones(float height)
     const float chestHeight = height * 0.25f;      // 4 voxels
     const float spineHeight = height * 0.1875f;    // 3 voxels
     const float legHeight = height * 0.4375f;      // 7 voxels (total)
+    (void)legHeight;
     const float upperLegHeight = height * 0.25f;   // 4 voxels
     const float lowerLegHeight = height * 0.1875f; // 3 voxels
     
     const float armLength = height * 0.4375f;      // 7 voxels (total)
+    (void)armLength;
     const float upperArmLength = height * 0.1875f; // 3 voxels
     const float lowerArmLength = height * 0.1875f; // 3 voxels
     const float handLength = height * 0.0625f;     // 1 voxel
