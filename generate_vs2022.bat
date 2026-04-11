@@ -6,7 +6,7 @@ REM For detailed build instructions, see BUILD.md
 setlocal enabledelayedexpansion
 
 REM Setup logging
-set "LOG_DIR=logs"
+set "LOG_DIR=%~dp0logs"
 if not exist "%LOG_DIR%" mkdir "%LOG_DIR%"
 
 REM Create timestamp for log file
