@@ -233,14 +233,18 @@ bool DirectX11RenderContext::initialize(void* win)
 {
     LOG_INFO_C("Initializing DirectX 11 render context...", "DirectX11");
 
-    if (!win) {
-        LOG_ERROR_C("Invalid window pointer", "DirectX11");
-        return false;
-    }
-
     window = win;
-    width = static_cast<int>(WindowAdapter::getWidth(window));
-    height = static_cast<int>(WindowAdapter::getHeight(window));
+
+    if (window) {
+        width  = static_cast<int>(WindowAdapter::getWidth(window));
+        height = static_cast<int>(WindowAdapter::getHeight(window));
+    } else {
+        // DLL-hosted mode: no window yet.  Dimensions are set later when the
+        // host calls Engine_SetViewportWindow() + Engine_ResizeViewport().
+        width  = 0;
+        height = 0;
+        LOG_INFO_C("No window provided — DLL-hosted mode, deferring swap chain creation", "DirectX11");
+    }
 
     if (!createDevice()) {
         LOG_ERROR_C("Failed to create device", "DirectX11");

@@ -349,6 +349,15 @@ LRESULT CALLBACK Win32Window::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LP
                     window->m_width = width;
                     window->m_height = height;
                     window->m_framebufferResized = true;
+
+                    // Fire the resize callback synchronously so editor panels are
+                    // repositioned NOW, inside WM_SIZE, before Windows repaints the
+                    // window.  Without this, repositioning happens one frame later and
+                    // the panels' old positions leave ghost artifacts.
+                    if (window->m_resizeCallback) {
+                        window->m_resizeCallback(static_cast<int>(width),
+                                                 static_cast<int>(height));
+                    }
                 }
             }
             return 0;
@@ -427,10 +436,18 @@ LRESULT CALLBACK Win32Window::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LP
             return 0;
         }
 
-        case WM_ERASEBKGND:
-            // Don't erase background - DirectX and child windows handle their own rendering
-            // This prevents flicker and ensures child windows are properly visible
+        case WM_ERASEBKGND: {
+            // Fill the erased area with black.  This clears the region vacated by
+            // a child panel after it has been repositioned (e.g. on maximize),
+            // preventing ghost images of old panel positions.
+            HDC hdc = reinterpret_cast<HDC>(wParam);
+            if (hdc) {
+                RECT rc;
+                GetClientRect(hwnd, &rc);
+                FillRect(hdc, &rc, static_cast<HBRUSH>(GetStockObject(BLACK_BRUSH)));
+            }
             return 1;
+        }
 
         case WM_DESTROY:
             PostQuitMessage(0);

@@ -224,14 +224,18 @@ bool DirectX12RenderContext::initialize(void* win)
 {
     std::cout << "[DirectX 12] Initializing DirectX 12 render context..." << std::endl;
 
-    if (!win) {
-        std::cerr << "[DirectX 12] Invalid window pointer" << std::endl;
-        return false;
-    }
-
     window = win;
-    width = static_cast<int>(WindowAdapter::getWidth(window));
-    height = static_cast<int>(WindowAdapter::getHeight(window));
+
+    if (window) {
+        width  = static_cast<int>(WindowAdapter::getWidth(window));
+        height = static_cast<int>(WindowAdapter::getHeight(window));
+    } else {
+        // DLL-hosted mode: no window yet.  Dimensions are set later when the
+        // host calls Engine_SetViewportWindow() + Engine_ResizeViewport().
+        width  = 0;
+        height = 0;
+        std::cout << "[DirectX 12] No window provided — DLL-hosted mode, deferring swap chain creation" << std::endl;
+    }
 
     #ifdef _DEBUG
     if (!enableDebugLayer()) {
