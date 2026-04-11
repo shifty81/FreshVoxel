@@ -59,38 +59,81 @@ call :log ""
 
 cd build
 
-REM Check for vcpkg (project directory first, then parent directory)
+REM Check for vcpkg (project directory, parent directory, VCPKG_ROOT env var, then common system paths)
 call :log "[STEP] Checking for vcpkg..."
-set "VCPKG_ROOT="
+set "VCPKG_FOUND_ROOT="
 set "VCPKG_LOCAL=%~dp0vcpkg"
 set "VCPKG_PARENT=%~dp0..\vcpkg"
+set "VCPKG_SCOOP=%USERPROFILE%\scoop\apps\vcpkg\current"
+set "VCPKG_CHOCO=C:\tools\vcpkg"
 
 if exist "%VCPKG_LOCAL%\scripts\buildsystems\vcpkg.cmake" (
-    set "VCPKG_ROOT=%VCPKG_LOCAL%"
+    set "VCPKG_FOUND_ROOT=%VCPKG_LOCAL%"
     call :log "[OK] Found vcpkg in project directory"
     call :log "     Path: %VCPKG_LOCAL%"
-) else if exist "%VCPKG_PARENT%\scripts\buildsystems\vcpkg.cmake" (
-    set "VCPKG_ROOT=%VCPKG_PARENT%"
+    goto :vcpkg_found
+)
+if exist "%VCPKG_PARENT%\scripts\buildsystems\vcpkg.cmake" (
+    set "VCPKG_FOUND_ROOT=%VCPKG_PARENT%"
     call :log "[OK] Found vcpkg in parent directory"
     call :log "     Path: %VCPKG_PARENT%"
-) else (
-    call :log "[ERROR] vcpkg not found"
-    call :log ""
-    call :log "vcpkg is required for automatic dependency management."
-    call :log ""
-    call :log "To set up vcpkg from the project root directory:"
-    call :log "  1. Clone vcpkg:    git clone https://github.com/microsoft/vcpkg.git"
-    call :log "  2. Enter vcpkg:    cd vcpkg"
-    call :log "  3. Bootstrap it:   bootstrap-vcpkg.bat"
-    call :log "  4. Return to root: cd .."
-    call :log "  5. Generate VS:    generate_vs2022.bat"
-    call :log ""
-    call :log "Or see BUILD.md for detailed setup instructions."
-    call :log ""
-    pause
-    cd ..
-    exit /b 1
+    goto :vcpkg_found
 )
+if defined VCPKG_ROOT (
+    if exist "%VCPKG_ROOT%\scripts\buildsystems\vcpkg.cmake" (
+        set "VCPKG_FOUND_ROOT=%VCPKG_ROOT%"
+        call :log "[OK] Found vcpkg via VCPKG_ROOT environment variable"
+        call :log "     Path: %VCPKG_ROOT%"
+        goto :vcpkg_found
+    ) else (
+        call :log "[WARN] VCPKG_ROOT is set but vcpkg.cmake was not found there"
+        call :log "       VCPKG_ROOT: %VCPKG_ROOT%"
+    )
+)
+if exist "%VCPKG_SCOOP%\scripts\buildsystems\vcpkg.cmake" (
+    set "VCPKG_FOUND_ROOT=%VCPKG_SCOOP%"
+    call :log "[OK] Found vcpkg installed via Scoop"
+    call :log "     Path: %VCPKG_SCOOP%"
+    goto :vcpkg_found
+)
+if exist "%VCPKG_CHOCO%\scripts\buildsystems\vcpkg.cmake" (
+    set "VCPKG_FOUND_ROOT=%VCPKG_CHOCO%"
+    call :log "[OK] Found vcpkg installed via Chocolatey"
+    call :log "     Path: %VCPKG_CHOCO%"
+    goto :vcpkg_found
+)
+
+call :log "[ERROR] vcpkg not found"
+call :log ""
+call :log "vcpkg is required for automatic dependency management."
+call :log ""
+call :log "Searched locations:"
+call :log "  - Project dir:  %VCPKG_LOCAL%"
+call :log "  - Parent dir:   %VCPKG_PARENT%"
+if defined VCPKG_ROOT (
+    call :log "  - VCPKG_ROOT:   %VCPKG_ROOT% (set but invalid)"
+) else (
+    call :log "  - VCPKG_ROOT:   (not set)"
+)
+call :log "  - Scoop:        %VCPKG_SCOOP%"
+call :log "  - Chocolatey:   %VCPKG_CHOCO%"
+call :log ""
+call :log "To set up vcpkg from the project root directory:"
+call :log "  1. Clone vcpkg:    git clone https://github.com/microsoft/vcpkg.git"
+call :log "  2. Enter vcpkg:    cd vcpkg"
+call :log "  3. Bootstrap it:   bootstrap-vcpkg.bat"
+call :log "  4. Return to root: cd .."
+call :log "  5. Generate VS:    generate_vs2022.bat"
+call :log ""
+call :log "Or set the VCPKG_ROOT environment variable to your existing vcpkg installation."
+call :log "Or see BUILD.md for detailed setup instructions."
+call :log ""
+pause
+cd ..
+exit /b 1
+
+:vcpkg_found
+set "VCPKG_ROOT=%VCPKG_FOUND_ROOT%"
 call :log ""
 
 REM Generate Visual Studio 2022 solution with vcpkg
