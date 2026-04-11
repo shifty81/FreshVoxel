@@ -352,10 +352,10 @@ bool Engine::initialize(const EngineConfig& config)
         // create the DX device and shader resources now, then bind the swap
         // chain later when Engine_SetViewportWindow() is called.
         if (!m_renderer->initialize(nullptr)) {
-            LOG_ERROR_C("Failed to initialise renderer in DLL-hosted mode", "Engine");
+            LOG_ERROR_C("Failed to initialize renderer in DLL-hosted mode", "Engine");
             return false;
         }
-        LOG_INFO_C("Renderer initialised in DLL-hosted mode (swap chain deferred)", "Engine");
+        LOG_INFO_C("Renderer initialized in DLL-hosted mode (swap chain deferred)", "Engine");
     } else {
     // Determine if we need OpenGL context for the window based on selected API
     bool useOpenGL = (m_renderer->getAPI() == GraphicsAPI::OpenGL);

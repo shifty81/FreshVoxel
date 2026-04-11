@@ -48,7 +48,7 @@ struct EngineConfig
      * When true the engine:
      *   - Does NOT create its own Win32 window, menu bar, or toolbar.
      *   - Does NOT create the native EditorManager UI panels.
-     *   - Initialises the renderer in a deferred state; the external host
+     *   - Initializes the renderer in a deferred state; the external host
      *     must call Engine_SetViewportWindow() to provide the render HWND.
      *   - Does NOT run its own message/event loop; Engine_Tick() drives
      *     each frame from the host's composition thread.
