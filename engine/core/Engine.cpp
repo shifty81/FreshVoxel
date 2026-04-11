@@ -183,6 +183,12 @@ constexpr glm::vec3 DEFAULT_SPAWN_POSITION(0.0f, 100.0f, 0.0f);  // Center, abov
 
 /// Distance (world units) beyond which chunks switch to LOD1 mesh
 [[maybe_unused]] constexpr float LOD_DISTANCE = 96.0f;
+
+/// World-space sun direction (normalized) used in the cell-shading toon pass
+[[maybe_unused]] constexpr glm::vec3 SUN_DIRECTION(0.5f, 1.0f, 0.3f);
+
+/// Placeholder voxel palette colour (mid-green) used until a per-type palette is wired
+[[maybe_unused]] constexpr glm::vec3 DEFAULT_VOXEL_COLOR(0.5f, 0.7f, 0.5f);
 #endif
 
 /**
@@ -2526,7 +2532,7 @@ void Engine::renderVoxelWorld()
             if (camLoc >= 0) glUniform3f(camLoc, camPos.x, camPos.y, camPos.z);
 
             GLint lightLoc = glGetUniformLocation(program, "lightDir");
-            if (lightLoc >= 0) glUniform3f(lightLoc, 0.5f, 1.0f, 0.3f); // fixed sun direction
+            if (lightLoc >= 0) glUniform3f(lightLoc, SUN_DIRECTION.x, SUN_DIRECTION.y, SUN_DIRECTION.z);
 
             GLint rimLoc = glGetUniformLocation(program, "rimThreshold");
             if (rimLoc >= 0) glUniform1f(rimLoc, csParams.rimThreshold);
@@ -2536,7 +2542,7 @@ void Engine::renderVoxelWorld()
                 csParams.shadowR, csParams.shadowG, csParams.shadowB, csParams.shadowA);
 
             GLint colorLoc = glGetUniformLocation(program, "voxelColor");
-            if (colorLoc >= 0) glUniform3f(colorLoc, 0.5f, 0.7f, 0.5f); // palette placeholder
+            if (colorLoc >= 0) glUniform3f(colorLoc, DEFAULT_VOXEL_COLOR.x, DEFAULT_VOXEL_COLOR.y, DEFAULT_VOXEL_COLOR.z); // palette placeholder
 
             GLint thickLoc = glGetUniformLocation(program, "outlineThickness");
             if (thickLoc >= 0) glUniform1f(thickLoc, csParams.outlineThickness);
