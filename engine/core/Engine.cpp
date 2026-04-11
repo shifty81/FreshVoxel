@@ -277,8 +277,10 @@ void Engine::setWindowTitle(const std::string& title)
         int len = MultiByteToWideChar(CP_UTF8, 0, title.c_str(), -1, nullptr, 0);
         if (len > 0) {
             std::wstring wide(len, L'\0');
-            MultiByteToWideChar(CP_UTF8, 0, title.c_str(), -1, wide.data(), len);
-            SetWindowTextW(m_window->getHandle(), wide.c_str());
+            int written = MultiByteToWideChar(CP_UTF8, 0, title.c_str(), -1, wide.data(), len);
+            if (written == len) {
+                SetWindowTextW(m_window->getHandle(), wide.c_str());
+            }
         }
     }
 #else

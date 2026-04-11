@@ -28,6 +28,7 @@
 #include "assets/vox/VoxImporter.h"
 #endif
 
+#include <cmath>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <mutex>
@@ -227,12 +228,16 @@ FRESH_API const char* Engine_GetSceneEntities(void* engine)
     ss << "{\"entities\":[";
 
     if (em) {
-        const auto entities = em->getAllEntities();
+        const std::vector<fresh::ecs::Entity> entities = em->getAllEntities();
         bool first = true;
         for (const auto& entity : entities) {
             if (!first) ss << ",";
             first = false;
-            ss << "{\"id\":" << entity.getId() << ",\"name\":\"Entity_" << entity.getId() << "\",\"components\":[]}";
+            // Entity IDs are numeric — safe to embed directly.
+            // Name uses only ASCII digits — no JSON escaping needed.
+            ss << "{\"id\":" << entity.getId()
+               << ",\"name\":\"Entity_" << entity.getId()
+               << "\",\"components\":[]}";
         }
     }
 
@@ -263,6 +268,10 @@ FRESH_API int Engine_RaycastViewport(void* engine, float u, float v)
 
     const glm::vec4 nearClip = invProjView * glm::vec4(ndcX, ndcY, -1.0f, 1.0f);
     const glm::vec4 farClip  = invProjView * glm::vec4(ndcX, ndcY,  1.0f, 1.0f);
+
+    // Guard against a degenerate projection matrix (w == 0 → perspective divide undefined)
+    static constexpr float W_EPSILON = 1e-6f;
+    if (std::abs(nearClip.w) < W_EPSILON || std::abs(farClip.w) < W_EPSILON) return -1;
 
     const glm::vec3 rayOrigin = glm::vec3(nearClip) / nearClip.w;
     const glm::vec3 rayDir    = glm::normalize(glm::vec3(farClip) / farClip.w - rayOrigin);
