@@ -134,9 +134,6 @@ public:
     /** @brief Set the upward buoyancy force applied in water */
     void setBuoyancy(float buoyancy);
 
-    /** @brief Get configured buoyancy force */
-    [[nodiscard]] float getBuoyancyValue() const;
-
 private:
     EnvironmentState m_state = EnvironmentState::Grounded;
 

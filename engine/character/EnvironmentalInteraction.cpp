@@ -149,9 +149,4 @@ void EnvironmentalInteraction::setBuoyancy(float buoyancy)
     m_buoyancy = buoyancy;
 }
 
-float EnvironmentalInteraction::getBuoyancyValue() const
-{
-    return m_buoyancy;
-}
-
 } // namespace fresh
