@@ -27,6 +27,7 @@ public:
     using KeyCallback = std::function<void(int vkCode, bool isDown)>;
     using MouseMoveCallback = std::function<void(int x, int y)>;
     using MouseButtonCallback = std::function<void(int button, bool isDown)>;
+    using ResizeCallback = std::function<void(int width, int height)>;
     
     Win32Window(uint32_t width, uint32_t height, const std::string& title);
     ~Win32Window();
