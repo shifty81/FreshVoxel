@@ -30,6 +30,8 @@ add_library(FreshEngine STATIC
     physics/PhysicsComponent.cpp
     physics/PhysicsSystemEnhanced.cpp
     physics/ClothSimulation.cpp
+    physics/BackpackPhysics.cpp
+    physics/HairPhysics.cpp
     interaction/RaycastSystem.cpp
     interaction/VoxelInteraction.cpp
     interaction/VoxelTool.cpp
@@ -54,6 +56,7 @@ add_library(FreshEngine STATIC
     character/CharacterRenderer.cpp
     character/RagdollSystem.cpp
     character/HitReactionSystem.cpp
+    character/EnvironmentalInteraction.cpp
     editor/EditorGUI.cpp
     editor/WorldEditor.cpp
     editor/TerraformingSystem.cpp

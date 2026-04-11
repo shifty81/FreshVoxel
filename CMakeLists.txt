@@ -681,6 +681,9 @@ if(BUILD_TESTS)
         tests/character/RagdollSystemTests.cpp
         tests/character/HitReactionSystemTests.cpp
         tests/physics/ClothSimulationTests.cpp
+        tests/physics/BackpackPhysicsTests.cpp
+        tests/physics/HairPhysicsTests.cpp
+        tests/character/EnvironmentalInteractionTests.cpp
         tests/editor/SelectionManagerTests.cpp
         tests/editor/SelectionRendererTests.cpp
         tests/editor/GamePackagerTests.cpp
@@ -757,9 +760,12 @@ if(BUILD_TESTS)
         engine/character/WeaponAttachment.cpp
         engine/character/RagdollSystem.cpp
         engine/character/HitReactionSystem.cpp
+        engine/character/EnvironmentalInteraction.cpp
         engine/character/Bone.cpp
         engine/character/HumanoidSkeleton.cpp
         engine/physics/ClothSimulation.cpp
+        engine/physics/BackpackPhysics.cpp
+        engine/physics/HairPhysics.cpp
         engine/editor/SelectionManager.cpp
         engine/editor/SelectionRenderer.cpp
         engine/editor/TransformGizmo.cpp
