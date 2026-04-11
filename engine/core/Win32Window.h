@@ -27,6 +27,7 @@ public:
     using KeyCallback = std::function<void(int vkCode, bool isDown)>;
     using MouseMoveCallback = std::function<void(int x, int y)>;
     using MouseButtonCallback = std::function<void(int button, bool isDown)>;
+    using ResizeCallback = std::function<void(int width, int height)>;
     
     Win32Window(uint32_t width, uint32_t height, const std::string& title);
     ~Win32Window();
@@ -164,6 +165,18 @@ public:
     }
 
     /**
+     * @brief Set resize callback — fired synchronously inside WM_SIZE.
+     *
+     * Use this to reposition child panels immediately when the window is
+     * resized or maximized, preventing ghost-panel artifacts that appear
+     * when repositioning is deferred to the next frame.
+     */
+    void setResizeCallback(ResizeCallback callback)
+    {
+        m_resizeCallback = callback;
+    }
+
+    /**
      * @brief Get or create the native menu bar
      * @return Pointer to Win32MenuBar instance
      */
@@ -231,6 +244,7 @@ private:
     KeyCallback m_keyCallback;
     MouseMoveCallback m_mouseMoveCallback;
     MouseButtonCallback m_mouseButtonCallback;
+    ResizeCallback m_resizeCallback;   ///< Fired synchronously on WM_SIZE
     
     // Native UI components
     std::unique_ptr<Win32MenuBar> m_menuBar;

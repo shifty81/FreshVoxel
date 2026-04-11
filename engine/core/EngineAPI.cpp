@@ -102,6 +102,13 @@ FRESH_API int Engine_Initialize(void* engine, int editorMode)
         : fresh::EngineMode::Runtime;
 
     fresh::EngineConfig cfg = fresh::EngineConfig::createDefault(mode);
+
+    // DLL-hosted: the external process (e.g. WPF HwndHost) owns the window.
+    // The engine must NOT create its own Win32 window, native menu/toolbar, or
+    // native EditorManager panels.  Rendering is deferred until the host calls
+    // Engine_SetViewportWindow().
+    cfg.dllHosted = true;
+
     bool ok = eng->initialize(cfg);
 
     if (ok) {

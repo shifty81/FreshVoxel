@@ -105,3 +105,4 @@ test_build/
 
 # Runtime session data (generated at runtime, not source)
 config/last_session.cfg
+build_check/

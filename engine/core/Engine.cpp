@@ -262,11 +262,15 @@ void Engine::tickOnce(float deltaSeconds)
     static constexpr float MAX_DELTA = 0.1f;
     deltaSeconds = std::min(deltaSeconds, MAX_DELTA);
 
-    if (m_window) {
-        m_window->pollEvents();
-        if (m_window->shouldClose()) {
-            m_running = false;
-            return;
+    // In DLL-hosted mode the external process drives the message pump.
+    // We must not poll our own (non-existent) window here.
+    if (!m_config.dllHosted) {
+        if (m_window) {
+            m_window->pollEvents();
+            if (m_window->shouldClose()) {
+                m_running = false;
+                return;
+            }
         }
     }
 
@@ -342,6 +346,17 @@ bool Engine::initialize(const EngineConfig& config)
     LOG_INFO_C("Render context created: " + std::string(getGraphicsAPIName(m_renderer->getAPI())),
                "Engine");
 
+    if (m_config.dllHosted) {
+        // DLL-hosted mode: the external process (e.g. WPF HwndHost) owns the
+        // window.  We initialise the renderer with a null window — it will
+        // create the DX device and shader resources now, then bind the swap
+        // chain later when Engine_SetViewportWindow() is called.
+        if (!m_renderer->initialize(nullptr)) {
+            LOG_ERROR_C("Failed to initialize renderer in DLL-hosted mode", "Engine");
+            return false;
+        }
+        LOG_INFO_C("Renderer initialized in DLL-hosted mode (swap chain deferred)", "Engine");
+    } else {
     // Determine if we need OpenGL context for the window based on selected API
     bool useOpenGL = (m_renderer->getAPI() == GraphicsAPI::OpenGL);
 
@@ -390,6 +405,16 @@ bool Engine::initialize(const EngineConfig& config)
     m_window->setMouseButtonCallback([this](int button, bool isDown) {
         m_inputManager->processMouseButton(button, isDown);
     });
+
+    // Synchronous resize callback: reposition editor panels immediately inside
+    // WM_SIZE so there are no ghost-panel artifacts from the old positions.
+    if (m_config.enableEditor) {
+        m_window->setResizeCallback([this](int w, int h) {
+            if (m_editorManager) {
+                m_editorManager->onWindowResize(w, h);
+            }
+        });
+    }
 #else
     // GLFW: Initialize with window handle
     m_inputManager->initialize(m_window->getHandle());
@@ -398,6 +423,7 @@ bool Engine::initialize(const EngineConfig& config)
     setupInputCallbacks();
     std::cout << "Input manager initialized" << std::endl;
     LOG_INFO_C("Input manager initialized", "Engine");
+    } // end else (not dllHosted)
     } else {
         // Headless mode (server): no window, renderer, or input
         LOG_INFO_C("Headless mode: skipping window, renderer, and input initialization", "Engine");
@@ -453,8 +479,10 @@ bool Engine::initialize(const EngineConfig& config)
     }
 
     // Create comprehensive editor manager (uses Windows Native Win32 UI) - show immediately
-    // Only initialize editor UI in Editor mode
-    if (m_config.enableEditor) {
+    // Only initialize editor UI in Editor mode AND when not in DLL-hosted mode.
+    // In DLL-hosted mode the external host (e.g. WPF) provides all editor UI;
+    // the engine only exposes the editing API through EngineAPI.h.
+    if (m_config.enableEditor && !m_config.dllHosted) {
     m_editorManager = std::make_unique<EditorManager>();
     
     // Set project manager reference in editor manager
@@ -590,7 +618,11 @@ bool Engine::initialize(const EngineConfig& config)
     }
 #endif
     } else {
-        LOG_INFO_C("Non-editor mode: skipping editor UI initialization", "Engine");
+        if (m_config.dllHosted) {
+            LOG_INFO_C("DLL-hosted mode: skipping native editor UI (WPF provides editor panels)", "Engine");
+        } else {
+            LOG_INFO_C("Non-editor mode: skipping editor UI initialization", "Engine");
+        }
     }
 
     // Create the primary ViewportContext (per ENGINE.md: the atomic rendering/input unit)
@@ -1909,6 +1941,12 @@ void Engine::renderEditor()
     // Route voxel world rendering through ViewportContext (per ENGINE.md)
     // The viewport binds its render target, renders the world, then presents.
     if (m_viewportContext && m_viewportContext->isReady()) {
+        // Mark viewport as actively rendering so WM_PAINT does not overwrite DX output
+#ifdef _WIN32
+        if (m_editorManager && m_editorManager->getViewportPanel()) {
+            m_editorManager->getViewportPanel()->setRenderingActive(true);
+        }
+#endif
         // Bind the viewport render target
         if (m_viewportContext->beginFrame()) {
             // Render voxel world INTO the viewport only
@@ -1941,78 +1979,17 @@ void Engine::renderEditor()
             }
 #endif
 
-            // Present the viewport frame
+            // Present the viewport frame — this is the ONLY present call.
+            // Do NOT begin another DX frame for "editor UI" after this; the
+            // native Win32 panels paint themselves and do not need a DX pass.
             m_viewportContext->endFrame();
         }
-    } else {
-        // Fallback: ViewportContext not ready — render directly (legacy path)
-        // This path handles the case before the viewport is initialized
-        if (!m_renderer->beginFrame()) {
-#ifdef _WIN32
-            if (m_editorManager && m_editorManager->getViewportPanel()) {
-                m_editorManager->getViewportPanel()->setRenderingActive(false);
-            }
-#endif
-            return;
-        }
-
-#ifdef _WIN32
-        if (m_editorManager && m_editorManager->getViewportPanel()) {
-            m_editorManager->getViewportPanel()->setRenderingActive(true);
-        }
-#endif
-
-        m_renderer->setViewport(0, 0, m_renderer->getSwapchainWidth(),
-                                m_renderer->getSwapchainHeight());
-
-#if defined(FRESH_OPENGL_SUPPORT) && defined(FRESH_GLEW_AVAILABLE)
-        if (m_renderer->getAPI() == GraphicsAPI::OpenGL) {
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            if (m_world && !m_isGeneratingWorld) {
-                renderVoxelWorld();
-            }
-        }
-#endif
-
-#ifdef _WIN32
-        if (m_renderer->getAPI() == GraphicsAPI::DirectX11) {
-            if (m_world && m_player && !m_isGeneratingWorld) {
-                auto* dx11Context = dynamic_cast<DirectX11RenderContext*>(m_renderer.get());
-                if (dx11Context) {
-                    dx11Context->renderVoxelWorld(m_world.get(), m_player.get());
-                }
-            }
-        }
-
-        if (m_renderer->getAPI() == GraphicsAPI::DirectX12) {
-            if (m_world && m_player && !m_isGeneratingWorld) {
-                auto* dx12Context = dynamic_cast<DirectX12RenderContext*>(m_renderer.get());
-                if (dx12Context) {
-                    dx12Context->renderVoxelWorld(m_world.get(), m_player.get());
-                }
-            }
-        }
-#endif
-
-        // Render editor UI (panels, gizmos, selection)
-        if (m_editorManager && m_editorManager->isInitialized()) {
-            m_editorManager->beginFrame();
-        }
-
-        if (m_editorManager && m_editorManager->isInitialized() && m_editorManager->isVisible()) {
-            m_editorManager->render();
-        }
-
-        if (m_editorManager && m_editorManager->isInitialized()) {
-            m_editorManager->endFrame();
-        }
-
-        m_renderer->endFrame();
+        // Done — return immediately.  The native Win32 editor panels update
+        // themselves through their own WndProc/WM_PAINT handlers.
         return;
     }
-
-    // === Editor UI Rendering ===
-    // Editor composite goes to the main window backbuffer (separate from viewport)
+    // Fallback: ViewportContext not ready — render directly (legacy path).
+    // This handles the brief period before the swap chain is created on startup.
     if (!m_renderer->beginFrame()) {
 #ifdef _WIN32
         if (m_editorManager && m_editorManager->getViewportPanel()) {
@@ -2031,19 +2008,34 @@ void Engine::renderEditor()
     m_renderer->setViewport(0, 0, m_renderer->getSwapchainWidth(),
                             m_renderer->getSwapchainHeight());
 
-    // Render editor UI (panels, gizmos, selection)
-    // This happens AFTER viewport content is rendered to its own target
-    if (m_editorManager && m_editorManager->isInitialized()) {
-        m_editorManager->beginFrame();
+#if defined(FRESH_OPENGL_SUPPORT) && defined(FRESH_GLEW_AVAILABLE)
+    if (m_renderer->getAPI() == GraphicsAPI::OpenGL) {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        if (m_world && !m_isGeneratingWorld) {
+            renderVoxelWorld();
+        }
+    }
+#endif
+
+#ifdef _WIN32
+    if (m_renderer->getAPI() == GraphicsAPI::DirectX11) {
+        if (m_world && m_player && !m_isGeneratingWorld) {
+            auto* dx11Context = dynamic_cast<DirectX11RenderContext*>(m_renderer.get());
+            if (dx11Context) {
+                dx11Context->renderVoxelWorld(m_world.get(), m_player.get());
+            }
+        }
     }
 
-    if (m_editorManager && m_editorManager->isInitialized() && m_editorManager->isVisible()) {
-        m_editorManager->render();
+    if (m_renderer->getAPI() == GraphicsAPI::DirectX12) {
+        if (m_world && m_player && !m_isGeneratingWorld) {
+            auto* dx12Context = dynamic_cast<DirectX12RenderContext*>(m_renderer.get());
+            if (dx12Context) {
+                dx12Context->renderVoxelWorld(m_world.get(), m_player.get());
+            }
+        }
     }
-
-    if (m_editorManager && m_editorManager->isInitialized()) {
-        m_editorManager->endFrame();
-    }
+#endif
 
     m_renderer->endFrame();
 }

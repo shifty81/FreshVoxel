@@ -42,6 +42,23 @@ struct EngineConfig
     bool autoLoadLastWorld = false;                ///< Auto-load last saved world on startup (client/runtime)
 
     /**
+     * @brief DLL-hosted mode — the engine is embedded in an external process
+     *        (e.g. the WPF editor via HwndHost).
+     *
+     * When true the engine:
+     *   - Does NOT create its own Win32 window, menu bar, or toolbar.
+     *   - Does NOT create the native EditorManager UI panels.
+     *   - Initializes the renderer in a deferred state; the external host
+     *     must call Engine_SetViewportWindow() to provide the render HWND.
+     *   - Does NOT run its own message/event loop; Engine_Tick() drives
+     *     each frame from the host's composition thread.
+     *
+     * The editing API (undo, entity queries, .vox import, etc.) remains
+     * fully available through EngineAPI.h.
+     */
+    bool dllHosted = false;
+
+    /**
      * @brief Create a default config for the given mode
      *
      * Sets sensible defaults based on the mode:
@@ -101,7 +118,7 @@ struct EngineConfig
     bool isClient() const { return mode == EngineMode::Client; }
     bool isServer() const { return mode == EngineMode::Server; }
     bool isRuntime() const { return mode == EngineMode::Runtime; }
-    bool hasWindow() const { return enableRendering && !headless; }
+    bool hasWindow() const { return enableRendering && !headless && !dllHosted; }
 };
 
 /**
