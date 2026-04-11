@@ -8,6 +8,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Backpack/Item Physics** — Phase 7 physics completion (BackpackPhysics)
+  - `BackpackPhysics`: Verlet-integration simulation for items carried by characters (backpacks, pouches, satchels)
+    - Anchor particle follows character bone; body particle swings freely under gravity and inertia
+    - Distance constraint maintains rest length between anchor and body
+    - Per-item gravity, damping, and constraint solver iterations
+    - `addItem()`, `removeItem()`, `setAnchorPosition()`, `reset()` operations
+    - `getAnchorPosition()`, `getBodyPosition()`, `getParticles()`, `getConstraints()` accessors
+    - 25 new tests covering construction, gravity, anchor tracking, reset, and multi-item scenarios
+
+- **Hair Physics System** — Phase 7 physics completion (HairPhysics)
+  - `HairPhysics`: Strand-based Verlet-integration simulation for character hair
+    - Each strand is a chain of particles; root pinned to head bone, tip free
+    - Gravity and external forces (wind) applied to non-pinned particles
+    - Iterative distance constraint satisfaction between consecutive particles
+    - `addStrand()`, `removeStrand()`, `setRootPosition()`, `reset()` operations
+    - Configurable particle count, segment length, gravity, damping, constraint iterations
+    - 25 new tests covering construction, chain layout, root tracking, gravity, and multi-strand scenarios
+
+- **Environmental Interaction System** — Phase 7 completion (EnvironmentalInteraction)
+  - `EnvironmentalInteraction`: State machine for character environmental states
+    - States: Grounded, Airborne, Climbing, Swimming, Ducking (mutually exclusive)
+    - Priority-ordered transitions each update: Swimming > Climbing > Ducking > Grounded > Airborne
+    - `getModifiedVelocity()`: applies state-specific velocity modifications
+      - Climbing: horizontal zeroed, vertical scaled by climb speed
+      - Swimming: all axes scaled by swim speed fraction
+      - Ducking: horizontal reduced by duck speed multiplier
+    - `getHeightMultiplier()`: returns 0.5 (configurable) when ducking, 1.0 otherwise
+    - `getBuoyancy()`: returns configurable upward force when swimming
+    - `isClimbing()`, `isSwimming()`, `isDucking()`, `isGrounded()` state queries
+    - Configurable: climbSpeed, swimSpeed, duckSpeedMultiplier, duckHeightMultiplier, buoyancy
+    - 25 new tests covering state transitions, priority, velocity modification, buoyancy, and configuration
+
 - **Physics Integration for Character System** — Phase 7 Weeks 13-14 implementation
   - `ClothSimulation`: Verlet-integration particle-based cloth physics for capes/clothing
     - Rectangular particle grid with structural (horizontal/vertical) and shear (diagonal) constraints
