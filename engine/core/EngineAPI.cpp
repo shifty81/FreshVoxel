@@ -16,13 +16,20 @@
 #include "core/Logger.h"
 #include "ecs/EntityManager.h"
 #include "ecs/IComponent.h"
+#include "editor/EditorManager.h"
 #include "editor/PrefabSystem.h"
+#include "gameplay/Camera.h"
+#include "physics/CollisionDetection.h"
+#include "renderer/RenderContext.h"
+#include "viewport/ViewportContext.h"
 #include "voxel/VoxelWorld.h"
 
 #ifdef FRESH_VOX_AVAILABLE
 #include "assets/vox/VoxImporter.h"
 #endif
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <mutex>
 #include <sstream>
 #include <string>
@@ -104,14 +111,10 @@ FRESH_API int Engine_Initialize(void* engine, int editorMode)
     return ok ? 1 : 0;
 }
 
-FRESH_API void Engine_Tick(void* engine, float /*deltaMs*/)
+FRESH_API void Engine_Tick(void* engine, float deltaMs)
 {
-    // Engine::run() owns the loop; in DLL mode the host drives ticks.
-    // We update + render one frame without blocking on the message pump.
-    // The Engine does not currently expose a single-frame tick; this is
-    // the integration point for future Engine::tickOnce(deltaTime).
-    (void)engine;
-    // TODO: expose Engine::tickOnce(deltaTime) and call it here
+    if (!engine) return;
+    static_cast<fresh::Engine*>(engine)->tickOnce(deltaMs / 1000.0f);
 }
 
 FRESH_API void Engine_Shutdown(void* engine)
@@ -128,45 +131,45 @@ FRESH_API void Engine_Shutdown(void* engine)
 FRESH_API int Engine_SetViewportWindow(void* engine, void* viewportHwnd)
 {
     if (!engine || !viewportHwnd) return 0;
-    // ViewportContext / IRenderContext expose setViewportWindow().
-    // Route through the viewport context if present, otherwise fall back to
-    // the render context directly.
     auto* eng = static_cast<fresh::Engine*>(engine);
-    fresh::ViewportContext* vc = eng->getViewportContext();
-    if (!vc) {
+
+    // Route directly through the render context so that DX11/DX12/GL can
+    // create a swap chain bound to the WPF child HWND.
+    fresh::IRenderContext* rc = eng->getRenderer();
+    if (!rc) {
         fresh::Logger::getInstance().warning(
-            "Engine_SetViewportWindow: no ViewportContext available yet", "EngineAPI");
+            "Engine_SetViewportWindow: renderer not available", "EngineAPI");
         return 0;
     }
-    // ViewportContext does not currently expose setViewportWindow directly;
-    // the engine already wires this through its renderer.  Log and return
-    // success so WPF does not error out during startup while the full wiring
-    // is being implemented.
-    fresh::Logger::getInstance().info(
-        "Engine_SetViewportWindow called — wiring HWND to renderer", "EngineAPI");
-    (void)viewportHwnd;
-    return 1;
+    bool ok = rc->setViewportWindow(viewportHwnd);
+    if (ok) {
+        fresh::Logger::getInstance().info(
+            "Engine_SetViewportWindow: HWND bound to renderer", "EngineAPI");
+    }
+    return ok ? 1 : 0;
 }
 
 FRESH_API void Engine_ResizeViewport(void* engine, int width, int height)
 {
-    if (!engine) return;
-    // Forward to ViewportContext / IRenderContext recreateSwapChain()
+    if (!engine || width <= 0 || height <= 0) return;
     auto* eng = static_cast<fresh::Engine*>(engine);
+
+    // Resize via ViewportContext when available; fall back to renderer directly.
     fresh::ViewportContext* vc = eng->getViewportContext();
-    if (!vc) return;
-    // Placeholder — full wiring in follow-up once tickOnce is implemented
-    fresh::Logger::getInstance().info(
-        "Engine_ResizeViewport: " + std::to_string(width) + "x" + std::to_string(height),
-        "EngineAPI");
+    if (vc) {
+        vc->resize(width, height);
+        return;
+    }
+    fresh::IRenderContext* rc = eng->getRenderer();
+    if (rc) {
+        rc->recreateSwapChain(width, height);
+    }
 }
 
 FRESH_API void Engine_SetWindowTitle(void* engine, const char* title)
 {
     if (!engine || !title) return;
-    // Delegate to engine window
-    (void)engine;
-    // TODO: call eng->getWindow()->setTitle(title) when API is exposed
+    static_cast<fresh::Engine*>(engine)->setWindowTitle(title);
 }
 
 // ---------------------------------------------------------------------------
@@ -176,29 +179,34 @@ FRESH_API void Engine_SetWindowTitle(void* engine, const char* title)
 FRESH_API void Engine_SetEditorMode(void* engine, int editorMode)
 {
     if (!engine) return;
-    // TODO: route to Engine::setMode() once exposed
-    fresh::Logger::getInstance().info(
-        std::string("Engine_SetEditorMode: ") + (editorMode ? "editor" : "runtime"),
-        "EngineAPI");
+    static_cast<fresh::Engine*>(engine)->setEditorMode(editorMode != 0);
 }
 
 FRESH_API void Engine_Undo(void* engine)
 {
     if (!engine) return;
-    // TODO: route to EditorManager::undo() once accessible from API
-    fresh::Logger::getInstance().info("Engine_Undo", "EngineAPI");
+    fresh::EditorManager* em = static_cast<fresh::Engine*>(engine)->getEditorManager();
+    if (em) {
+        em->undo();
+    }
 }
 
 FRESH_API void Engine_Redo(void* engine)
 {
     if (!engine) return;
-    fresh::Logger::getInstance().info("Engine_Redo", "EngineAPI");
+    fresh::EditorManager* em = static_cast<fresh::Engine*>(engine)->getEditorManager();
+    if (em) {
+        em->redo();
+    }
 }
 
 FRESH_API void Engine_FrameSelection(void* engine)
 {
     if (!engine) return;
-    fresh::Logger::getInstance().info("Engine_FrameSelection", "EngineAPI");
+    fresh::EditorManager* em = static_cast<fresh::Engine*>(engine)->getEditorManager();
+    if (em) {
+        em->frameSelection();
+    }
 }
 
 // ---------------------------------------------------------------------------
@@ -213,20 +221,62 @@ FRESH_API const char* Engine_GetSceneEntities(void* engine)
     }
 
     auto* eng = static_cast<fresh::Engine*>(engine);
-    // Access the entity manager and serialise to JSON
-    // The Engine does not currently expose a public getEntityManager(); this
-    // will be wired once that accessor is added.  Return a placeholder.
-    (void)eng;
-    g_sceneEntitiesJson = "{\"entities\":[]}";
+    fresh::ecs::EntityManager* em = eng->getEntityManager();
+
+    std::ostringstream ss;
+    ss << "{\"entities\":[";
+
+    if (em) {
+        const auto entities = em->getAllEntities();
+        bool first = true;
+        for (const auto& entity : entities) {
+            if (!first) ss << ",";
+            first = false;
+            ss << "{\"id\":" << entity.getId() << ",\"name\":\"Entity_" << entity.getId() << "\",\"components\":[]}";
+        }
+    }
+
+    ss << "]}";
+    g_sceneEntitiesJson = ss.str();
     return g_sceneEntitiesJson.c_str();
 }
 
 FRESH_API int Engine_RaycastViewport(void* engine, float u, float v)
 {
     if (!engine) return -1;
-    (void)u;
-    (void)v;
-    // TODO: delegate to ViewportContext::raycast(u, v) and return entity ID
+
+    auto* eng = static_cast<fresh::Engine*>(engine);
+    fresh::ViewportContext* vc = eng->getViewportContext();
+    if (!vc) return -1;
+
+    fresh::Camera* cam = vc->getCamera();
+    if (!cam) return -1;
+
+    // Build a world-space ray from normalised viewport coordinates [0,1].
+    // Convert to NDC: x in [-1,1], y in [-1,1] (flip Y because screen Y is top-down).
+    const float ndcX =  2.0f * u - 1.0f;
+    const float ndcY =  1.0f - 2.0f * v;
+
+    const glm::mat4 proj = vc->getProjectionMatrix();
+    const glm::mat4 view = vc->getViewMatrix();
+    const glm::mat4 invProjView = glm::inverse(proj * view);
+
+    const glm::vec4 nearClip = invProjView * glm::vec4(ndcX, ndcY, -1.0f, 1.0f);
+    const glm::vec4 farClip  = invProjView * glm::vec4(ndcX, ndcY,  1.0f, 1.0f);
+
+    const glm::vec3 rayOrigin = glm::vec3(nearClip) / nearClip.w;
+    const glm::vec3 rayDir    = glm::normalize(glm::vec3(farClip) / farClip.w - rayOrigin);
+
+    fresh::VoxelWorld* world = eng->getWorld();
+    if (!world) return -1;
+
+    const fresh::Ray ray(rayOrigin, rayDir);
+    const fresh::RayHit hit = fresh::CollisionDetection::raycastVoxel(ray, world, 200.0f);
+    if (!hit.hit) return -1;
+
+    // No entity spatial index yet — report the voxel hit position encoded as a
+    // negative sentinel so callers can distinguish "hit voxel" from "hit entity".
+    // Return -1 (no entity) until entity AABB picking is implemented.
     return -1;
 }
 
@@ -236,8 +286,10 @@ FRESH_API int Engine_SetComponentProperty(void* engine, int entityId,
                                           const char* value)
 {
     if (!engine || !component || !key || !value) return 0;
-    (void)entityId;
-    // TODO: route through Reflection system to locate and set the property
+    // Full reflection-based property setting requires a registered component
+    // property map that does not yet exist.  Log the request so that it is
+    // visible in the Output Log and return 0 (not applied) until the
+    // reflection system is wired.
     fresh::Logger::getInstance().info(
         std::string("SetComponentProperty entity=") + std::to_string(entityId) +
         " " + component + "." + key + "=" + value,
@@ -286,10 +338,10 @@ FRESH_API void Engine_SetLogCallback(void* engine, EngineLogCallback callback)
 FRESH_API void Engine_SetCellShadingEnabled(void* engine, int enabled)
 {
     if (!engine) return;
-    // TODO: route to IRenderContext::setCellShadingEnabled()
-    fresh::Logger::getInstance().info(
-        std::string("Engine_SetCellShadingEnabled: ") + (enabled ? "on" : "off"),
-        "EngineAPI");
+    fresh::IRenderContext* rc = static_cast<fresh::Engine*>(engine)->getRenderer();
+    if (rc) {
+        rc->setCellShadingEnabled(enabled != 0);
+    }
 }
 
 FRESH_API void Engine_SetCellShadingParams(void* engine,
@@ -299,9 +351,17 @@ FRESH_API void Engine_SetCellShadingParams(void* engine,
                                            float shadowB, float shadowA)
 {
     if (!engine) return;
-    // TODO: route to IRenderContext::setCellShadingParams()
-    (void)outlineThickness; (void)rimThreshold;
-    (void)shadowR; (void)shadowG; (void)shadowB; (void)shadowA;
+    fresh::IRenderContext* rc = static_cast<fresh::Engine*>(engine)->getRenderer();
+    if (rc) {
+        fresh::IRenderContext::CellShadingParams p;
+        p.outlineThickness = outlineThickness;
+        p.rimThreshold     = rimThreshold;
+        p.shadowR          = shadowR;
+        p.shadowG          = shadowG;
+        p.shadowB          = shadowB;
+        p.shadowA          = shadowA;
+        rc->setCellShadingParams(p);
+    }
 }
 
 // ---------------------------------------------------------------------------

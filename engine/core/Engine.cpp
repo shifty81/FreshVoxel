@@ -242,6 +242,61 @@ ViewportContext* Engine::getViewportContext() const
     return m_viewportContext.get();
 }
 
+void Engine::tickOnce(float deltaSeconds)
+{
+    // Clamp to prevent physics explosions on first frame or after pauses
+    static constexpr float MAX_DELTA = 0.1f;
+    deltaSeconds = std::min(deltaSeconds, MAX_DELTA);
+
+    if (m_window) {
+        m_window->pollEvents();
+        if (m_window->shouldClose()) {
+            m_running = false;
+            return;
+        }
+    }
+
+    processInput();
+
+    if (m_world) {
+        update(deltaSeconds);
+    } else if (m_config.enableEditor) {
+        updateEditor(deltaSeconds);
+    }
+
+    if (m_config.enableRendering) {
+        render();
+    }
+}
+
+void Engine::setWindowTitle(const std::string& title)
+{
+#ifdef _WIN32
+    if (m_window) {
+        // Convert UTF-8 to wide string for Win32
+        int len = MultiByteToWideChar(CP_UTF8, 0, title.c_str(), -1, nullptr, 0);
+        if (len > 0) {
+            std::wstring wide(len, L'\0');
+            MultiByteToWideChar(CP_UTF8, 0, title.c_str(), -1, wide.data(), len);
+            SetWindowTextW(m_window->getHandle(), wide.c_str());
+        }
+    }
+#else
+    // On non-Windows platforms the window type exposes setTitle if available
+    (void)title;
+#endif
+}
+
+void Engine::setEditorMode(bool editorMode)
+{
+    bool currentlyInPlayMode = m_inGame;
+    if (editorMode && currentlyInPlayMode) {
+        exitPlayMode();
+    } else if (!editorMode && !currentlyInPlayMode) {
+        enterPlayMode();
+    }
+}
+
 bool Engine::initialize(const EngineConfig& config)
 {
     m_config = config;
