@@ -16,12 +16,17 @@
 //   with its own message pump when used in DLL mode.
 // ===========================================================================
 
-#ifdef FRESH_ENGINE_EXPORTS
-    #define FRESH_API __declspec(dllexport)
-#elif defined(FRESH_ENGINE_IMPORTS)
-    #define FRESH_API __declspec(dllimport)
+#ifdef _WIN32
+    #ifdef FRESH_ENGINE_EXPORTS
+        #define FRESH_API __declspec(dllexport)
+    #elif defined(FRESH_ENGINE_IMPORTS)
+        #define FRESH_API __declspec(dllimport)
+    #else
+        #define FRESH_API
+    #endif
 #else
-    // Header included from within a non-DLL build (e.g. static lib tests)
+    // On non-Windows platforms (Linux, macOS) there is no DLL decoration.
+    // GCC/Clang visibility attributes are not needed for a static library.
     #define FRESH_API
 #endif
 

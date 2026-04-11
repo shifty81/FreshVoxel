@@ -150,6 +150,16 @@ public:
      */
     virtual void setCellShadingParams(const CellShadingParams& params) { (void)params; }
 
+    /** @brief Query whether cell shading is currently active. */
+    virtual bool isCellShadingEnabled() const { return false; }
+
+    /** @brief Retrieve the current cell shading parameters (read-only). */
+    virtual const CellShadingParams& getCellShadingParams() const
+    {
+        static const CellShadingParams defaults;
+        return defaults;
+    }
+
     // Resource creation
     virtual std::shared_ptr<RenderBuffer> createVertexBuffer(const void* data, size_t size) = 0;
     virtual std::shared_ptr<RenderBuffer> createIndexBuffer(const void* data, size_t size) = 0;

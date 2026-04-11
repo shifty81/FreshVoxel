@@ -145,6 +145,37 @@ public:
     EngineSystemRegistry& getSystemRegistry() { return m_systemRegistry; }
     const EngineSystemRegistry& getSystemRegistry() const { return m_systemRegistry; }
 
+    /**
+     * @brief Get the active render context (may be nullptr before Initialize).
+     */
+    IRenderContext* getRenderer() const { return m_renderer.get(); }
+
+    /**
+     * @brief Get the editor manager (may be nullptr in non-editor modes).
+     */
+    EditorManager* getEditorManager() const { return m_editorManager.get(); }
+
+    /**
+     * @brief Advance the engine by exactly one frame without blocking.
+     *
+     * Used in DLL mode so that the WPF host can drive the render loop from
+     * CompositionTarget.Rendering.  Equivalent to one iteration of run().
+     * @param deltaSeconds Elapsed time in seconds since the previous call.
+     */
+    void tickOnce(float deltaSeconds);
+
+    /**
+     * @brief Set the OS window title.
+     * @param title UTF-8 title string.
+     */
+    void setWindowTitle(const std::string& title);
+
+    /**
+     * @brief Switch between editor and play mode.
+     * @param editorMode true → editor mode, false → play/runtime mode.
+     */
+    void setEditorMode(bool editorMode);
+
 private:
     void processInput();
     void update(float deltaTime);
@@ -243,7 +274,9 @@ private:
 
 #if defined(FRESH_OPENGL_SUPPORT) && defined(FRESH_GLEW_AVAILABLE)
     // OpenGL rendering state
-    GLuint m_shaderProgram = 0;
+    GLuint m_shaderProgram = 0;       ///< Standard voxel shader
+    GLuint m_cellShadingProgram = 0;  ///< Toon cell-shading shader (pass 1)
+    GLuint m_outlineProgram = 0;      ///< Inverted-hull outline shader (pass 2)
     GLuint m_crosshairShader = 0;
     GLuint m_crosshairVAO = 0;
     GLuint m_crosshairVBO = 0;
@@ -251,6 +284,11 @@ private:
     std::unordered_map<ChunkPos, GLuint> m_chunkVBOs;
     std::unordered_map<ChunkPos, GLuint> m_chunkEBOs;
     std::unordered_map<ChunkPos, size_t> m_chunkIndexCounts;
+    // LOD1 GPU buffers — used for chunks beyond LOD_DISTANCE
+    std::unordered_map<ChunkPos, GLuint> m_chunkLod1VAOs;
+    std::unordered_map<ChunkPos, GLuint> m_chunkLod1VBOs;
+    std::unordered_map<ChunkPos, GLuint> m_chunkLod1EBOs;
+    std::unordered_map<ChunkPos, size_t> m_chunkLod1IndexCounts;
 #endif
 
     void createNewWorld(const WorldCreationParams& params);
