@@ -88,6 +88,7 @@
 #include "ui/SceneHierarchyPanel.h"
 #include "ui/VoxelToolPalette.h"
 #include "voxel/Chunk.h"
+#include "voxel/MeshGenerator.h"
 #include "voxel/VoxelTypes.h"
 #include "voxel/VoxelWorld.h"
 #include "viewport/ViewportContext.h"
@@ -171,10 +172,17 @@ constexpr float DEFAULT_CAMERA_PITCH = 0.0f;    // Level horizon
 constexpr glm::vec3 DEFAULT_SPAWN_POSITION(0.0f, 100.0f, 0.0f);  // Center, above terrain
 
 #if defined(FRESH_OPENGL_SUPPORT) && defined(FRESH_GLEW_AVAILABLE)
-[[maybe_unused]] const char* VOXEL_VERTEX_SHADER = "shaders/voxel.vert";
-[[maybe_unused]] const char* VOXEL_FRAGMENT_SHADER = "shaders/voxel.frag";
-[[maybe_unused]] const char* CROSSHAIR_VERTEX_SHADER = "shaders/crosshair.vert";
-[[maybe_unused]] const char* CROSSHAIR_FRAGMENT_SHADER = "shaders/crosshair.frag";
+[[maybe_unused]] const char* VOXEL_VERTEX_SHADER        = "shaders/voxel.vert";
+[[maybe_unused]] const char* VOXEL_FRAGMENT_SHADER      = "shaders/voxel.frag";
+[[maybe_unused]] const char* CELL_VERTEX_SHADER         = "shaders/voxel_cell.vert";
+[[maybe_unused]] const char* CELL_FRAGMENT_SHADER       = "shaders/voxel_cell.frag";
+[[maybe_unused]] const char* OUTLINE_VERTEX_SHADER      = "shaders/voxel_outline.vert";
+[[maybe_unused]] const char* OUTLINE_FRAGMENT_SHADER    = "shaders/voxel_outline.frag";
+[[maybe_unused]] const char* CROSSHAIR_VERTEX_SHADER    = "shaders/crosshair.vert";
+[[maybe_unused]] const char* CROSSHAIR_FRAGMENT_SHADER  = "shaders/crosshair.frag";
+
+/// Distance (world units) beyond which chunks switch to LOD1 mesh
+[[maybe_unused]] constexpr float LOD_DISTANCE = 96.0f;
 #endif
 
 /**
@@ -2208,6 +2216,16 @@ void Engine::initializeRendering()
         return;
     }
 
+    // Create cell-shading shader pair (non-fatal if shaders are missing)
+    m_cellShadingProgram = createShaderProgram(CELL_VERTEX_SHADER, CELL_FRAGMENT_SHADER);
+    if (m_cellShadingProgram == 0) {
+        LOG_WARNING_C("Cell shading shaders not found — cell shading will be unavailable", "Engine");
+    }
+    m_outlineProgram = createShaderProgram(OUTLINE_VERTEX_SHADER, OUTLINE_FRAGMENT_SHADER);
+    if (m_outlineProgram == 0) {
+        LOG_WARNING_C("Outline shader not found — ink outline will be unavailable", "Engine");
+    }
+
     // Create crosshair shader program
     m_crosshairShader = createShaderProgram(CROSSHAIR_VERTEX_SHADER, CROSSHAIR_FRAGMENT_SHADER);
     if (m_crosshairShader == 0) {
@@ -2278,9 +2296,25 @@ void Engine::shutdownRendering()
     m_chunkEBOs.clear();
     m_chunkIndexCounts.clear();
 
+    for (auto& pair : m_chunkLod1VAOs) glDeleteVertexArrays(1, &pair.second);
+    for (auto& pair : m_chunkLod1VBOs) glDeleteBuffers(1, &pair.second);
+    for (auto& pair : m_chunkLod1EBOs) glDeleteBuffers(1, &pair.second);
+    m_chunkLod1VAOs.clear();
+    m_chunkLod1VBOs.clear();
+    m_chunkLod1EBOs.clear();
+    m_chunkLod1IndexCounts.clear();
+
     if (m_shaderProgram) {
         glDeleteProgram(m_shaderProgram);
         m_shaderProgram = 0;
+    }
+    if (m_cellShadingProgram) {
+        glDeleteProgram(m_cellShadingProgram);
+        m_cellShadingProgram = 0;
+    }
+    if (m_outlineProgram) {
+        glDeleteProgram(m_outlineProgram);
+        m_outlineProgram = 0;
     }
     if (m_crosshairShader) {
         glDeleteProgram(m_crosshairShader);
@@ -2294,7 +2328,22 @@ void Engine::renderVoxelWorld()
         return;
     }
 
-    glUseProgram(m_shaderProgram);
+    // -----------------------------------------------------------------------
+    // Select active shader based on cell-shading state.
+    // When cell shading is enabled we render in two passes:
+    //   Pass 1: cell / toon shader (front faces)
+    //   Pass 2: inverted-hull outline (back faces)
+    // When disabled we use the standard voxel shader (single pass).
+    // -----------------------------------------------------------------------
+    const bool useCellShading = m_renderer &&
+                                m_renderer->isCellShadingEnabled() &&
+                                m_cellShadingProgram != 0;
+
+    const IRenderContext::CellShadingParams csParams =
+        (m_renderer ? m_renderer->getCellShadingParams() : IRenderContext::CellShadingParams{});
+
+    GLuint activeProgram = useCellShading ? m_cellShadingProgram : m_shaderProgram;
+    glUseProgram(activeProgram);
 
     // Calculate matrices
     glm::mat4 view = m_player->getCamera().getViewMatrix();
@@ -2304,6 +2353,7 @@ void Engine::renderVoxelWorld()
 
     // Combined VP matrix used for frustum extraction and MVP per chunk
     const glm::mat4 vp = projection * view;
+    const glm::vec3 camPos = m_player->getCamera().getPosition();
 
     // -----------------------------------------------------------------------
     // Gribb-Hartmann frustum plane extraction (6 planes from VP matrix).
@@ -2347,7 +2397,23 @@ void Engine::renderVoxelWorld()
     // Vertex layout: 8 floats per vertex (pos.xyz, normal.xyz, ao, typeId)
     constexpr int kStride = 8 * static_cast<int>(sizeof(float));
 
-    // Lambda: upload / rebuild GPU buffers for a chunk
+    // Helper: set vertex attribute pointers for the standard 8-float layout
+    auto bindVertexAttribs = [&]() {
+        // Position (location 0, vec3)
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, kStride, (void*)0);
+        // Normal (location 1, vec3)
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, kStride, (void*)(3 * sizeof(float)));
+        // AO factor (location 2, float)
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, kStride, (void*)(6 * sizeof(float)));
+        // VoxelType ID (location 3, float)
+        glEnableVertexAttribArray(3);
+        glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, kStride, (void*)(7 * sizeof(float)));
+    };
+
+    // Lambda: upload LOD0 GPU buffers for a chunk (triggered when dirty or first seen)
     auto uploadChunk = [&](const ChunkPos& chunkPos, Chunk* chunk) {
         bool needsUpload = chunk->isDirty() || (m_chunkVAOs.find(chunkPos) == m_chunkVAOs.end());
         if (!needsUpload) return;
@@ -2355,6 +2421,17 @@ void Engine::renderVoxelWorld()
         if (chunk->isDirty()) {
             chunk->generateMesh();
             chunk->clearDirty();
+            // Invalidate LOD1 cache so it is rebuilt next time it is needed
+            auto lod1It = m_chunkLod1VAOs.find(chunkPos);
+            if (lod1It != m_chunkLod1VAOs.end()) {
+                glDeleteVertexArrays(1, &m_chunkLod1VAOs[chunkPos]);
+                glDeleteBuffers(1, &m_chunkLod1VBOs[chunkPos]);
+                glDeleteBuffers(1, &m_chunkLod1EBOs[chunkPos]);
+                m_chunkLod1VAOs.erase(chunkPos);
+                m_chunkLod1VBOs.erase(chunkPos);
+                m_chunkLod1EBOs.erase(chunkPos);
+                m_chunkLod1IndexCounts.erase(chunkPos);
+            }
         }
 
         const auto& vertices = chunk->getMeshVertices();
@@ -2373,66 +2450,117 @@ void Engine::renderVoxelWorld()
         }
 
         glBindVertexArray(vao);
-
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
         glBufferData(GL_ARRAY_BUFFER,
                      static_cast<GLsizeiptr>(vertices.size() * sizeof(float)),
                      vertices.data(), GL_STATIC_DRAW);
-
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER,
                      static_cast<GLsizeiptr>(indices.size() * sizeof(uint32_t)),
                      indices.data(), GL_STATIC_DRAW);
-
-        // Position (location 0, vec3)
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, kStride, (void*)0);
-
-        // Normal (location 1, vec3)
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, kStride,
-                              (void*)(3 * sizeof(float)));
-
-        // AO factor (location 2, float packed as single-component)
-        glEnableVertexAttribArray(2);
-        glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, kStride,
-                              (void*)(6 * sizeof(float)));
-
-        // VoxelType ID (location 3, float — cast to int in shader for palette lookup)
-        glEnableVertexAttribArray(3);
-        glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, kStride,
-                              (void*)(7 * sizeof(float)));
-
+        bindVertexAttribs();
         glBindVertexArray(0);
 
         m_chunkIndexCounts[chunkPos] = indices.size();
     };
 
-    // Lambda: draw a single chunk (assumes program/uniforms already set)
-    auto drawChunk = [&](const ChunkPos& chunkPos) {
-        auto vaoIt = m_chunkVAOs.find(chunkPos);
-        if (vaoIt == m_chunkVAOs.end()) return;
+    // Lambda: upload LOD1 GPU buffers for a chunk (lazy, only when needed at distance)
+    auto uploadChunkLod1 = [&](const ChunkPos& chunkPos, Chunk* chunk) {
+        if (m_chunkLod1VAOs.find(chunkPos) != m_chunkLod1VAOs.end()) return; // cached
 
-        size_t indexCount = m_chunkIndexCounts[chunkPos];
-        if (indexCount == 0) return;
+        MeshGenerator gen;
+        std::vector<float>    lod1Vertices;
+        std::vector<uint32_t> lod1Indices;
+        gen.generateLOD1Mesh(chunk, lod1Vertices, lod1Indices);
+        if (lod1Vertices.empty() || lod1Indices.empty()) return;
 
-        glm::mat4 model = glm::translate(glm::mat4(1.0f),
-                                         glm::vec3(chunkPos.x * CHUNK_SIZE, 0, chunkPos.z * CHUNK_SIZE));
-        glm::mat4 mvp   = vp * model;
+        GLuint& vao = m_chunkLod1VAOs[chunkPos];
+        GLuint& vbo = m_chunkLod1VBOs[chunkPos];
+        GLuint& ebo = m_chunkLod1EBOs[chunkPos];
 
-        GLint mvpLoc = glGetUniformLocation(m_shaderProgram, "modelViewProj");
-        glUniformMatrix4fv(mvpLoc, 1, GL_FALSE, glm::value_ptr(mvp));
+        glGenVertexArrays(1, &vao);
+        glGenBuffers(1, &vbo);
+        glGenBuffers(1, &ebo);
+
+        glBindVertexArray(vao);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glBufferData(GL_ARRAY_BUFFER,
+                     static_cast<GLsizeiptr>(lod1Vertices.size() * sizeof(float)),
+                     lod1Vertices.data(), GL_STATIC_DRAW);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+                     static_cast<GLsizeiptr>(lod1Indices.size() * sizeof(uint32_t)),
+                     lod1Indices.data(), GL_STATIC_DRAW);
+        bindVertexAttribs();
+        glBindVertexArray(0);
+
+        m_chunkLod1IndexCounts[chunkPos] = lod1Indices.size();
+    };
+
+    // Lambda: draw a single chunk using a given shader program
+    // Uploads MVp and any extra uniforms needed by the currently-bound program.
+    auto drawChunkWithProgram = [&](const ChunkPos& chunkPos,
+                                    const std::unordered_map<ChunkPos, GLuint>& vaoMap,
+                                    const std::unordered_map<ChunkPos, size_t>& indexMap,
+                                    GLuint program)
+    {
+        auto vaoIt = vaoMap.find(chunkPos);
+        if (vaoIt == vaoMap.end()) return;
+
+        auto idxIt = indexMap.find(chunkPos);
+        if (idxIt == indexMap.end() || idxIt->second == 0) return;
+
+        const glm::mat4 model = glm::translate(glm::mat4(1.0f),
+            glm::vec3(chunkPos.x * CHUNK_SIZE, 0, chunkPos.z * CHUNK_SIZE));
+        const glm::mat4 mvp = vp * model;
+
+        GLint mvpLoc = glGetUniformLocation(program, "modelViewProj");
+        if (mvpLoc >= 0) glUniformMatrix4fv(mvpLoc, 1, GL_FALSE, glm::value_ptr(mvp));
+
+        // Set extra uniforms required by the cell / outline shaders
+        if (useCellShading) {
+            GLint modelLoc = glGetUniformLocation(program, "modelMatrix");
+            if (modelLoc >= 0) glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+            GLint camLoc = glGetUniformLocation(program, "cameraPos");
+            if (camLoc >= 0) glUniform3f(camLoc, camPos.x, camPos.y, camPos.z);
+
+            GLint lightLoc = glGetUniformLocation(program, "lightDir");
+            if (lightLoc >= 0) glUniform3f(lightLoc, 0.5f, 1.0f, 0.3f); // fixed sun direction
+
+            GLint rimLoc = glGetUniformLocation(program, "rimThreshold");
+            if (rimLoc >= 0) glUniform1f(rimLoc, csParams.rimThreshold);
+
+            GLint shadowLoc = glGetUniformLocation(program, "shadowColor");
+            if (shadowLoc >= 0) glUniform4f(shadowLoc,
+                csParams.shadowR, csParams.shadowG, csParams.shadowB, csParams.shadowA);
+
+            GLint colorLoc = glGetUniformLocation(program, "voxelColor");
+            if (colorLoc >= 0) glUniform3f(colorLoc, 0.5f, 0.7f, 0.5f); // palette placeholder
+
+            GLint thickLoc = glGetUniformLocation(program, "outlineThickness");
+            if (thickLoc >= 0) glUniform1f(thickLoc, csParams.outlineThickness);
+        }
 
         glBindVertexArray(vaoIt->second);
-        glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indexCount), GL_UNSIGNED_INT, nullptr);
+        glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(idxIt->second), GL_UNSIGNED_INT, nullptr);
         glBindVertexArray(0);
     };
 
+    // Convenience wrapper using the active LOD-selected buffers
+    auto drawChunk = [&](const ChunkPos& chunkPos, bool useLod1) {
+        if (useLod1) {
+            drawChunkWithProgram(chunkPos, m_chunkLod1VAOs, m_chunkLod1IndexCounts, activeProgram);
+        } else {
+            drawChunkWithProgram(chunkPos, m_chunkVAOs, m_chunkIndexCounts, activeProgram);
+        }
+    };
+
     // -----------------------------------------------------------------------
-    // Pass 1 — opaque chunks (frustum-culled)
+    // Pass 1 — opaque chunks (frustum-culled, LOD-selected)
     // Transparent chunk positions are collected for pass 2.
     // -----------------------------------------------------------------------
-    std::vector<ChunkPos> transparentChunks;
+    std::vector<std::pair<ChunkPos, bool>> transparentChunks; // (pos, useLod1)
 
     for (const auto& chunkPair : m_world->getChunks()) {
         const ChunkPos& chunkPos = chunkPair.first;
@@ -2447,7 +2575,17 @@ void Engine::renderVoxelWorld()
 
         if (!isAABBVisible(chunkMin, chunkMax)) continue; // frustum culled
 
-        uploadChunk(chunkPos, chunk);
+        // LOD selection: use LOD1 for chunks whose centre is beyond LOD_DISTANCE
+        const glm::vec3 centre = (chunkMin + chunkMax) * 0.5f;
+        const bool useLod1 = (glm::distance(camPos, centre) > LOD_DISTANCE);
+
+        if (useLod1) {
+            uploadChunkLod1(chunkPos, chunk);
+            // Still need LOD0 uploaded so dirty-flag clears work correctly
+            uploadChunk(chunkPos, chunk);
+        } else {
+            uploadChunk(chunkPos, chunk);
+        }
 
         // Scan for transparent voxels — defer to pass 2
         bool hasTransparent = false;
@@ -2458,37 +2596,69 @@ void Engine::renderVoxelWorld()
                         hasTransparent = true;
 
         if (hasTransparent) {
-            transparentChunks.push_back(chunkPos);
+            transparentChunks.emplace_back(chunkPos, useLod1);
             continue; // skip in opaque pass
         }
 
-        drawChunk(chunkPos);
+        drawChunk(chunkPos, useLod1);
+    }
+
+    // -----------------------------------------------------------------------
+    // Cell-shading pass 2 — inverted-hull outline
+    // Rendered immediately after opaque geometry (before transparent pass)
+    // so the outlines don't bleed over transparent surfaces.
+    // -----------------------------------------------------------------------
+    if (useCellShading && m_outlineProgram != 0) {
+        glUseProgram(m_outlineProgram);
+        glCullFace(GL_FRONT); // render back faces only
+        glDepthFunc(GL_LEQUAL);
+
+        for (const auto& chunkPair : m_world->getChunks()) {
+            const ChunkPos& chunkPos = chunkPair.first;
+            Chunk* chunk = chunkPair.second.get();
+            if (!chunk) continue;
+
+            const glm::vec3 chunkMin(chunkPos.x * CHUNK_SIZE, 0, chunkPos.z * CHUNK_SIZE);
+            const glm::vec3 chunkMax(chunkMin.x + CHUNK_SIZE,
+                                     static_cast<float>(CHUNK_HEIGHT),
+                                     chunkMin.z + CHUNK_SIZE);
+            if (!isAABBVisible(chunkMin, chunkMax)) continue;
+
+            const glm::vec3 centre = (chunkMin + chunkMax) * 0.5f;
+            const bool useLod1 = (glm::distance(camPos, centre) > LOD_DISTANCE);
+            drawChunkWithProgram(chunkPos,
+                useLod1 ? m_chunkLod1VAOs : m_chunkVAOs,
+                useLod1 ? m_chunkLod1IndexCounts : m_chunkIndexCounts,
+                m_outlineProgram);
+        }
+
+        glDepthFunc(GL_LESS);
+        glCullFace(GL_BACK);
+        glUseProgram(activeProgram);
     }
 
     // -----------------------------------------------------------------------
     // Pass 2 — transparent chunks, sorted back-to-front then blended
     // -----------------------------------------------------------------------
     if (!transparentChunks.empty()) {
-        const glm::vec3 camPos = m_player->getCamera().getPosition();
-
         // Sort furthest first
         std::sort(transparentChunks.begin(), transparentChunks.end(),
-                  [&](const ChunkPos& a, const ChunkPos& b) {
+                  [&](const std::pair<ChunkPos, bool>& a, const std::pair<ChunkPos, bool>& b) {
                       auto centre = [](const ChunkPos& cp) -> glm::vec3 {
                           return glm::vec3(cp.x * CHUNK_SIZE + CHUNK_SIZE * 0.5f,
                                            CHUNK_HEIGHT * 0.5f,
                                            cp.z * CHUNK_SIZE + CHUNK_SIZE * 0.5f);
                       };
-                      return glm::distance(camPos, centre(a)) >
-                             glm::distance(camPos, centre(b));
+                      return glm::distance(camPos, centre(a.first)) >
+                             glm::distance(camPos, centre(b.first));
                   });
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glDepthMask(GL_FALSE); // write colour but not depth for transparent geometry
 
-        for (const ChunkPos& cp : transparentChunks)
-            drawChunk(cp);
+        for (const auto& [cp, lod1] : transparentChunks)
+            drawChunk(cp, lod1);
 
         glDepthMask(GL_TRUE);
         glDisable(GL_BLEND);

@@ -89,6 +89,12 @@ public:
     std::shared_ptr<RenderShader> createShader(const std::string& vertexCode,
                                                const std::string& fragmentCode) override;
 
+    // ---- Cell shading ----
+    void setCellShadingEnabled(bool enabled) override { m_cellShadingEnabled = enabled; }
+    void setCellShadingParams(const CellShadingParams& params) override { m_cellShadingParams = params; }
+    bool isCellShadingEnabled() const override { return m_cellShadingEnabled; }
+    const CellShadingParams& getCellShadingParams() const override { return m_cellShadingParams; }
+
 private:
     bool initializeGLEW();
     void checkGLErrors(const char* context);
@@ -101,6 +107,10 @@ private:
     GLuint defaultVAO = 0; // Default Vertex Array Object
     glm::vec4 clearColorValue = glm::vec4(0.1f, 0.1f, 0.1f, 1.0f);
     float clearDepthValue = 1.0f;
+
+    // Cell shading state
+    bool m_cellShadingEnabled = false;
+    CellShadingParams m_cellShadingParams;
 };
 
 } // namespace fresh
