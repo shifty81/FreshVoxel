@@ -36,8 +36,8 @@ jobs:
     - name: Run Tests
       working-directory: build
       run: |
-        if (Test-Path "${{ matrix.build_type }}/FreshVoxelEngineTests.exe") {
-          & "${{ matrix.build_type }}/FreshVoxelEngineTests.exe"
+        if (Test-Path "${{ matrix.build_type }}/FreshTests.exe") {
+          & "${{ matrix.build_type }}/FreshTests.exe"
         } else {
           Write-Error "Test executable not found"
           exit 1
@@ -49,6 +49,9 @@ jobs:
       with:
         name: fresh-windows-x64
         path: |
-          build/${{ matrix.build_type }}/FreshVoxelEngine.exe
+          build/${{ matrix.build_type }}/FreshEditor.exe
+          build/${{ matrix.build_type }}/FreshClient.exe
+          build/${{ matrix.build_type }}/FreshServer.exe
+          build/${{ matrix.build_type }}/FreshRuntime.exe
           build/shaders/
         retention-days: 7

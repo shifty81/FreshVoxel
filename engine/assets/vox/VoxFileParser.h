@@ -13,6 +13,7 @@
 
 #include <array>
 #include <cstdint>
+#include <cstring>
 #include <string>
 #include <vector>
 
@@ -91,7 +92,7 @@ private:
             T value{};
             // NOLINTNEXTLINE(bugprone-sizeof-expression)
             if (canRead(sizeof(T))) {
-                __builtin_memcpy(&value, data + pos, sizeof(T));
+                std::memcpy(&value, data + pos, sizeof(T));
                 pos += sizeof(T);
             }
             return value;

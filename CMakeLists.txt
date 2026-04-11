@@ -836,6 +836,16 @@ if(BUILD_TESTS)
     target_link_libraries(FreshTests PRIVATE
         GTest::gtest
     )
+
+    # Link OpenAL (required by AudioEngine.cpp compiled into tests)
+    if(OpenAL_FOUND)
+        target_link_libraries(FreshTests PRIVATE OpenAL::OpenAL)
+    endif()
+
+    # Link libvorbis (required by ResourceManager.cpp and AudioEngine.cpp compiled into tests)
+    if(Vorbis_FOUND)
+        target_link_libraries(FreshTests PRIVATE Vorbis::vorbisfile Vorbis::vorbis Ogg::ogg)
+    endif()
     
     # Link GLFW if needed for tests
     if(glfw3_FOUND)
